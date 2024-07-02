@@ -1,0 +1,493 @@
+mixed-port: 7890
+allow-lan: true
+bind-address: "*"
+mode: rule
+log-level: info
+external-controller: 127.0.0.1:9090
+dns:
+  enable: true
+  ipv6: false
+  default-nameserver: [223.5.5.5, 119.29.29.29]
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  use-hosts: true
+  nameserver: [https://853.66a.net:443/dns-query, https://doh.pub/dns-query, https://dns.alidns.com/dns-query]
+  fallback: [https://doh.dns.sb/dns-query, https://dns.cloudflare.com/dns-query, https://dns.twnic.tw/dns-query, tls://8.8.4.4:853]
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    geosite:
+      - gfw
+    ipcidr:
+      - 240.0.0.0/4
+    domain:
+      - +.google.com
+      - +.facebook.com
+      - +.youtube.com
+  nameserver-policy:
+    geosite:cn,private,apple:
+      - https://doh.pub/dns-query
+      - https://dns.alidns.com/dns-query
+    www.baidu.com,+.google.cn: [223.5.5.5, https://dns.alidns.com/dns-query]
+    rule-set:自定义广告白名单: [223.5.5.5, https://dns.alidns.com/dns-query]
+    rule-set:adblock,自定义广告拦截: rcode://success
+  fake-ip-filter:
+    - "*.lan"
+    - localhost.ptlogin2.qq.com
+rule-providers:
+  adblock:
+    type: http
+    behavior: classical
+    path: ./rule_providers/adblock.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/adblock.yml
+    interval: 21600
+    format: yaml
+  proxy:
+    type: http
+    behavior: classical
+    path: ./rule_providers/proxy.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/proxy.yml
+    interval: 86400
+    format: yaml
+  direct:
+    type: http
+    behavior: classical
+    path: ./rule_providers/direct.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/direct.yml
+    interval: 86400
+    format: yaml
+  region:
+    type: http
+    behavior: classical
+    path: ./rule_providers/region.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/region.yml
+    interval: 86400
+    format: yaml
+  direct2:
+    behavior: domain
+    type: http
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt
+    interval: 86400
+    path: ./ruleset/direct2.yaml
+    format: yaml
+  telegramcidr:
+    type: http
+    behavior: ipcidr
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt
+    path: ./ruleset/telegramcidr.yaml
+    interval: 86400
+    format: yaml
+  ProxyGFWlist:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ProxyGFWlist.yaml
+    path: ./ruleset/ProxyGFWlist.yaml
+    interval: 86400
+    format: yaml
+  ChinaCompanyIp:
+    type: http
+    behavior: ipcidr
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaCompanyIp.yaml
+    path: ./ruleset/gfw.yaml
+    interval: 86400
+    format: yaml
+  ChinaDomain:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaDomain.yaml
+    path: ./ruleset/ChinaDomain.yaml
+    interval: 86400
+    format: yaml
+  ChinaIp:
+    type: http
+    behavior: ipcidr
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaIp.yaml
+    path: ./ruleset/ChinaIp.yaml
+    interval: 86400
+    format: yaml
+  ChinaMedia:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaMedia.yaml
+    path: ./ruleset/ChinaMedia.yaml
+    interval: 86400
+    format: yaml
+  LocalAreaNetwork:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/LocalAreaNetwork.yaml
+    path: ./ruleset/LocalAreaNetwork.yaml
+    interval: 86400
+    format: yaml
+  自定义广告拦截:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com//HDYOU/ClashADRule/main/self_payload_ad.yml
+    path: ./ruleset/自定义广告拦截.yaml
+    interval: 86400
+    format: yaml
+  自定义广告白名单:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/HDYOU/ClashADRule/main/self_payload_whitelist.yml
+    path: ./ruleset/自定义广告白名单.yaml
+    interval: 86400
+    format: yaml
+  MetaCubeX-cn-domain:
+    behavior: domain
+    interval: 86400
+    path: ./ruleset/cn_domain.yaml
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/cn_domain.yaml
+proxies:
+  - {name: 🇺🇸 美国 CloudFlare节点 8, server: 104.19.48.16, port: 8443, type: vmess, uuid: 39135a39-e6ca-43df-a360-d859eea58d86, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hk01.linkitnow.net}}, udp: true}
+  - {name: 🇺🇸 美国 加利福尼亚州洛杉矶市SharkTech数据中心, server: 107.167.20.178, port: 30000, type: vmess, uuid: 418048af-a293-4b99-9b0c-98ca3580dd24, alterId: 64, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /}, udp: true}
+  - {name: Relay_-🇭🇰HK_63 |19.61Mb, server: 154.3.8.151, port: 30067, type: ss, cipher: aes-256-gcm, password: iUB0923RBA, udp: true}
+  - {name: 🇺🇸 美国 亚利桑那州凤凰城Oracle云计算数据中心, server: 129.146.46.181, port: 52408, type: vmess, uuid: a797ff7b-8161-40a6-d577-1b2c213b3885, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 11, server: 104.19.58.175, port: 2052, type: vmess, uuid: d6b6d982-d52f-465a-b988-85670b23f64a, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: cdn1.freegradely.xyz}}, udp: true}
+  - {name: Pool_🇭🇰HK_1188 |10.65Mb, server: xg.dashuai.cyou, port: 19901, type: vmess, uuid: 9eac9c76-1c96-4c16-8dfa-1db26c8071e0, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: xg.dashuai.cyou, udp: true}
+  - {name: Relay_-🇸🇬SG_51 |25.08Mb, server: 192.53.113.130, port: 80, type: ss, cipher: chacha20-ietf-poly1305, password: vBE5Su1CJ3Ly3mzUtQqnI3, udp: true}
+  - {name: 🇸🇬 _SG_新加坡->🏳️_unKnow_未知, server: 18.143.144.112, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇸🇬 Relay_🇸🇬SG-🇸🇬SG_1291 |18.88Mb, server: 139.162.21.128, port: 2083, type: vmess, uuid: 0eb76650-5dda-4466-a142-b2097b93c50a, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: sg2-v2ray.ipracevpn.com, udp: true}
+  - {name: Pool_🇸🇬SG_1294 | 8.67Mb, server: sg-full.privateip.net, port: 443, type: vmess, uuid: 951acb73-09b9-4092-b4fa-b1987cec7f49, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: sg-full.privateip.net}}, udp: true}
+  - {name: 🇸🇬 _SG_新加坡, server: 52.77.246.165, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点, server: 104.19.38.88, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip5-4.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 15, server: cfcdn3.sanfencdn9.com, port: 80, type: vmess, uuid: d22e082c-3742-421f-aabd-2511eec9148c, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 6Sn8mFtTjp3.yofnhkfc.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 18, server: 104.19.47.65, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip11-2.freegradely.xyz}}, udp: true}
+  - {name: Relay_-🇯🇵JP_882 |25.92Mb, server: jp03-alt-vm0.entry.srthdw.art, port: 21583, type: vmess, uuid: 22acc467-7440-386a-927a-d84be554b37e, alterId: 1, cipher: auto, tls: true, skip-cert-verify: true, udp: true}
+  - {name: 🇸🇬 新加坡-112.1KB/s, server: 103.172.116.103, port: 9060, type: ss, cipher: aes-256-cfb, password: ueLXVkvh4hckhErQ, udp: true}
+  - {name: Relay_-🇸🇬SG_131 |15.48Mb, server: 91.192.81.21, port: 8388, type: ss, cipher: chacha20-ietf-poly1305, password: 1q7RNKaIk2wYO8fEPmEX0vWQ7Va+QRTA, udp: true}
+  - {name: Relay_-🇭🇰HK_703 |13.20Mb, server: 206.237.31.203, port: 49879, type: vmess, uuid: 2aa1a094-8320-4567-b833-c0b4934eb7e2, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, udp: true}
+  - {name: 🇸🇬 新加坡-166.5KB/s, server: 103.172.116.103, port: 9056, type: ss, cipher: aes-256-cfb, password: rNBfNuuANFCAk7KB, udp: true}
+  - {name: 🇸🇬 新加坡-102.8KB/s, server: 103.172.116.103, port: 9031, type: ss, cipher: aes-256-cfb, password: BwcAUZk8hUFAkDGN, udp: true}
+  - {name: 🇸🇬 新加坡-749.3KB/s, server: 103.172.116.103, port: 9014, type: ss, cipher: aes-256-cfb, password: KnJGad3FqTvjqbaX, udp: true}
+  - {name: 🇸🇬 新加坡-163.9KB/s, server: 103.172.116.103, port: 9046, type: ss, cipher: aes-256-cfb, password: NvS8N4Vf8qAGPSCL, udp: true}
+  - {name: 🇸🇬 新加坡-149.6KB/s, server: 103.172.116.103, port: 9060, type: ss, cipher: aes-256-cfb, password: ueLXVkvh4hckhErQ, udp: true}
+  - {name: 🇸🇬 新加坡-171.2KB/s, server: 103.172.116.103, port: 9018, type: ss, cipher: aes-256-cfb, password: fG2artUmHfNT2cX7, udp: true}
+  - {name: 🇸🇬 新加坡-410.9KB/s, server: 103.172.116.103, port: 9064, type: ss, cipher: aes-256-cfb, password: cp8pRSUAyLhTfVWH, udp: true}
+  - {name: Relay_-🇯🇵JP_837 |16.60Mb, server: 183.181.36.194, port: 41597, type: vmess, uuid: 4a6eaa2d-5603-4c05-d967-fb6f42250a5a, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /}, udp: true}
+  - {name: 🇸🇬 新加坡-411.1KB/s, server: 103.172.116.103, port: 9031, type: ss, cipher: aes-256-cfb, password: BwcAUZk8hUFAkDGN, udp: true}
+  - {name: 🇺🇸 美国 华盛顿Cogent通信公司 2, server: 38.114.114.6, port: 5499, type: ss, cipher: aes-256-gcm, password: lGqs95QkFHo2NV, udp: true}
+  - {name: 🇺🇸 _US_美国, server: 23.162.200.28, port: 3389, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: Pool_🇸🇬SG_1292 |25.46Mb, server: sg2-full.privateip.net, port: 443, type: vmess, uuid: 8114a974-d3c2-466e-9475-748aba41c307, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: sg2-full.privateip.net}}, udp: true}
+  - {name: Relay_-🇨🇳CN_808 |29.96Mb, server: 38.165.72.151, port: 38001, type: vmess, uuid: 418048af-a293-4b99-9b0c-98ca3580dd24, alterId: 64, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: www.22103619.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 6, server: Khuosrow.digifashop.ir., port: 443, type: vmess, uuid: 28dc623f-3ee7-4969-849b-d4a7af58078c, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: Arakelyan.digifashop.ir., network: ws, ws-opts: {path: /, headers: {Host: Khuosrow.digifashop.ir.}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 19, server: Lousaper.digifashop.ir., port: 443, type: vmess, uuid: 28dc623f-3ee7-4969-849b-d4a7af58078c, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: Ghazaryan.digifashop.ir., network: ws, ws-opts: {path: /, headers: {Host: Lousaper.digifashop.ir.}}, udp: true}
+  - {name: 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 149, server: 104.19.46.17, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip13.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 19, server: 104.19.47.65, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip11-2.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 -1289-US【ccbaohe.com〗 永久免费节点机场, server: 38.95.233.222, port: 80, type: vmess, uuid: 41fcf4ae-9266-422f-f730-b1ff57bb0345, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 38.95.233.222}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 2, server: 104.19.48.35, port: 8443, type: vmess, uuid: 39135a39-e6ca-43df-a360-d859eea58d86, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hk01.linkitnow.net}}, udp: true}
+  - {name: 🇸🇬 美国【TG：@ccbaohe】定时更新节点订阅, server: 104.19.32.46, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: github.com/Alvin9999, headers: {Host: ip002-3.dtku47.xyz}}, udp: true}
+  - {name: 🇸🇬 美国【TG：@ccbaohe】定时更新节点订阅 13, server: 104.19.46.233, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip002-2.dtku47.xyz}}, udp: true}
+  - {name: 🇰🇷 VM-TCP-NA 🇰🇷 KR-141.164.58.88:8881, server: 141.164.58.88, port: 8881, type: vmess, uuid: db5afae4-ac23-41a6-8378-f307a9a47436, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, udp: true}
+  - {name: 🇰🇷 KR-152.67.218.38-3017, server: 152.67.218.38, port: 443, type: vmess, uuid: b5e9480a-b7aa-40a4-f9a7-5299b5e363b4, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /}, udp: true}
+  - {name: 🇯🇵 日本3|@ripaojiedian, server: cfcdn3.sanfencdn9.com, port: 80, type: vmess, uuid: d22e082c-3742-421f-aabd-2511eec9148c, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 6Sn8mFtTjp3.yofnhkfc.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 5, server: 104.19.21.240, port: 2052, type: vmess, uuid: d6b6d982-d52f-465a-b988-85670b23f64a, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: cdn1.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 147, server: 104.19.38.18, port: 2052, type: vmess, uuid: d6b6d982-d52f-465a-b988-85670b23f64a, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: github.com/Alvin9999, headers: {Host: cdn1.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 37, server: 104.19.21.81, port: 2052, type: vmess, uuid: d6b6d982-d52f-465a-b988-85670b23f64a, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: cdn1.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 161, server: 104.19.45.31, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: github.com/Alvin9999, headers: {Host: ip13.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 160, server: 104.19.45.90, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip13.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 164, server: 104.19.45.11, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip13.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 7, server: 104.19.21.73, port: 2052, type: vmess, uuid: d6b6d982-d52f-465a-b988-85670b23f64a, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: cdn1.freegradely.xyz}}, udp: true}
+  - {name: 🇭🇰 香港|@ripaojiedian, server: cfcdn2.sanfencdn9.com, port: 2052, type: vmess, uuid: d22e082c-3742-421f-aabd-2511eec9148c, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: zifstzamhk1.yofnhkfc.xyz}}, udp: true}
+  - {name: 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 155, server: 104.19.46.22, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: github.com/Alvin9999, headers: {Host: ip13.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 154, server: 104.19.45.13, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip13.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 15, server: 104.19.38.88, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip5-4.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 082, server: 172.64.175.213, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip11.freegradely.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip11.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 150, server: 104.19.45.50, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip13.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 157, server: 104.19.46.36, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip13.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 151, server: 104.19.45.19, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: github.com/Alvin9999, headers: {Host: ip13.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 159, server: 104.19.45.47, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip13.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 153, server: 104.19.45.17, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: github.com/Alvin9999, headers: {Host: ip13.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 163, server: 104.19.46.33, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip13.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 3, server: 104.19.46.103, port: 2052, type: vmess, uuid: d6b6d982-d52f-465a-b988-85670b23f64a, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: cdn1.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 148, server: 104.19.46.39, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: github.com/Alvin9999, headers: {Host: ip13.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国2|@ripaojiedian, server: cfcdn1.sanfencdn9.com, port: 8080, type: vmess, uuid: d22e082c-3742-421f-aabd-2511eec9148c, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: us5PhAx6xsj.fzbqfrse.xyz}}, udp: true}
+  - {name: 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 158, server: 104.19.46.59, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip13.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 50, server: 172.64.99.22, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: github.com/Alvin9999, headers: {Host: ip11.freegradely.xyz}}, udp: true}
+  - {name: 🇭🇰 VM-WS-NA 🇭🇰 HK-47.242.22.171:28681, server: 47.242.22.171, port: 28681, type: vmess, uuid: 3b1072ce-d096-46c2-a3e7-08b4f58538f5, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 3, server: Prabvpion.digifashop.ir., port: 443, type: vmess, uuid: 28dc623f-3ee7-4969-849b-d4a7af58078c, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: "@RaFaV2ray", headers: {Host: Prabvpion.digifashop.ir.}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 11 2, server: Lousaper.digifashop.ir., port: 443, type: vmess, uuid: 28dc623f-3ee7-4969-849b-d4a7af58078c, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: Ghazaryan.digifashop.ir., network: ws, ws-opts: {path: /, headers: {Host: Lousaper.digifashop.ir.}}, udp: true}
+  - {name: "🇺🇸 美国 03 | 1x US Washington\r", server: free.2apzhfa.xyz, port: 31215, type: ss, cipher: chacha20-ietf-poly1305, password: 65911e66-f5b2-4a40-98ed-035c169ae1b5, udp: true}
+proxy-groups:
+  - name: 🚀 节点选择
+    type: select
+    proxies:
+      - ♻️ 自动选择
+      - ✅ 手动选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: ♻️ 自动选择
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+    proxies:
+      - 🇺🇸 美国 CloudFlare节点 8
+      - 🇺🇸 美国 加利福尼亚州洛杉矶市SharkTech数据中心
+      - Relay_-🇭🇰HK_63 |19.61Mb
+      - 🇺🇸 美国 亚利桑那州凤凰城Oracle云计算数据中心
+      - 🇺🇸 美国 CloudFlare节点 11
+      - Pool_🇭🇰HK_1188 |10.65Mb
+      - Relay_-🇸🇬SG_51 |25.08Mb
+      - 🇸🇬 _SG_新加坡->🏳️_unKnow_未知
+      - 🇸🇬 Relay_🇸🇬SG-🇸🇬SG_1291 |18.88Mb
+      - Pool_🇸🇬SG_1294 | 8.67Mb
+      - 🇸🇬 _SG_新加坡
+      - 🇺🇸 美国 CloudFlare节点
+      - 🇺🇸 美国 CloudFlare节点 15
+      - 🇺🇸 美国 CloudFlare节点 18
+      - Relay_-🇯🇵JP_882 |25.92Mb
+      - 🇸🇬 新加坡-112.1KB/s
+      - Relay_-🇸🇬SG_131 |15.48Mb
+      - Relay_-🇭🇰HK_703 |13.20Mb
+      - 🇸🇬 新加坡-166.5KB/s
+      - 🇸🇬 新加坡-102.8KB/s
+      - 🇸🇬 新加坡-749.3KB/s
+      - 🇸🇬 新加坡-163.9KB/s
+      - 🇸🇬 新加坡-149.6KB/s
+      - 🇸🇬 新加坡-171.2KB/s
+      - 🇸🇬 新加坡-410.9KB/s
+      - Relay_-🇯🇵JP_837 |16.60Mb
+      - 🇸🇬 新加坡-411.1KB/s
+      - 🇺🇸 美国 华盛顿Cogent通信公司 2
+      - 🇺🇸 _US_美国
+      - Pool_🇸🇬SG_1292 |25.46Mb
+      - Relay_-🇨🇳CN_808 |29.96Mb
+      - 🇺🇸 美国 CloudFlare节点 6
+      - 🇺🇸 美国 CloudFlare节点 19
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 149
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 19
+      - 🇺🇸 -1289-US【ccbaohe.com〗 永久免费节点机场
+      - 🇺🇸 美国 CloudFlare节点 2
+      - 🇸🇬 美国【TG：@ccbaohe】定时更新节点订阅
+      - 🇸🇬 美国【TG：@ccbaohe】定时更新节点订阅 13
+      - 🇰🇷 VM-TCP-NA 🇰🇷 KR-141.164.58.88:8881
+      - 🇰🇷 KR-152.67.218.38-3017
+      - 🇯🇵 日本3|@ripaojiedian
+      - 🇺🇸 美国 CloudFlare节点 5
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 147
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 37
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 161
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 160
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 164
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 7
+      - 🇭🇰 香港|@ripaojiedian
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 155
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 154
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 15
+      - 🇺🇸 美国 082
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 150
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 157
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 151
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 159
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 153
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 163
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 3
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 148
+      - 🇺🇸 美国2|@ripaojiedian
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 158
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 50
+      - 🇭🇰 VM-WS-NA 🇭🇰 HK-47.242.22.171:28681
+      - 🇺🇸 美国 CloudFlare节点 3
+      - 🇺🇸 美国 CloudFlare节点 11 2
+      - "🇺🇸 美国 03 | 1x US Washington\r"
+  - name: ✅ 手动选择
+    type: select
+    proxies:
+      - 🇺🇸 美国 CloudFlare节点 8
+      - 🇺🇸 美国 加利福尼亚州洛杉矶市SharkTech数据中心
+      - Relay_-🇭🇰HK_63 |19.61Mb
+      - 🇺🇸 美国 亚利桑那州凤凰城Oracle云计算数据中心
+      - 🇺🇸 美国 CloudFlare节点 11
+      - Pool_🇭🇰HK_1188 |10.65Mb
+      - Relay_-🇸🇬SG_51 |25.08Mb
+      - 🇸🇬 _SG_新加坡->🏳️_unKnow_未知
+      - 🇸🇬 Relay_🇸🇬SG-🇸🇬SG_1291 |18.88Mb
+      - Pool_🇸🇬SG_1294 | 8.67Mb
+      - 🇸🇬 _SG_新加坡
+      - 🇺🇸 美国 CloudFlare节点
+      - 🇺🇸 美国 CloudFlare节点 15
+      - 🇺🇸 美国 CloudFlare节点 18
+      - Relay_-🇯🇵JP_882 |25.92Mb
+      - 🇸🇬 新加坡-112.1KB/s
+      - Relay_-🇸🇬SG_131 |15.48Mb
+      - Relay_-🇭🇰HK_703 |13.20Mb
+      - 🇸🇬 新加坡-166.5KB/s
+      - 🇸🇬 新加坡-102.8KB/s
+      - 🇸🇬 新加坡-749.3KB/s
+      - 🇸🇬 新加坡-163.9KB/s
+      - 🇸🇬 新加坡-149.6KB/s
+      - 🇸🇬 新加坡-171.2KB/s
+      - 🇸🇬 新加坡-410.9KB/s
+      - Relay_-🇯🇵JP_837 |16.60Mb
+      - 🇸🇬 新加坡-411.1KB/s
+      - 🇺🇸 美国 华盛顿Cogent通信公司 2
+      - 🇺🇸 _US_美国
+      - Pool_🇸🇬SG_1292 |25.46Mb
+      - Relay_-🇨🇳CN_808 |29.96Mb
+      - 🇺🇸 美国 CloudFlare节点 6
+      - 🇺🇸 美国 CloudFlare节点 19
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 149
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 19
+      - 🇺🇸 -1289-US【ccbaohe.com〗 永久免费节点机场
+      - 🇺🇸 美国 CloudFlare节点 2
+      - 🇸🇬 美国【TG：@ccbaohe】定时更新节点订阅
+      - 🇸🇬 美国【TG：@ccbaohe】定时更新节点订阅 13
+      - 🇰🇷 VM-TCP-NA 🇰🇷 KR-141.164.58.88:8881
+      - 🇰🇷 KR-152.67.218.38-3017
+      - 🇯🇵 日本3|@ripaojiedian
+      - 🇺🇸 美国 CloudFlare节点 5
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 147
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 37
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 161
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 160
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 164
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 7
+      - 🇭🇰 香港|@ripaojiedian
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 155
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 154
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 15
+      - 🇺🇸 美国 082
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 150
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 157
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 151
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 159
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 153
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 163
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 3
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 148
+      - 🇺🇸 美国2|@ripaojiedian
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 158
+      - 🇺🇸 【电报：@ccbaohe|免费机场节点 美国 - 洛杉矶 - Psychz Networks - 50
+      - 🇭🇰 VM-WS-NA 🇭🇰 HK-47.242.22.171:28681
+      - 🇺🇸 美国 CloudFlare节点 3
+      - 🇺🇸 美国 CloudFlare节点 11 2
+      - "🇺🇸 美国 03 | 1x US Washington\r"
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 🐟 漏网之鱼
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 🚫 拒接访问
+    type: select
+    proxies:
+      - REJECT
+  - name: 🎯 全球直连
+    type: select
+    proxies:
+      - DIRECT
+  - name: 🌍 国外加速
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 📲 电报信息
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+  - name: Ⓜ️ 微软服务
+    type: select
+    proxies:
+      - 🎯 全球直连
+      - 🚀 节点选择
+  - name: 🛑 全球拦截
+    type: select
+    proxies:
+      - 🚫 拒接访问
+      - 🎯 全球直连
+rules:
+  - DOMAIN-SUFFIX,googleapis.cn,🌍 国外加速
+  - DOMAIN-SUFFIX,xn--ngstr-lra8j.com,🎯 全球直连
+  - DOMAIN-SUFFIX,xn--ngstr-cn-8za9o.com,🎯 全球直连
+  - DOMAIN-KEYWORD,kgithub,🎯 全球直连
+  - DOMAIN-KEYWORD,fastgit,🎯 全球直连
+  - DOMAIN-KEYWORD,ghproxy,🎯 全球直连
+  - DOMAIN-KEYWORD,gitmirror,🎯 全球直连
+  - DOMAIN-SUFFIX,gitclone.com,🎯 全球直连
+  - DOMAIN-SUFFIX,gh.api.99988866.xyz,🎯 全球直连
+  - DOMAIN-SUFFIX,weserv.nl,🎯 全球直连
+  - DOMAIN-SUFFIX,wsrv.nl,🎯 全球直连
+  - PROCESS-NAME,v2ray,🎯 全球直连
+  - PROCESS-NAME,xray,🎯 全球直连
+  - PROCESS-NAME,naive,🎯 全球直连
+  - PROCESS-NAME,trojan,🎯 全球直连
+  - PROCESS-NAME,trojan-go,🎯 全球直连
+  - PROCESS-NAME,ss-local,🎯 全球直连
+  - PROCESS-NAME,privoxy,🎯 全球直连
+  - PROCESS-NAME,leaf,🎯 全球直连
+  - PROCESS-NAME,v2ray.exe,🎯 全球直连
+  - PROCESS-NAME,xray.exe,🎯 全球直连
+  - PROCESS-NAME,naive.exe,🎯 全球直连
+  - PROCESS-NAME,trojan.exe,🎯 全球直连
+  - PROCESS-NAME,trojan-go.exe,🎯 全球直连
+  - PROCESS-NAME,ss-local.exe,🎯 全球直连
+  - PROCESS-NAME,privoxy.exe,🎯 全球直连
+  - PROCESS-NAME,leaf.exe,🎯 全球直连
+  - PROCESS-NAME,Surge,🎯 全球直连
+  - PROCESS-NAME,Surge 2,🎯 全球直连
+  - PROCESS-NAME,Surge 3,🎯 全球直连
+  - PROCESS-NAME,Surge 4,🎯 全球直连
+  - PROCESS-NAME,Surge%202,🎯 全球直连
+  - PROCESS-NAME,Surge%203,🎯 全球直连
+  - PROCESS-NAME,Surge%204,🎯 全球直连
+  - PROCESS-NAME,Thunder,🎯 全球直连
+  - PROCESS-NAME,DownloadService,🎯 全球直连
+  - PROCESS-NAME,qBittorrent,🎯 全球直连
+  - PROCESS-NAME,Transmission,🎯 全球直连
+  - PROCESS-NAME,fdm,🎯 全球直连
+  - PROCESS-NAME,aria2c,🎯 全球直连
+  - PROCESS-NAME,Folx,🎯 全球直连
+  - PROCESS-NAME,NetTransport,🎯 全球直连
+  - PROCESS-NAME,uTorrent,🎯 全球直连
+  - PROCESS-NAME,WebTorrent,🎯 全球直连
+  - PROCESS-NAME,aria2c.exe,🎯 全球直连
+  - PROCESS-NAME,BitComet.exe,🎯 全球直连
+  - PROCESS-NAME,fdm.exe,🎯 全球直连
+  - PROCESS-NAME,NetTransport.exe,🎯 全球直连
+  - PROCESS-NAME,qbittorrent.exe,🎯 全球直连
+  - PROCESS-NAME,Thunder.exe,🎯 全球直连
+  - PROCESS-NAME,ThunderVIP.exe,🎯 全球直连
+  - PROCESS-NAME,transmission-daemon.exe,🎯 全球直连
+  - PROCESS-NAME,transmission-qt.exe,🎯 全球直连
+  - PROCESS-NAME,uTorrent.exe,🎯 全球直连
+  - PROCESS-NAME,WebTorrent.exe,🎯 全球直连
+  - DOMAIN,steamstore-a.akamaihd.net,🎯 全球直连
+  - DOMAIN,steamcdn-a.akamaihd.net,🎯 全球直连
+  - DOMAIN,api.steampowered.com,🎯 全球直连
+  - DOMAIN,store.steampowered.com,🎯 全球直连
+  - DOMAIN,clash.razord.top,🎯 全球直连
+  - DOMAIN,yacd.haishan.me,🎯 全球直连
+  - DOMAIN,www.biqugeu.net,🌍 国外加速
+  - DOMAIN,www.cool18.com,🌍 国外加速
+  - DOMAIN-KEYWORD,diyibanzhu,🌍 国外加速
+  - DOMAIN-SUFFIX,cool18.com,🌍 国外加速
+  - DOMAIN-KEYWORD,cunhua,🌍 国外加速
+  - RULE-SET,自定义广告白名单,🎯 全球直连
+  - RULE-SET,自定义广告拦截,🛑 全球拦截
+  - RULE-SET,adblock,🛑 全球拦截
+  - IP-CIDR,0.0.0.0/32,🛑 全球拦截
+  - RULE-SET,MetaCubeX-cn-domain,🎯 全球直连
+  - GEOIP,private,🎯 全球直连,no-resolve
+  - GEOIP,JP,🌍 国外加速
+  - GEOIP,CN,🎯 全球直连
+  - RULE-SET,ChinaCompanyIp,🎯 全球直连
+  - RULE-SET,ChinaDomain,🎯 全球直连
+  - RULE-SET,ChinaMedia,🎯 全球直连
+  - RULE-SET,ChinaIp,🎯 全球直连
+  - RULE-SET,LocalAreaNetwork,🎯 全球直连
+  - DOMAIN-SUFFIX,cn,🎯 全球直连
+  - DOMAIN-KEYWORD,-cn,🎯 全球直连
+  - RULE-SET,region,🌍 国外加速
+  - RULE-SET,direct,🎯 全球直连
+  - RULE-SET,direct2,🎯 全球直连
+  - RULE-SET,ProxyGFWlist,🌍 国外加速
+  - RULE-SET,telegramcidr,📲 电报信息
+  - GEOIP,CN,🎯 全球直连
+  - RULE-SET,proxy,🌍 国外加速
+  - MATCH,🐟 漏网之鱼
