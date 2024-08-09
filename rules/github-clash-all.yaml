@@ -1,0 +1,746 @@
+mixed-port: 7890
+allow-lan: true
+bind-address: "*"
+mode: rule
+log-level: info
+external-controller: 127.0.0.1:9090
+dns:
+  enable: true
+  ipv6: false
+  default-nameserver: [223.5.5.5, 119.29.29.29]
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  use-hosts: true
+  nameserver: [https://853.66a.net:443/dns-query, https://doh.pub/dns-query, https://dns.alidns.com/dns-query]
+  fallback: [https://doh.dns.sb/dns-query, https://dns.cloudflare.com/dns-query, https://dns.twnic.tw/dns-query, tls://8.8.4.4:853]
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    geosite:
+      - gfw
+    ipcidr:
+      - 240.0.0.0/4
+    domain:
+      - +.google.com
+      - +.facebook.com
+      - +.youtube.com
+  nameserver-policy:
+    geosite:cn,private,apple:
+      - https://doh.pub/dns-query
+      - https://dns.alidns.com/dns-query
+    www.baidu.com,+.google.cn: [223.5.5.5, https://dns.alidns.com/dns-query]
+    rule-set:自定义广告白名单: [223.5.5.5, https://dns.alidns.com/dns-query]
+    rule-set:adblock,自定义广告拦截: rcode://success
+  fake-ip-filter:
+    - "*.lan"
+    - localhost.ptlogin2.qq.com
+rule-providers:
+  adblock:
+    type: http
+    behavior: classical
+    path: ./rule_providers/adblock.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/adblock.yml
+    interval: 21600
+    format: yaml
+  proxy:
+    type: http
+    behavior: classical
+    path: ./rule_providers/proxy.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/proxy.yml
+    interval: 86400
+    format: yaml
+  direct:
+    type: http
+    behavior: classical
+    path: ./rule_providers/direct.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/direct.yml
+    interval: 86400
+    format: yaml
+  region:
+    type: http
+    behavior: classical
+    path: ./rule_providers/region.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/region.yml
+    interval: 86400
+    format: yaml
+  direct2:
+    behavior: domain
+    type: http
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt
+    interval: 86400
+    path: ./ruleset/direct2.yaml
+    format: yaml
+  telegramcidr:
+    type: http
+    behavior: ipcidr
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt
+    path: ./ruleset/telegramcidr.yaml
+    interval: 86400
+    format: yaml
+  ProxyGFWlist:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ProxyGFWlist.yaml
+    path: ./ruleset/ProxyGFWlist.yaml
+    interval: 86400
+    format: yaml
+  ChinaCompanyIp:
+    type: http
+    behavior: ipcidr
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaCompanyIp.yaml
+    path: ./ruleset/gfw.yaml
+    interval: 86400
+    format: yaml
+  ChinaDomain:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaDomain.yaml
+    path: ./ruleset/ChinaDomain.yaml
+    interval: 86400
+    format: yaml
+  ChinaIp:
+    type: http
+    behavior: ipcidr
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaIp.yaml
+    path: ./ruleset/ChinaIp.yaml
+    interval: 86400
+    format: yaml
+  ChinaMedia:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaMedia.yaml
+    path: ./ruleset/ChinaMedia.yaml
+    interval: 86400
+    format: yaml
+  LocalAreaNetwork:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/LocalAreaNetwork.yaml
+    path: ./ruleset/LocalAreaNetwork.yaml
+    interval: 86400
+    format: yaml
+  自定义广告拦截:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com//HDYOU/ClashADRule/main/self_payload_ad.yml
+    path: ./ruleset/自定义广告拦截.yaml
+    interval: 86400
+    format: yaml
+  自定义广告白名单:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/HDYOU/ClashADRule/main/self_payload_whitelist.yml
+    path: ./ruleset/自定义广告白名单.yaml
+    interval: 86400
+    format: yaml
+  MetaCubeX-cn-domain:
+    behavior: domain
+    interval: 86400
+    path: ./ruleset/cn_domain.yaml
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/cn_domain.yaml
+proxies:
+  - {name: 🇺🇸 美国 - 凤凰城 - Performive LLC - 80, server: 184.170.241.194, port: 443, type: ss, cipher: aes-128-cfb, password: shadowsocks, udp: true}
+  - {name: 🇨🇦 加拿大 - 多伦多 - GLOBALTELEHOST Corp. - 5, server: 23.162.200.94, port: 443, type: vmess, uuid: 03fcc618-b93d-6796-6aed-8a38c975d581, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: wrmelmwxlf.gktevlrqznwqqozy.fabpfs66gizmnojhcvqxwl.kytrcfzqla87gvgvs6c7kjnrubuh.cc, network: ws, ws-opts: {path: /}, udp: true}
+  - {name: 🇳🇱 荷兰 - Rozendaal - NForce Entertainment B.V. - 2, server: 109.201.152.181, port: 443, type: ss, cipher: aes-128-cfb, password: shadowsocks, udp: true}
+  - {name: 🇦🇱 阿尔巴尼亚 - 地拉那 - Keminet Ltd. - 2, server: 31.171.153.182, port: 989, type: ss, cipher: aes-256-cfb, password: f8f7aCzcPKbsF8p3, udp: true}
+  - {name: 🇦🇱 阿尔巴尼亚 - 地拉那 - Keminet Ltd. - 1, server: 31.171.153.178, port: 989, type: ss, cipher: aes-256-cfb, password: f8f7aCzcPKbsF8p3, udp: true}
+  - {name: 二爷翻墙 https://1808.free.hr Node_80, server: 23.162.152.6, port: 22324, type: vmess, uuid: 04621bae-ab36-11ec-b909-0242ac120002, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, udp: true}
+  - {name: 🇸🇬 新加坡 - 新加坡 - Amazon Technologies Inc - 17, server: 47.128.150.72, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 17, server: kt01.898965.xyz, port: 2052, type: vmess, uuid: 1b7eac5b-476b-4433-bb43-720e659e01ae, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: kt01.898965.xyz}}, udp: true}
+  - {name: 亚太地区 V2CROSS.COM, server: 103.174.86.113, port: 51348, type: ss, cipher: chacha20-ietf-poly1305, password: vZr8MlUXUihNEndqIpjDxQdSeqi37FbgoHBmQ1syy6ZjkbBn, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Netsec Limited - 2, server: 103.212.98.234, port: 443, type: vmess, uuid: 418048af-a293-4b99-9b0c-98ca3580dd24, alterId: 64, cipher: auto, tls: true, skip-cert-verify: true, servername: www.59795160.xyz, network: ws, ws-opts: {path: /, headers: {Host: www.59795160.xyz}}, udp: true}
+  - {name: 0|-https://t.me/MrXbin-8, server: 95.164.44.140, port: 80, type: vmess, uuid: 7e7325be-5c04-400a-9f11-e7f51c9cb1a9, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: wrmelmwxlf.gktevlrqznwqqozy.fabpfs66gizmnojhcvqxwl.kytrcfzqla87gvgvs6c7kjnrubuh.cc}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 10, server: 172.64.167.5, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇺🇸 10 11|美国5|@ripaojiedian, server: 104.26.0.56, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip14.freegradely.xyz}}, udp: true}
+  - {name: 二爷翻墙 https://1808.free.hr Node_112, server: 104.19.51.232, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip005.dtku47.xyz}}, udp: true}
+  - {name: 二爷翻墙 https://1808.free.hr Node_5, server: 163.172.64.22, port: 989, type: ss, cipher: aes-256-cfb, password: f8f7aCzcPKbsF8p3, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 13, server: 172.67.74.112, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip11.freegradely.xyz}}, udp: true}
+  - {name: 二爷翻墙 https://1808.free.hr Node_75, server: 104.19.123.11, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 二爷翻墙 https://1808.free.hr Node_72, server: 104.19.38.62, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip006.dtku47.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 29, server: 172.64.198.249, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip1.1457230.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 45, server: 104.19.32.46, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip006.3196772.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip006.3196772.xyz}}, udp: true}
+  - {name: 二爷翻墙 https://1808.free.hr Node_91, server: 104.26.0.56, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip14.freegradely.xyz}}, udp: true}
+  - {name: 二爷翻墙 https://1808.free.hr Node_74, server: 104.19.55.49, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 73, server: 104.19.51.232, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip005.dtku47.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 13, server: 104.18.57.111, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip11.freegradely.xyz}}, udp: true}
+  - {name: 🇫🇷 _FR_法国->🇷🇺_RU_俄罗斯, server: 163.172.64.22, port: 989, type: ss, cipher: aes-256-cfb, password: f8f7aCzcPKbsF8p3, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 6, server: 104.26.5.56, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip1.1789034.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 50, server: 104.16.148.244, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip006.freegradely.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip006.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 7, server: 23.227.38.5, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip006.freegradely.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip006.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点, server: 172.64.233.17, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 厄瓜多尔 - 基多 - Puntonet S.A. - 1, server: 179.49.5.114, port: 989, type: ss, cipher: aes-256-cfb, password: f8f7aCzcPKbsF8p3, udp: true}
+  - {name: 🇺🇸 美国 - 亚特兰大 - GTHost - 1, server: 38.121.43.248, port: 8882, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇩🇪 德国 - 法兰克福 - Stark Industries Solutions LTD - 2, server: 94.131.110.115, port: 47765, type: ss, cipher: aes-256-gcm, password: skGOAdXdDhk0leK8FuSpiy, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 65, server: 104.19.46.59, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip1.1457230.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 V2CROSS.COM, server: 23.162.200.133, port: 2376, type: ss, cipher: aes-256-gcm, password: faBAoD54k87UJG7, udp: true}
+  - {name: 🇺🇸 美国 V2CROSS.COM 2, server: 23.162.200.133, port: 2375, type: ss, cipher: aes-256-gcm, password: faBAoD54k87UJG7, udp: true}
+  - {name: 🇺🇸 美国 - Ashburn - GTHost - 84, server: 69.50.93.100, port: 8009, type: ss, cipher: aes-256-gcm, password: XKFKl2rULjIp74, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 427, server: 23.227.38.8, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip5-10.freegradely.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip5-10.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 14, server: 104.19.55.49, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip11.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 北美地区 V2CROSS.COM 2, server: 23.154.136.176, port: 9102, type: ss, cipher: aes-256-gcm, password: e4FCWrgpkji3QY, udp: true}
+  - {name: 🇺🇸 美国 - Ashburn - GTHost - 87, server: 69.50.93.100, port: 8000, type: ss, cipher: aes-256-gcm, password: KixLvKzwjekG00rm, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 27, server: 172.64.167.44, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇰🇷 韩国 - 首尔特别市 - Amazon.com  Inc. - 7, server: 43.201.254.74, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 14, server: 172.64.166.16, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 85, server: 15.204.87.225, port: 7002, type: ss, cipher: aes-256-gcm, password: RexnBgU7EV5ADxG, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 67, server: 104.19.46.56, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip2.1457230.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇹🇷 土耳其 - 伊兹密尔 - Stark Industries Solutions LTD - 1, server: 108.162.192.63, port: 80, type: vmess, uuid: b2413a5a-d5d0-4447-b6d7-6dbcd2989a35, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: dl2.127.0.0.1.востейcontrol.控制.kонтроль農達懲罰.cводкаhо.wonkacapitano.buzz.}}, udp: true}
+  - {name: 🇨🇦 加拿大 - Beauharnois - OVH SAS - 1, server: 142.4.216.225, port: 80, type: ss, cipher: chacha20-ietf-poly1305, password: JIhN6rBKkaEboLNXVSv5rq, udp: true}
+  - {name: 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 5, server: 15.204.87.225, port: 5003, type: ss, cipher: aes-256-gcm, password: g5MeD6Ft3CWlJId, udp: true}
+  - {name: 二爷翻墙 https://1808.free.hr Node_73, server: 172.64.233.43, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 71, server: 104.19.47.36, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip14.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 15, server: 104.19.45.13, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip13.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 70, server: 104.19.38.62, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip005.3196772.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip005.3196772.xyz}}, udp: true}
+  - {name: 二爷翻墙 https://1808.free.hr Node_79, server: 104.19.21.63, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip11.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 24, server: 104.26.5.123, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip1.1789034.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 16, server: 104.19.47.32, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip14.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - Warrenton - OVH US LLC - 83, server: 51.81.14.31, port: 11119, type: ss, cipher: chacha20-ietf-poly1305, password: uH5Llyz7Ghb5v2uu3jLrYx, udp: true}
+  - {name: 二爷翻墙 https://1808.free.hr Node_40, server: 104.21.8.157, port: 2082, type: vmess, uuid: 112ac36f-3f53-4e26-8371-d25c028e1b9a, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: s1c.v2.v001sss.xyz}}, udp: true}
+  - {name: 二爷翻墙 https://1808.free.hr Node_82, server: 104.19.45.13, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip13.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 76, server: 104.18.57.111, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 中国 - 香港 - SunnyVision Limited -%�, server: 150.107.46.21, port: 8083, type: ssr, cipher: aes-256-cfb, password: iFqnzSscN, protocol: origin, obfs: tls1.2_ticket_auth, protocol-param: "", obfs-param: "", udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 26, server: 172.64.233.15, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 2|d*********g.com_2, server: 104.16.148.244, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip006.freegradely.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip006.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 18, server: 104.19.47.79, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip2.1457230.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 8, server: 172.64.233.32, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: "4|d*********g.com_0 #2", server: 104.19.46.233, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip005.3196772.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip005.3196772.xyz}}, udp: true}
+  - {name: 二爷翻墙 https://1808.free.hr Node_87, server: 104.18.57.111, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: "3|d*********g.com_3 #1", server: 104.19.38.62, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip006.3196772.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip006.3196772.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 8, server: 23.227.38.6, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip005.3196772.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip005.3196772.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 19, server: 172.64.233.37, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: "3|d*********g.com_0 #1", server: 104.19.32.46, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip006.3196772.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip006.3196772.xyz}}, udp: true}
+  - {name: 🇮🇪 爱尔兰 - 都柏林 - Microsoft Corporation - 1, server: 23.102.13.154, port: 55744, type: ss, cipher: chacha20-ietf-poly1305, password: f1iUdU5BsGclmGMsuXgzdp, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 28, server: 104.26.5.113, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip1.1789034.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 17, server: 172.64.167.22, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 61, server: 104.26.5.123, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip1.1789034.xyz}}, udp: true}
+  - {name: 2|d*********g.com_0, server: 104.19.51.232, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip006.freegradely.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip006.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 22, server: 104.19.45.17, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip13.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 57, server: 162.159.140.77, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip1.1789034.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 28, server: 172.64.166.2, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 436, server: singapore.com, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip1.1789034.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip1.1789034.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 75, server: 104.26.5.145, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip1.1789034.xyz}}, udp: true}
+  - {name: "3|d*********g.com_1 #1", server: 23.227.38.6, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip006.3196772.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip006.3196772.xyz}}, udp: true}
+  - {name: "3|d*********g.com_2 #1", server: 104.19.51.232, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip006.3196772.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip006.3196772.xyz}}, udp: true}
+  - {name: 🇮🇪 爱尔兰 V2CROSS.COM, server: 23.102.13.154, port: 55744, type: ss, cipher: chacha20-ietf-poly1305, password: f1iUdU5BsGclmGMsuXgzdp, udp: true}
+  - {name: 🇳🇱 荷兰 - 阿姆斯特丹 - Seed Technologies LTD. - 1, server: 86.107.50.3, port: 80, type: vmess, uuid: 6a99725d-2af8-d27c-cef5-302fbbe54c07, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: wrmelmwxlf.gktevlrqznwqqozy.fabpfs66gizmnojhcvqxwl.kytrcfzqla87gvgvs6c7kjnrubuh.cc}}, udp: true}
+  - {name: 二爷翻墙 https://1808.free.hr Node_83, server: 104.26.7.132, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 3, server: 15.204.87.225, port: 8118, type: ss, cipher: aes-256-gcm, password: cdBIDV42DCwnfIN, udp: true}
+  - {name: 二爷翻墙 https://1808.free.hr Node_81, server: 172.64.233.27, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 428, server: 172.64.233.35, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 25, server: 172.64.166.28, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 二爷翻墙 https://1808.free.hr Node_116, server: 43.201.253.180, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 2, server: 15.204.87.225, port: 9090, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 20, server: 172.64.167.35, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip2.1457230.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 二爷翻墙 https://1808.free.hr Node_69, server: 172.67.130.140, port: 2082, type: vmess, uuid: 112ac36f-3f53-4e26-8371-d25c028e1b9a, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: s1c.v2.v001sss.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 54, server: 104.19.21.230, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip14.freegradely.xyz}}, udp: true}
+  - {name: 🇩🇪 德国 - 法兰克福 - Stark Industries Solutions LTD - 1, server: 80.92.204.106, port: 9080, type: ss, cipher: aes-256-cfb, password: VP8ZPxQpJtZRCjfZ, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 31, server: 104.19.46.63, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇫🇷 _FR_法国->🇷🇺_RU_俄罗斯 2, server: 163.172.64.22, port: 989, type: ss, cipher: aes-256-cfb, password: f8f7aCzcPKbsF8p3, udp: true}
+  - {name: 二爷翻墙 https://1808.free.hr Node_77, server: 172.64.167.35, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇩🇪 乌拉圭 - 蒙得维的亚 - Administracion Nacional de Telecomunicaciones - 1, server: 179.27.200.28, port: 989, type: ss, cipher: aes-256-cfb, password: f8f7aCzcPKbsF8p3, udp: true}
+  - {name: 二爷翻墙 https://1808.free.hr Node_76, server: 104.19.58.175, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip14.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 58, server: 104.19.58.175, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip14.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 59, server: 104.19.46.39, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip14.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 33, server: 104.19.45.90, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip13.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 5, server: 172.64.233.43, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 30, server: 104.19.46.103, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip2.1457230.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 4, server: 15.204.87.225, port: 7306, type: ss, cipher: aes-256-gcm, password: FoOiGlkAA9yPEGP, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 25, server: 104.19.45.35, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip13.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 81, server: 15.204.87.225, port: 5499, type: ss, cipher: aes-256-gcm, password: lGqs95QkFHo2NV, udp: true}
+  - {name: 🇻🇳 越南 - Quận Bảy - LAM A Architecture Construction Company Limited - 1, server: 103.163.218.2, port: 989, type: ss, cipher: aes-256-cfb, password: f8f7aCzcPKbsF8p3, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 23, server: 172.64.167.8, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 39, server: 104.19.123.11, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip2.1457230.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇫🇷 法国 - 斯特拉斯堡 - OVH SAS - 2, server: 104.21.8.157, port: 2082, type: vmess, uuid: 112ac36f-3f53-4e26-8371-d25c028e1b9a, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: s1c.v2.v001sss.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 21, server: 104.19.38.12, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip14.freegradely.xyz}}, udp: true}
+  - {name: 2|d*********g.com_3, server: 104.19.38.62, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip006.freegradely.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip006.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 82, server: 15.204.87.225, port: 8090, type: ss, cipher: aes-256-gcm, password: PCnnH6SQSnfoS27, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 15, server: 172.64.166.32, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 86, server: 15.204.87.225, port: 8000, type: ss, cipher: aes-256-gcm, password: KixLvKzwjekG00rm, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 46, server: 104.26.0.56, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip14.freegradely.xyz}}, udp: true}
+  - {name: 二爷翻墙 https://1808.free.hr Node_90, server: 104.19.38.8, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip14.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 10 11|美国|@ripaojiedian, server: 104.19.51.232, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip005.dtku47.xyz}}, udp: true}
+  - {name: "4|d*********g.com_2 #2", server: 104.19.51.232, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip005.3196772.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip005.3196772.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 19, server: 104.26.5.103, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip1.1789034.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 60, server: 104.26.5.113, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip1.1789034.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip1.1789034.xyz}}, udp: true}
+  - {name: "4|d*********g.com_1 #2", server: 23.227.38.6, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip005.3196772.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip005.3196772.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 18, server: 172.64.166.33, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip2.1457230.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 437, server: 104.26.5.67, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip1.1789034.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip1.1789034.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 53, server: 104.19.47.65, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip11-2.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 52, server: 162.159.140.19, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip1.1789034.xyz}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Hong Kong Telecommunications (HKT) Limited Mass Internet - 22, server: 218.250.217.111, port: 81, type: ss, cipher: aes-128-gcm, password: a-wym4ovY4Yw, udp: true}
+  - {name: "4|d*********g.com_3 #2", server: 104.19.38.62, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip005.3196772.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip005.3196772.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 23, server: 104.19.46.39, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip13.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 429, server: 172.64.233.24, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 2|d*********g.com_1, server: 23.227.38.5, port: 2086, type: vmess, uuid: 29eebb60-b27b-4a9d-bba5-947763d9205e, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip006.freegradely.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip006.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 69, server: 104.19.32.88, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip5-4.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 55, server: www.visa.com, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip1.1789034.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 62, server: 104.19.47.32, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip14.freegradely.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 47, server: 162.159.140.45, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip1.1789034.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 79, server: 162.159.140.93, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip1.1789034.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 迈阿密 - Stark Industries Solutions LTD - 35, server: 141.101.114.40, port: 80, type: vmess, uuid: 5d214f53-1332-449f-ad0e-0a1888ef5479, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: dl2.arsha.разведки守望者.hаблюдатели.watchers.aгент.偵察探員.wonkacapitano.buzz.}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 9, server: 104.19.45.253, port: 2095, type: vmess, uuid: 7a737f41-b792-4260-94ff-3d864da67b80, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: onea.flha.ru}}, udp: true}
+  - {name: 🇹🇷 土耳其 - 伊斯坦布尔 - Iksir Internet Hizmetleri A.S. - 2, server: 185.123.101.241, port: 989, type: ss, cipher: aes-256-cfb, password: f8f7aCzcPKbsF8p3, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 36, server: 104.26.5.112, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip1.1789034.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 24, server: 172.64.166.12, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 27, server: 104.19.45.98, port: 2095, type: vmess, uuid: 7a737f41-b792-4260-94ff-3d864da67b80, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: onea.flha.ru}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 434, server: japan.com, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip1.1789034.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip1.1789034.xyz}}, udp: true}
+  - {name: 🇷🇴 罗马尼亚 V2CROSS.COM, server: 89.44.193.112, port: 51348, type: ss, cipher: chacha20-ietf-poly1305, password: 04yG0sOWSRVSlid9mfKUmmj8U4XgVlodu4oSRU90ey2e0CQ2, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 21, server: 172.64.233.15, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 49, server: 104.19.46.27, port: 2086, type: vmess, uuid: e9e3cc13-db48-4cc1-8c24-7626439a5339, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip2.1457230.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip2.1457230.xyz}}, udp: true}
+  - {name: 🇰🇷 韩国 - 首尔特别市 - Oracle Corporation - 10, server: 104.19.44.174, port: 8080, type: vmess, uuid: 3fdf9d48-578a-42dc-9fdd-0dfcefa3d0c5, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: amd2.720208.xyz}}, udp: true}
+  - {name: "🇲🇾 马来西亚01 | 1x MY\r", server: free.2apzhfa.xyz, port: 31721, type: ss, cipher: chacha20-ietf-poly1305, password: cb6df4e1-ec3f-4bc7-a7f2-2f02bffd5543, udp: true}
+  - {name: "🇨🇦 加拿大 01 | 1x CA\r", server: free.2apzhfa.xyz, port: 31441, type: ss, cipher: chacha20-ietf-poly1305, password: cb6df4e1-ec3f-4bc7-a7f2-2f02bffd5543, udp: true}
+  - {name: "🇷🇺 俄罗斯 01 | 1x RU\r", server: free.2apzhfa.xyz, port: 31511, type: ss, cipher: chacha20-ietf-poly1305, password: cb6df4e1-ec3f-4bc7-a7f2-2f02bffd5543, udp: true}
+  - {name: "🇨🇳 台湾【国外直连】\r", server: free.2apzhfa.xyz, port: 31241, type: ss, cipher: chacha20-ietf-poly1305, password: cb6df4e1-ec3f-4bc7-a7f2-2f02bffd5543, udp: true}
+  - {name: "🇭🇰 香港 【国外直连】\r", server: free.2apzhfa.xyz, port: 31141, type: ss, cipher: chacha20-ietf-poly1305, password: cb6df4e1-ec3f-4bc7-a7f2-2f02bffd5543, udp: true}
+proxy-groups:
+  - name: 🚀 节点选择
+    type: select
+    proxies:
+      - ♻️ 自动选择
+      - ✅ 手动选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: ♻️ 自动选择
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+    proxies:
+      - 🇺🇸 美国 - 凤凰城 - Performive LLC - 80
+      - 🇨🇦 加拿大 - 多伦多 - GLOBALTELEHOST Corp. - 5
+      - 🇳🇱 荷兰 - Rozendaal - NForce Entertainment B.V. - 2
+      - 🇦🇱 阿尔巴尼亚 - 地拉那 - Keminet Ltd. - 2
+      - 🇦🇱 阿尔巴尼亚 - 地拉那 - Keminet Ltd. - 1
+      - 二爷翻墙 https://1808.free.hr Node_80
+      - 🇸🇬 新加坡 - 新加坡 - Amazon Technologies Inc - 17
+      - 🇺🇸 美国 CloudFlare节点 17
+      - 亚太地区 V2CROSS.COM
+      - 🇭🇰 中国 - 香港 - Netsec Limited - 2
+      - 0|-https://t.me/MrXbin-8
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 10
+      - 🇺🇸 10 11|美国5|@ripaojiedian
+      - 二爷翻墙 https://1808.free.hr Node_112
+      - 二爷翻墙 https://1808.free.hr Node_5
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 13
+      - 二爷翻墙 https://1808.free.hr Node_75
+      - 二爷翻墙 https://1808.free.hr Node_72
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 29
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 45
+      - 二爷翻墙 https://1808.free.hr Node_91
+      - 二爷翻墙 https://1808.free.hr Node_74
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 73
+      - 🇺🇸 美国 CloudFlare节点 13
+      - 🇫🇷 _FR_法国->🇷🇺_RU_俄罗斯
+      - 🇺🇸 美国 CloudFlare节点 6
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 50
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 7
+      - 🇺🇸 美国 CloudFlare节点
+      - 厄瓜多尔 - 基多 - Puntonet S.A. - 1
+      - 🇺🇸 美国 - 亚特兰大 - GTHost - 1
+      - 🇩🇪 德国 - 法兰克福 - Stark Industries Solutions LTD - 2
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 65
+      - 🇺🇸 美国 V2CROSS.COM
+      - 🇺🇸 美国 V2CROSS.COM 2
+      - 🇺🇸 美国 - Ashburn - GTHost - 84
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 427
+      - 🇺🇸 美国 CloudFlare节点 14
+      - 🇺🇸 北美地区 V2CROSS.COM 2
+      - 🇺🇸 美国 - Ashburn - GTHost - 87
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 27
+      - 🇰🇷 韩国 - 首尔特别市 - Amazon.com  Inc. - 7
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 14
+      - 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 85
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 67
+      - 🇹🇷 土耳其 - 伊兹密尔 - Stark Industries Solutions LTD - 1
+      - 🇨🇦 加拿大 - Beauharnois - OVH SAS - 1
+      - 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 5
+      - 二爷翻墙 https://1808.free.hr Node_73
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 71
+      - 🇺🇸 美国 CloudFlare节点 15
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 70
+      - 二爷翻墙 https://1808.free.hr Node_79
+      - 🇺🇸 美国 CloudFlare节点 24
+      - 🇺🇸 美国 CloudFlare节点 16
+      - 🇺🇸 美国 - Warrenton - OVH US LLC - 83
+      - 二爷翻墙 https://1808.free.hr Node_40
+      - 二爷翻墙 https://1808.free.hr Node_82
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 76
+      - 🇺🇸 美国 CloudFlare节点 26
+      - 2|d*********g.com_2
+      - 🇺🇸 美国 CloudFlare节点 18
+      - 🇺🇸 美国 CloudFlare节点 8
+      - "4|d*********g.com_0 #2"
+      - 二爷翻墙 https://1808.free.hr Node_87
+      - "3|d*********g.com_3 #1"
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 8
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 19
+      - "3|d*********g.com_0 #1"
+      - 🇮🇪 爱尔兰 - 都柏林 - Microsoft Corporation - 1
+      - 🇺🇸 美国 CloudFlare节点 28
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 17
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 61
+      - 2|d*********g.com_0
+      - 🇺🇸 美国 CloudFlare节点 22
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 57
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 28
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 436
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 75
+      - "3|d*********g.com_1 #1"
+      - "3|d*********g.com_2 #1"
+      - 🇮🇪 爱尔兰 V2CROSS.COM
+      - 🇳🇱 荷兰 - 阿姆斯特丹 - Seed Technologies LTD. - 1
+      - 二爷翻墙 https://1808.free.hr Node_83
+      - 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 3
+      - 二爷翻墙 https://1808.free.hr Node_81
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 428
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 25
+      - 二爷翻墙 https://1808.free.hr Node_116
+      - 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 2
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 20
+      - 二爷翻墙 https://1808.free.hr Node_69
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 54
+      - 🇩🇪 德国 - 法兰克福 - Stark Industries Solutions LTD - 1
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 31
+      - 🇫🇷 _FR_法国->🇷🇺_RU_俄罗斯 2
+      - 二爷翻墙 https://1808.free.hr Node_77
+      - 🇩🇪 乌拉圭 - 蒙得维的亚 - Administracion Nacional de Telecomunicaciones - 1
+      - 二爷翻墙 https://1808.free.hr Node_76
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 58
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 59
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 33
+      - 🇺🇸 美国 CloudFlare节点 5
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 30
+      - 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 4
+      - 🇺🇸 美国 CloudFlare节点 25
+      - 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 81
+      - 🇻🇳 越南 - Quận Bảy - LAM A Architecture Construction Company Limited - 1
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 23
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 39
+      - 🇫🇷 法国 - 斯特拉斯堡 - OVH SAS - 2
+      - 🇺🇸 美国 CloudFlare节点 21
+      - 2|d*********g.com_3
+      - 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 82
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 15
+      - 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 86
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 46
+      - 二爷翻墙 https://1808.free.hr Node_90
+      - 🇺🇸 10 11|美国|@ripaojiedian
+      - "4|d*********g.com_2 #2"
+      - 🇺🇸 美国 CloudFlare节点 19
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 60
+      - "4|d*********g.com_1 #2"
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 18
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 437
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 53
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 52
+      - 🇭🇰 中国 - 香港 - Hong Kong Telecommunications (HKT) Limited Mass Internet - 22
+      - "4|d*********g.com_3 #2"
+      - 🇺🇸 美国 CloudFlare节点 23
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 429
+      - 2|d*********g.com_1
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 69
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 55
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 62
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 47
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 79
+      - 🇺🇸 美国 - 迈阿密 - Stark Industries Solutions LTD - 35
+      - 🇺🇸 美国 CloudFlare节点 9
+      - 🇹🇷 土耳其 - 伊斯坦布尔 - Iksir Internet Hizmetleri A.S. - 2
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 36
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 24
+      - 🇺🇸 美国 CloudFlare节点 27
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 434
+      - 🇷🇴 罗马尼亚 V2CROSS.COM
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 21
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 49
+      - 🇰🇷 韩国 - 首尔特别市 - Oracle Corporation - 10
+      - "🇲🇾 马来西亚01 | 1x MY\r"
+      - "🇨🇦 加拿大 01 | 1x CA\r"
+      - "🇷🇺 俄罗斯 01 | 1x RU\r"
+      - "🇨🇳 台湾【国外直连】\r"
+      - "🇭🇰 香港 【国外直连】\r"
+  - name: ✅ 手动选择
+    type: select
+    proxies:
+      - 🇺🇸 美国 - 凤凰城 - Performive LLC - 80
+      - 🇨🇦 加拿大 - 多伦多 - GLOBALTELEHOST Corp. - 5
+      - 🇳🇱 荷兰 - Rozendaal - NForce Entertainment B.V. - 2
+      - 🇦🇱 阿尔巴尼亚 - 地拉那 - Keminet Ltd. - 2
+      - 🇦🇱 阿尔巴尼亚 - 地拉那 - Keminet Ltd. - 1
+      - 二爷翻墙 https://1808.free.hr Node_80
+      - 🇸🇬 新加坡 - 新加坡 - Amazon Technologies Inc - 17
+      - 🇺🇸 美国 CloudFlare节点 17
+      - 亚太地区 V2CROSS.COM
+      - 🇭🇰 中国 - 香港 - Netsec Limited - 2
+      - 0|-https://t.me/MrXbin-8
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 10
+      - 🇺🇸 10 11|美国5|@ripaojiedian
+      - 二爷翻墙 https://1808.free.hr Node_112
+      - 二爷翻墙 https://1808.free.hr Node_5
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 13
+      - 二爷翻墙 https://1808.free.hr Node_75
+      - 二爷翻墙 https://1808.free.hr Node_72
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 29
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 45
+      - 二爷翻墙 https://1808.free.hr Node_91
+      - 二爷翻墙 https://1808.free.hr Node_74
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 73
+      - 🇺🇸 美国 CloudFlare节点 13
+      - 🇫🇷 _FR_法国->🇷🇺_RU_俄罗斯
+      - 🇺🇸 美国 CloudFlare节点 6
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 50
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 7
+      - 🇺🇸 美国 CloudFlare节点
+      - 厄瓜多尔 - 基多 - Puntonet S.A. - 1
+      - 🇺🇸 美国 - 亚特兰大 - GTHost - 1
+      - 🇩🇪 德国 - 法兰克福 - Stark Industries Solutions LTD - 2
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 65
+      - 🇺🇸 美国 V2CROSS.COM
+      - 🇺🇸 美国 V2CROSS.COM 2
+      - 🇺🇸 美国 - Ashburn - GTHost - 84
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 427
+      - 🇺🇸 美国 CloudFlare节点 14
+      - 🇺🇸 北美地区 V2CROSS.COM 2
+      - 🇺🇸 美国 - Ashburn - GTHost - 87
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 27
+      - 🇰🇷 韩国 - 首尔特别市 - Amazon.com  Inc. - 7
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 14
+      - 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 85
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 67
+      - 🇹🇷 土耳其 - 伊兹密尔 - Stark Industries Solutions LTD - 1
+      - 🇨🇦 加拿大 - Beauharnois - OVH SAS - 1
+      - 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 5
+      - 二爷翻墙 https://1808.free.hr Node_73
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 71
+      - 🇺🇸 美国 CloudFlare节点 15
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 70
+      - 二爷翻墙 https://1808.free.hr Node_79
+      - 🇺🇸 美国 CloudFlare节点 24
+      - 🇺🇸 美国 CloudFlare节点 16
+      - 🇺🇸 美国 - Warrenton - OVH US LLC - 83
+      - 二爷翻墙 https://1808.free.hr Node_40
+      - 二爷翻墙 https://1808.free.hr Node_82
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 76
+      - 🇺🇸 美国 CloudFlare节点 26
+      - 2|d*********g.com_2
+      - 🇺🇸 美国 CloudFlare节点 18
+      - 🇺🇸 美国 CloudFlare节点 8
+      - "4|d*********g.com_0 #2"
+      - 二爷翻墙 https://1808.free.hr Node_87
+      - "3|d*********g.com_3 #1"
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 8
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 19
+      - "3|d*********g.com_0 #1"
+      - 🇮🇪 爱尔兰 - 都柏林 - Microsoft Corporation - 1
+      - 🇺🇸 美国 CloudFlare节点 28
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 17
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 61
+      - 2|d*********g.com_0
+      - 🇺🇸 美国 CloudFlare节点 22
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 57
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 28
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 436
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 75
+      - "3|d*********g.com_1 #1"
+      - "3|d*********g.com_2 #1"
+      - 🇮🇪 爱尔兰 V2CROSS.COM
+      - 🇳🇱 荷兰 - 阿姆斯特丹 - Seed Technologies LTD. - 1
+      - 二爷翻墙 https://1808.free.hr Node_83
+      - 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 3
+      - 二爷翻墙 https://1808.free.hr Node_81
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 428
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 25
+      - 二爷翻墙 https://1808.free.hr Node_116
+      - 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 2
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 20
+      - 二爷翻墙 https://1808.free.hr Node_69
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 54
+      - 🇩🇪 德国 - 法兰克福 - Stark Industries Solutions LTD - 1
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 31
+      - 🇫🇷 _FR_法国->🇷🇺_RU_俄罗斯 2
+      - 二爷翻墙 https://1808.free.hr Node_77
+      - 🇩🇪 乌拉圭 - 蒙得维的亚 - Administracion Nacional de Telecomunicaciones - 1
+      - 二爷翻墙 https://1808.free.hr Node_76
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 58
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 59
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 33
+      - 🇺🇸 美国 CloudFlare节点 5
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 30
+      - 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 4
+      - 🇺🇸 美国 CloudFlare节点 25
+      - 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 81
+      - 🇻🇳 越南 - Quận Bảy - LAM A Architecture Construction Company Limited - 1
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 23
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 39
+      - 🇫🇷 法国 - 斯特拉斯堡 - OVH SAS - 2
+      - 🇺🇸 美国 CloudFlare节点 21
+      - 2|d*********g.com_3
+      - 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 82
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 15
+      - 🇺🇸 美国 - 希尔斯伯勒 - OVH SAS - 86
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 46
+      - 二爷翻墙 https://1808.free.hr Node_90
+      - 🇺🇸 10 11|美国|@ripaojiedian
+      - "4|d*********g.com_2 #2"
+      - 🇺🇸 美国 CloudFlare节点 19
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 60
+      - "4|d*********g.com_1 #2"
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 18
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 437
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 53
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 52
+      - 🇭🇰 中国 - 香港 - Hong Kong Telecommunications (HKT) Limited Mass Internet - 22
+      - "4|d*********g.com_3 #2"
+      - 🇺🇸 美国 CloudFlare节点 23
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 429
+      - 2|d*********g.com_1
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 69
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 55
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 62
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 47
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 79
+      - 🇺🇸 美国 - 迈阿密 - Stark Industries Solutions LTD - 35
+      - 🇺🇸 美国 CloudFlare节点 9
+      - 🇹🇷 土耳其 - 伊斯坦布尔 - Iksir Internet Hizmetleri A.S. - 2
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 36
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 24
+      - 🇺🇸 美国 CloudFlare节点 27
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 434
+      - 🇷🇴 罗马尼亚 V2CROSS.COM
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 21
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 49
+      - 🇰🇷 韩国 - 首尔特别市 - Oracle Corporation - 10
+      - "🇲🇾 马来西亚01 | 1x MY\r"
+      - "🇨🇦 加拿大 01 | 1x CA\r"
+      - "🇷🇺 俄罗斯 01 | 1x RU\r"
+      - "🇨🇳 台湾【国外直连】\r"
+      - "🇭🇰 香港 【国外直连】\r"
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 🐟 漏网之鱼
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 🚫 拒接访问
+    type: select
+    proxies:
+      - REJECT
+  - name: 🎯 全球直连
+    type: select
+    proxies:
+      - DIRECT
+  - name: 🌍 国外加速
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 📲 电报信息
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+  - name: Ⓜ️ 微软服务
+    type: select
+    proxies:
+      - 🎯 全球直连
+      - 🚀 节点选择
+  - name: 🛑 全球拦截
+    type: select
+    proxies:
+      - 🚫 拒接访问
+      - 🎯 全球直连
+rules:
+  - DOMAIN-SUFFIX,googleapis.cn,🌍 国外加速
+  - DOMAIN-SUFFIX,xn--ngstr-lra8j.com,🎯 全球直连
+  - DOMAIN-SUFFIX,xn--ngstr-cn-8za9o.com,🎯 全球直连
+  - DOMAIN-KEYWORD,kgithub,🎯 全球直连
+  - DOMAIN-KEYWORD,fastgit,🎯 全球直连
+  - DOMAIN-KEYWORD,ghproxy,🎯 全球直连
+  - DOMAIN-KEYWORD,gitmirror,🎯 全球直连
+  - DOMAIN-SUFFIX,gitclone.com,🎯 全球直连
+  - DOMAIN-SUFFIX,gh.api.99988866.xyz,🎯 全球直连
+  - DOMAIN-SUFFIX,weserv.nl,🎯 全球直连
+  - DOMAIN-SUFFIX,wsrv.nl,🎯 全球直连
+  - PROCESS-NAME,v2ray,🎯 全球直连
+  - PROCESS-NAME,xray,🎯 全球直连
+  - PROCESS-NAME,naive,🎯 全球直连
+  - PROCESS-NAME,trojan,🎯 全球直连
+  - PROCESS-NAME,trojan-go,🎯 全球直连
+  - PROCESS-NAME,ss-local,🎯 全球直连
+  - PROCESS-NAME,privoxy,🎯 全球直连
+  - PROCESS-NAME,leaf,🎯 全球直连
+  - PROCESS-NAME,v2ray.exe,🎯 全球直连
+  - PROCESS-NAME,xray.exe,🎯 全球直连
+  - PROCESS-NAME,naive.exe,🎯 全球直连
+  - PROCESS-NAME,trojan.exe,🎯 全球直连
+  - PROCESS-NAME,trojan-go.exe,🎯 全球直连
+  - PROCESS-NAME,ss-local.exe,🎯 全球直连
+  - PROCESS-NAME,privoxy.exe,🎯 全球直连
+  - PROCESS-NAME,leaf.exe,🎯 全球直连
+  - PROCESS-NAME,Surge,🎯 全球直连
+  - PROCESS-NAME,Surge 2,🎯 全球直连
+  - PROCESS-NAME,Surge 3,🎯 全球直连
+  - PROCESS-NAME,Surge 4,🎯 全球直连
+  - PROCESS-NAME,Surge%202,🎯 全球直连
+  - PROCESS-NAME,Surge%203,🎯 全球直连
+  - PROCESS-NAME,Surge%204,🎯 全球直连
+  - PROCESS-NAME,Thunder,🎯 全球直连
+  - PROCESS-NAME,DownloadService,🎯 全球直连
+  - PROCESS-NAME,qBittorrent,🎯 全球直连
+  - PROCESS-NAME,Transmission,🎯 全球直连
+  - PROCESS-NAME,fdm,🎯 全球直连
+  - PROCESS-NAME,aria2c,🎯 全球直连
+  - PROCESS-NAME,Folx,🎯 全球直连
+  - PROCESS-NAME,NetTransport,🎯 全球直连
+  - PROCESS-NAME,uTorrent,🎯 全球直连
+  - PROCESS-NAME,WebTorrent,🎯 全球直连
+  - PROCESS-NAME,aria2c.exe,🎯 全球直连
+  - PROCESS-NAME,BitComet.exe,🎯 全球直连
+  - PROCESS-NAME,fdm.exe,🎯 全球直连
+  - PROCESS-NAME,NetTransport.exe,🎯 全球直连
+  - PROCESS-NAME,qbittorrent.exe,🎯 全球直连
+  - PROCESS-NAME,Thunder.exe,🎯 全球直连
+  - PROCESS-NAME,ThunderVIP.exe,🎯 全球直连
+  - PROCESS-NAME,transmission-daemon.exe,🎯 全球直连
+  - PROCESS-NAME,transmission-qt.exe,🎯 全球直连
+  - PROCESS-NAME,uTorrent.exe,🎯 全球直连
+  - PROCESS-NAME,WebTorrent.exe,🎯 全球直连
+  - DOMAIN,steamstore-a.akamaihd.net,🎯 全球直连
+  - DOMAIN,steamcdn-a.akamaihd.net,🎯 全球直连
+  - DOMAIN,api.steampowered.com,🎯 全球直连
+  - DOMAIN,store.steampowered.com,🎯 全球直连
+  - DOMAIN,clash.razord.top,🎯 全球直连
+  - DOMAIN,yacd.haishan.me,🎯 全球直连
+  - DOMAIN,www.biqugeu.net,🌍 国外加速
+  - DOMAIN,www.cool18.com,🌍 国外加速
+  - DOMAIN-KEYWORD,diyibanzhu,🌍 国外加速
+  - DOMAIN-SUFFIX,cool18.com,🌍 国外加速
+  - DOMAIN-KEYWORD,cunhua,🌍 国外加速
+  - RULE-SET,自定义广告白名单,🎯 全球直连
+  - RULE-SET,自定义广告拦截,🛑 全球拦截
+  - RULE-SET,adblock,🛑 全球拦截
+  - IP-CIDR,0.0.0.0/32,🛑 全球拦截
+  - RULE-SET,MetaCubeX-cn-domain,🎯 全球直连
+  - GEOIP,private,🎯 全球直连,no-resolve
+  - GEOIP,JP,🌍 国外加速
+  - GEOIP,CN,🎯 全球直连
+  - RULE-SET,ChinaCompanyIp,🎯 全球直连
+  - RULE-SET,ChinaDomain,🎯 全球直连
+  - RULE-SET,ChinaMedia,🎯 全球直连
+  - RULE-SET,ChinaIp,🎯 全球直连
+  - RULE-SET,LocalAreaNetwork,🎯 全球直连
+  - DOMAIN-SUFFIX,cn,🎯 全球直连
+  - DOMAIN-KEYWORD,-cn,🎯 全球直连
+  - RULE-SET,region,🌍 国外加速
+  - RULE-SET,direct,🎯 全球直连
+  - RULE-SET,direct2,🎯 全球直连
+  - RULE-SET,ProxyGFWlist,🌍 国外加速
+  - RULE-SET,telegramcidr,📲 电报信息
+  - GEOIP,CN,🎯 全球直连
+  - RULE-SET,proxy,🌍 国外加速
+  - MATCH,🐟 漏网之鱼
