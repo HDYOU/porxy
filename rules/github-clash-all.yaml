@@ -1,0 +1,1085 @@
+mixed-port: 7890
+allow-lan: true
+bind-address: "*"
+mode: rule
+log-level: info
+external-controller: 127.0.0.1:9090
+dns:
+  enable: true
+  ipv6: false
+  default-nameserver: [223.5.5.5, 119.29.29.29]
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  use-hosts: true
+  nameserver: [https://853.66a.net:443/dns-query, https://doh.pub/dns-query, https://dns.alidns.com/dns-query]
+  fallback: [https://doh.dns.sb/dns-query, https://dns.cloudflare.com/dns-query, https://dns.twnic.tw/dns-query, tls://8.8.4.4:853]
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    geosite:
+      - gfw
+    ipcidr:
+      - 240.0.0.0/4
+    domain:
+      - +.google.com
+      - +.facebook.com
+      - +.youtube.com
+  nameserver-policy:
+    geosite:cn,private,apple:
+      - https://doh.pub/dns-query
+      - https://dns.alidns.com/dns-query
+    www.baidu.com,+.google.cn: [223.5.5.5, https://dns.alidns.com/dns-query]
+    rule-set:自定义广告白名单: [223.5.5.5, https://dns.alidns.com/dns-query]
+    rule-set:adblock,自定义广告拦截: rcode://success
+  fake-ip-filter:
+    - "*.lan"
+    - localhost.ptlogin2.qq.com
+rule-providers:
+  adblock:
+    type: http
+    behavior: classical
+    path: ./rule_providers/adblock.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/adblock.yml
+    interval: 21600
+    format: yaml
+  proxy:
+    type: http
+    behavior: classical
+    path: ./rule_providers/proxy.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/proxy.yml
+    interval: 86400
+    format: yaml
+  direct:
+    type: http
+    behavior: classical
+    path: ./rule_providers/direct.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/direct.yml
+    interval: 86400
+    format: yaml
+  region:
+    type: http
+    behavior: classical
+    path: ./rule_providers/region.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/region.yml
+    interval: 86400
+    format: yaml
+  direct2:
+    behavior: domain
+    type: http
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt
+    interval: 86400
+    path: ./ruleset/direct2.yaml
+    format: yaml
+  telegramcidr:
+    type: http
+    behavior: ipcidr
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt
+    path: ./ruleset/telegramcidr.yaml
+    interval: 86400
+    format: yaml
+  ProxyGFWlist:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ProxyGFWlist.yaml
+    path: ./ruleset/ProxyGFWlist.yaml
+    interval: 86400
+    format: yaml
+  ChinaCompanyIp:
+    type: http
+    behavior: ipcidr
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaCompanyIp.yaml
+    path: ./ruleset/gfw.yaml
+    interval: 86400
+    format: yaml
+  ChinaDomain:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaDomain.yaml
+    path: ./ruleset/ChinaDomain.yaml
+    interval: 86400
+    format: yaml
+  ChinaIp:
+    type: http
+    behavior: ipcidr
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaIp.yaml
+    path: ./ruleset/ChinaIp.yaml
+    interval: 86400
+    format: yaml
+  ChinaMedia:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaMedia.yaml
+    path: ./ruleset/ChinaMedia.yaml
+    interval: 86400
+    format: yaml
+  LocalAreaNetwork:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/LocalAreaNetwork.yaml
+    path: ./ruleset/LocalAreaNetwork.yaml
+    interval: 86400
+    format: yaml
+  自定义广告拦截:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com//HDYOU/ClashADRule/main/self_payload_ad.yml
+    path: ./ruleset/自定义广告拦截.yaml
+    interval: 86400
+    format: yaml
+  自定义广告白名单:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/HDYOU/ClashADRule/main/self_payload_whitelist.yml
+    path: ./ruleset/自定义广告白名单.yaml
+    interval: 86400
+    format: yaml
+  MetaCubeX-cn-domain:
+    behavior: domain
+    interval: 86400
+    path: ./ruleset/cn_domain.yaml
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/cn_domain.yaml
+proxies:
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_178, server: 172.67.131.108, port: 443, type: vmess, uuid: 1052f24e-7b09-45eb-b0c5-d858eb124192, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: glweidf.cfd}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_193, server: 172.67.216.29, port: 443, type: vmess, uuid: 1052f24e-7b09-45eb-b0c5-d858eb124192, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: glweidf.cfd}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_191, server: 172.64.103.211, port: 443, type: vmess, uuid: 1052f24e-7b09-45eb-b0c5-d858eb124192, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: glweidf.cfd}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_220, server: hms182.glweidf.sbs, port: 443, type: vmess, uuid: 76221bfb-e92f-4e80-81c5-6fe48f50ac0b, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: glweidf.sbs}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_202, server: glweidf.cfd, port: 443, type: vmess, uuid: 1052f24e-7b09-45eb-b0c5-d858eb124192, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: glweidf.cfd}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_198, server: 172.67.156.210, port: 443, type: vmess, uuid: 76221bfb-e92f-4e80-81c5-6fe48f50ac0b, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: glweidf.sbs}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_195, server: 172.67.170.13, port: 443, type: vmess, uuid: edbb1059-1633-4271-b66e-ed4fba47a1bf, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: linde06.indiavideo.sbs}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_196, server: 172.67.170.11, port: 443, type: vmess, uuid: edbb1059-1633-4271-b66e-ed4fba47a1bf, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: linde06.indiavideo.sbs}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_199, server: 104.21.28.62, port: 443, type: vmess, uuid: 1052f24e-7b09-45eb-b0c5-d858eb124192, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: glweidf.cfd}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_203, server: 104.21.53.183, port: 443, type: vmess, uuid: 1052f24e-7b09-45eb-b0c5-d858eb124192, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: glweidf.cfd}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_194, server: 172.67.131.17, port: 443, type: vmess, uuid: 62aa5f80-0328-4004-a375-7f5a59df4022, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hms19.best-tizi.top}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_201, server: linde06.indiavideo.sbs, port: 443, type: vmess, uuid: edbb1059-1633-4271-b66e-ed4fba47a1bf, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: linde06.indiavideo.sbs}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_189, server: 172.67.196.112, port: 443, type: vmess, uuid: edbb1059-1633-4271-b66e-ed4fba47a1bf, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: linde06.indiavideo.sbs}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_231, server: 172.67.219.194, port: 443, type: vmess, uuid: b321fd5d-e6ec-4293-a644-164e3885f52e, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: adenc36v.xtooltech.cfd}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_200, server: 104.21.24.170, port: 443, type: vmess, uuid: b321fd5d-e6ec-4293-a644-164e3885f52e, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: adenc36v.xtooltech.cfd}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_217, server: 172.67.223.119, port: 443, type: vmess, uuid: 6c168fcc-2231-4f3b-8c1e-f6391692df4a, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hms02.fxiaomi.sbs}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_188, server: denc36.xtooltech.cfd, port: 443, type: vmess, uuid: b321fd5d-e6ec-4293-a644-164e3885f52e, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: adenc36v.xtooltech.cfd}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 10, server: 172.64.175.88, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 18, server: 104.26.5.112, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 180, server: 104.26.0.56, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip10.6016725.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip10.6016725.xyz}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_238, server: hms19.best-tizi.top, port: 443, type: vmess, uuid: 62aa5f80-0328-4004-a375-7f5a59df4022, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hms19.best-tizi.top}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 13, server: 104.17.106.151, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 11, server: 162.159.140.19, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 176, server: fbi.gov, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip10.6016725.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip10.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 17, server: 162.159.140.93, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 11 2, server: 104.19.45.19, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip3.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 5, server: 172.64.167.5, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.6016725.xyz}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_233, server: ParsVds.ir, port: 443, type: vmess, uuid: 62aa5f80-0328-4004-a375-7f5a59df4022, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hms19.best-tizi.top}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 7, server: 104.19.46.103, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip3.6929198.xyz}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_237, server: 162.159.8.120, port: 443, type: vmess, uuid: 62aa5f80-0328-4004-a375-7f5a59df4022, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hms19.best-tizi.top}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 20, server: 172.64.166.16, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 2, server: 104.19.55.49, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip3.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 2 2, server: 104.19.38.11, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip6.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 24, server: 104.19.38.10, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip6.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 19, server: 104.19.55.49, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 13 2, server: 172.64.167.22, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip3.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 10 2, server: singapore.com, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip3.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 23, server: 104.20.25.146, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip3.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 209, server: 104.19.58.175, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip15.6929198.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip15.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 17 2, server: 104.17.106.151, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip3.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 24 2, server: 162.159.140.33, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 22, server: 104.20.25.146, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip3.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 17 3, server: 172.64.167.25, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip3.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 7 2, server: 104.19.21.71, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip3.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点, server: 104.16.149.244, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip3.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 13, server: 35.94.175.12, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 210, server: fbi.gov, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: ip15.6929198.xyz, network: ws, ws-opts: {path: /, headers: {Host: ip15.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 18 2, server: 172.67.64.120, port: 80, type: vmess, uuid: 7a8c8e19-b110-4224-89c5-f32f8c9b07eb, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 68690907783461163508239105253758.chrsjfklsdjfkljoierfdjklfjlkefeojsdlkfjeoifjsdlkfjweoifjlsdchrs.cyou}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 21, server: 104.26.5.90, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 14, server: ip.sb, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip3.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 19 2, server: ip.sb, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip3.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 22 2, server: 104.26.5.88, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip3.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 v2rayfree.eu.org 2, server: 23.162.200.227, port: 443, type: vmess, uuid: 03fcc618-b93d-6796-6aed-8a38c975d581, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_206, server: 158.51.121.36, port: 443, type: vmess, uuid: 03fcc618-b93d-6796-6aed-8a38c975d581, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 158.51.121.36}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_157, server: 23.154.136.2, port: 443, type: vmess, uuid: 03fcc618-b93d-6796-6aed-8a38c975d581, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 23.154.136.2}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_133, server: 69.50.93.90, port: 443, type: vmess, uuid: 03fcc618-b93d-6796-6aed-8a38c975d581, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 69.50.93.90}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 5 2, server: 104.19.45.17, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip3.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 4, server: 104.19.46.103, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip3.6929198.xyz}}, udp: true}
+  - {name: 🇯🇵 日本 - 东京 - Amazon Technologies Inc - 1, server: 13.114.140.218, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇯🇵 日本 - 东京 - Amazon Technologies Inc. - 3, server: 18.183.186.69, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇩🇪 德国 - Frankfurt Am Main - Hetzner Online AG - 2, server: speedtest.net, port: 443, type: vmess, uuid: 57727d7d-8873-4000-b3f4-33a93fcfdd51, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: mehrjavan.ir, network: ws, ws-opts: {path: /, headers: {Host: mehrjavan.ir}}, udp: true}
+  - {name: 🇮🇪 爱尔兰 - 都柏林 - Microsoft Corporation - 1, server: 13.74.66.239, port: 12919, type: ss, cipher: chacha20-ietf-poly1305, password: 27oHrBVTnqyiSARogNNZwW, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_226, server: 172.67.136.233, port: 443, type: vmess, uuid: 3f638f34-8dba-4186-bc43-2716a7ddd4be, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: az05.beyondy.cfd}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_186, server: 104.26.0.95, port: 443, type: vmess, uuid: 05641cf5-58d2-4ba4-a9f1-b3cda0b1fb1d, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: obdii.cfd}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_117, server: 172.67.181.241, port: 443, type: vmess, uuid: f584de15-2034-4170-a723-f48c2bae5e0f, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: afrhms16v.bestxray.buzz}}, udp: true}
+  - {name: 🇮🇹 意大利 V2CROSS.COM, server: 212.102.53.198, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_165, server: 188.114.97.21, port: 443, type: vmess, uuid: f584de15-2034-4170-a723-f48c2bae5e0f, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: afrhms16v.bestxray.buzz}}, udp: true}
+  - {name: 🇮🇹 意大利 V2CROSS.COM 2, server: 212.102.53.195, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_107, server: 188.114.96.2, port: 443, type: vmess, uuid: f584de15-2034-4170-a723-f48c2bae5e0f, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: afrhms16v.bestxray.buzz}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_109, server: 172.99.190.50, port: 443, type: vmess, uuid: 03fcc618-b93d-6796-6aed-8a38c975d581, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 172.99.190.50}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_244, server: 104.21.83.208, port: 443, type: vmess, uuid: f584de15-2034-4170-a723-f48c2bae5e0f, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: afrhms16v.bestxray.buzz}}, udp: true}
+  - {name: 🇮🇹 意大利+v2rayfree.eu.org, server: 212.102.53.195, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇬🇧 英国 - 伦敦 - Datacamp Limited - 1, server: 212.102.53.198, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_174, server: 188.114.97.8, port: 443, type: vmess, uuid: f584de15-2034-4170-a723-f48c2bae5e0f, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: afrhms16v.bestxray.buzz}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_110, server: 68.168.31.242, port: 443, type: vmess, uuid: 03fcc618-b93d-6796-6aed-8a38c975d581, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 68.168.31.242}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_179, server: 68.168.31.196, port: 443, type: vmess, uuid: 03fcc618-b93d-6796-6aed-8a38c975d581, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 68.168.31.196}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_175, server: 172.99.190.209, port: 443, type: vmess, uuid: 03fcc618-b93d-6796-6aed-8a38c975d581, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 172.99.190.209}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_210, server: 149.7.16.188, port: 443, type: vmess, uuid: 03fcc618-b93d-6796-6aed-8a38c975d581, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 149.7.16.188}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_209, server: 149.7.16.248, port: 443, type: vmess, uuid: 03fcc618-b93d-6796-6aed-8a38c975d581, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 149.7.16.248}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_112, server: 172.67.175.56, port: 443, type: vmess, uuid: 05641cf5-58d2-4ba4-a9f1-b3cda0b1fb1d, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: obdii.cfd}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_166, server: 188.114.96.3, port: 443, type: vmess, uuid: 05641cf5-58d2-4ba4-a9f1-b3cda0b1fb1d, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: obdii.cfd}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_106, server: 188.114.97.2, port: 443, type: vmess, uuid: 05641cf5-58d2-4ba4-a9f1-b3cda0b1fb1d, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: obdii.cfd}}, udp: true}
+  - {name: 🇫🇷 法国 国际航空电讯集团公司(SITA), server: 57.129.28.69, port: 443, type: vmess, uuid: 03fcc618-b93d-6796-6aed-8a38c975d581, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: wrmelmwxlf.gktevlrqznwqqozy.fabpfs66gizmnojhcvqxwl.kytrcfzqla87gvgvs6c7kjnrubuh.cc, network: ws, ws-opts: {path: /, headers: {Host: baradiha.com}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_184, server: 51.77.20.132, port: 443, type: vmess, uuid: 03fcc618-b93d-6796-6aed-8a38c975d581, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: a.baradiha.com}}, udp: true}
+  - {name: 🇺🇸 美国 V2CROSS.COM 11, server: 45.158.171.14, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: a8bt9fY0QsLS6eLnXUe0Ym, udp: true}
+  - {name: 欧盟+v2rayfree.eu.org, server: 45.87.175.164, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: gDFRe52uiIvVaxqPlqw439, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_183, server: 188.114.96.1, port: 443, type: vmess, uuid: f584de15-2034-4170-a723-f48c2bae5e0f, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: afrhms16v.bestxray.buzz}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_211, server: beyonddsz.cfd, port: 443, type: vmess, uuid: 9b456c2a-f2c1-45e1-87a9-b7628b04bb24, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: beyonddsz.cfd}}, udp: true}
+  - {name: 🇸🇬 新加坡 - 新加坡 - Amazon Technologies Inc. - 4, server: 3.0.93.45, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇸🇬 新加坡 - 新加坡 - Amazon Technologies Inc. - 1, server: 13.212.100.34, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇷🇺 俄罗斯+v2rayfree.eu.org, server: 176.124.199.255, port: 30252, type: ss, cipher: chacha20-ietf-poly1305, password: Zgg@X0m515, udp: true}
+  - {name: 🇰🇷 韩国 - 首尔特别市 - Amazon.com  Inc. - 2, server: 3.35.222.240, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Hong Kong Cable Television Limited - 5, server: hkt2.bika.hk, port: 30251, type: vmess, uuid: 9e88a10b-655c-5120-89d0-408634169561, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: hkt2.bika.hk, udp: true}
+  - {name: 🇰🇷 韩国 - 首尔特别市 - Amazon.com  Inc. - 1, server: 3.38.102.189, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 178, server: 54.185.199.99, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 亚太地区+v2rayfree.eu.org, server: 103.174.86.113, port: 51348, type: ss, cipher: chacha20-ietf-poly1305, password: vZr8MlUXUihNEndqIpjDxQdSeqi37FbgoHBmQ1syy6ZjkbBn, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 25, server: 104.16.60.8, port: 80, type: vmess, uuid: 4804f14b-c1f8-452d-a6ec-eff1490aeac9, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hdfy6c1.freelines.net}}, udp: true}
+  - {name: 亚太地区+v2rayfree.eu.org 2, server: 103.174.86.113, port: 51348, type: ss, cipher: chacha20-ietf-poly1305, password: vZr8MlUXUihNEndqIpjDxQdSeqi37FbgoHBmQ1syy6ZjkbBn, udp: true}
+  - {name: 🇫🇷 _FR_法国->🇷🇺_RU_俄罗斯, server: 163.172.64.22, port: 989, type: ss, cipher: aes-256-cfb, password: f8f7aCzcPKbsF8p3, udp: true}
+  - {name: 🇺🇸 美国 华盛顿Cogent通信公司 6, server: 38.114.114.69, port: 5601, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 _US_美国_13, server: 69.50.92.99, port: 8882, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 7, server: 38.114.114.69, port: 8009, type: ss, cipher: aes-256-gcm, password: XKFKl2rULjIp74, udp: true}
+  - {name: 🇺🇸 美国+v2rayfree.eu.org 5, server: 69.50.95.218, port: 7002, type: ss, cipher: aes-256-gcm, password: RexnBgU7EV5ADxG, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司, server: 38.68.134.9, port: 8882, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 14, server: 38.68.134.9, port: 9101, type: ss, cipher: aes-256-gcm, password: e4FCWrgpkji3QY, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 11, server: 38.114.114.69, port: 4444, type: ss, cipher: aes-256-gcm, password: pKEW8JPByTVTLtM, udp: true}
+  - {name: 🇺🇸 美国 华盛顿Cogent通信公司, server: 38.114.114.69, port: 8118, type: ss, cipher: aes-256-gcm, password: cdBIDV42DCwnfIN, udp: true}
+  - {name: 🇺🇸 美国 华盛顿Cogent通信公司 4, server: 38.75.136.21, port: 7307, type: ss, cipher: aes-256-gcm, password: FoOiGlkAA9yPEGP, udp: true}
+  - {name: 🇺🇸 美国 - 丹佛 - GTHost - 12, server: 69.50.95.179, port: 5498, type: ss, cipher: aes-256-gcm, password: lGqs95QkFHo2NV, udp: true}
+  - {name: 🇺🇸 _US_美国_29, server: 69.50.95.53, port: 6379, type: ss, cipher: aes-256-gcm, password: zDNVedRFPQexG9v, udp: true}
+  - {name: 🇺🇸 美国+v2rayfree.eu.org 4, server: 69.50.95.218, port: 5001, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 _US_美国_21, server: 69.50.95.53, port: 8881, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 _US_美国_15, server: 69.50.95.53, port: 6697, type: ss, cipher: aes-256-gcm, password: TEzjfAYq2IjtuoS, udp: true}
+  - {name: 🇺🇸 美国+v2rayfree.eu.org 8, server: 69.50.95.53, port: 3389, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国 - 丹佛 - GTHost - 173, server: 69.50.95.179, port: 6379, type: ss, cipher: aes-256-gcm, password: zDNVedRFPQexG9v, udp: true}
+  - {name: 🇺🇸 美国+v2rayfree.eu.org 2, server: 69.50.95.53, port: 8881, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 美国 华盛顿Cogent通信公司 12, server: 38.68.134.9, port: 8882, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 _US_美国_27, server: 169.197.142.120, port: 8882, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 _US_美国_22, server: 169.197.142.216, port: 7002, type: ss, cipher: aes-256-gcm, password: RexnBgU7EV5ADxG, udp: true}
+  - {name: 🇺🇸 美国+v2rayfree.eu.org 4 2, server: 69.50.95.218, port: 2375, type: ss, cipher: aes-256-gcm, password: faBAoD54k87UJG7, udp: true}
+  - {name: 🇺🇸 _US_美国_25, server: 69.50.95.179, port: 8882, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 _US_美国_24, server: 69.50.92.55, port: 7307, type: ss, cipher: aes-256-gcm, password: FoOiGlkAA9yPEGP, udp: true}
+  - {name: 🇺🇸 _US_美国_17, server: 142.202.49.84, port: 6679, type: ss, cipher: aes-256-gcm, password: TEzjfAYq2IjtuoS, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 13, server: 38.110.1.35, port: 7306, type: ss, cipher: aes-256-gcm, password: FoOiGlkAA9yPEGP, udp: true}
+  - {name: 🇺🇸 _US_美国_24 2, server: 69.50.92.55, port: 7307, type: ss, cipher: aes-256-gcm, password: FoOiGlkAA9yPEGP, udp: true}
+  - {name: 🇺🇸 _US_美国_7, server: 69.50.92.72, port: 6679, type: ss, cipher: aes-256-gcm, password: TEzjfAYq2IjtuoS, udp: true}
+  - {name: 🇺🇸 _US_美国_26, server: 69.50.92.110, port: 8118, type: ss, cipher: aes-256-gcm, password: cdBIDV42DCwnfIN, udp: true}
+  - {name: 🇺🇸 _US_美国_13 2, server: 69.50.92.99, port: 8882, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 美国+v2rayfree.eu.org 3, server: 139.64.164.15, port: 8118, type: ss, cipher: aes-256-gcm, password: cdBIDV42DCwnfIN, udp: true}
+  - {name: 🇺🇸 美国+v2rayfree.eu.org, server: 139.64.164.15, port: 5500, type: ss, cipher: aes-256-gcm, password: KixLvKzwjekG00rm, udp: true}
+  - {name: 🇺🇸 _US_美国_26 2, server: 69.50.92.110, port: 8118, type: ss, cipher: aes-256-gcm, password: cdBIDV42DCwnfIN, udp: true}
+  - {name: 🇺🇸 美国 - 丹佛 - GTHost - 8, server: 69.50.92.99, port: 8881, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 _US_美国_28, server: 69.50.95.53, port: 8882, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 14 2, server: 38.114.114.69, port: 4444, type: ss, cipher: aes-256-gcm, password: pKEW8JPByTVTLtM, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 4, server: 38.114.114.69, port: 2376, type: ss, cipher: aes-256-gcm, password: faBAoD54k87UJG7, udp: true}
+  - {name: 🇺🇸 美国+v2rayfree.eu.org 2 2, server: 69.50.95.218, port: 8000, type: ss, cipher: aes-256-gcm, password: KixLvKzwjekG00rm, udp: true}
+  - {name: 🇺🇸 _US_美国_29 2, server: 69.50.95.53, port: 6379, type: ss, cipher: aes-256-gcm, password: zDNVedRFPQexG9v, udp: true}
+  - {name: 🇺🇸 美国+v2rayfree.eu.org 8 2, server: 69.50.95.218, port: 5600, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 _US_美国_15 2, server: 69.50.95.53, port: 6697, type: ss, cipher: aes-256-gcm, password: TEzjfAYq2IjtuoS, udp: true}
+  - {name: 🇺🇸 美国 V2CROSS.COM 10, server: 69.50.95.53, port: 3389, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 _US_美国_21 2, server: 69.50.95.53, port: 8881, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 美国 V2CROSS.COM 2, server: 69.50.95.53, port: 8881, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 美国+v2rayfree.eu.org 5 2, server: 69.50.95.218, port: 8000, type: ss, cipher: aes-256-gcm, password: KixLvKzwjekG00rm, udp: true}
+  - {name: 🇺🇸 _US_美国_25 2, server: 69.50.95.179, port: 8882, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 美国 - 丹佛 - GTHost - 6, server: 69.50.95.218, port: 8090, type: ss, cipher: aes-256-gcm, password: PCnnH6SQSnfoS27, udp: true}
+  - {name: 🇺🇸 _US_美国_1, server: 139.64.165.230, port: 5500, type: ss, cipher: aes-256-gcm, password: KixLvKzwjekG00rm, udp: true}
+  - {name: 🇺🇸 _US_美国_7 2, server: 69.50.92.72, port: 6679, type: ss, cipher: aes-256-gcm, password: TEzjfAYq2IjtuoS, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 10, server: 38.110.1.46, port: 8080, type: ss, cipher: aes-256-gcm, password: KixLvKzwjekG00rm, udp: true}
+  - {name: 🇺🇸 美国 华盛顿Cogent通信公司 5, server: 38.110.1.105, port: 443, type: ss, cipher: aes-256-gcm, password: pKEW8JPByTVTLtM, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 19, server: 38.110.1.105, port: 5004, type: ss, cipher: aes-256-gcm, password: g5MeD6Ft3CWlJId, udp: true}
+  - {name: 🇺🇸 _US_美国_19, server: 38.110.1.12, port: 3389, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国 - 丹佛 - GTHost - 179, server: 69.50.92.99, port: 2375, type: ss, cipher: aes-256-gcm, password: faBAoD54k87UJG7, udp: true}
+  - {name: 🇺🇸 美国 - 丹佛 - GTHost - 177, server: 69.50.92.110, port: 5498, type: ss, cipher: aes-256-gcm, password: lGqs95QkFHo2NV, udp: true}
+  - {name: 🇺🇸 美国 - 丹佛 - GTHost - 10, server: 69.50.92.99, port: 8882, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 2, server: 38.114.114.69, port: 7001, type: ss, cipher: aes-256-gcm, password: RexnBgU7EV5ADxG, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 13 2, server: 38.114.114.69, port: 6679, type: ss, cipher: aes-256-gcm, password: TEzjfAYq2IjtuoS, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 9, server: 38.114.114.69, port: 9101, type: ss, cipher: aes-256-gcm, password: e4FCWrgpkji3QY, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 8, server: 38.114.114.69, port: 9102, type: ss, cipher: aes-256-gcm, password: e4FCWrgpkji3QY, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 7 2, server: 38.114.114.69, port: 8118, type: ss, cipher: aes-256-gcm, password: cdBIDV42DCwnfIN, udp: true}
+  - {name: 🇺🇸 _US_美国_28 2, server: 69.50.95.53, port: 8882, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 美国 - 丹佛 - GTHost - 2, server: 69.50.95.218, port: 5000, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国 华盛顿Cogent通信公司 8, server: 38.114.114.69, port: 3389, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国 - 丹佛 - GTHost - 174, server: 69.50.95.179, port: 3389, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国+v2rayfree.eu.org 3 2, server: 69.50.95.218, port: 5000, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 _US_美国_1 2, server: 139.64.165.230, port: 5500, type: ss, cipher: aes-256-gcm, password: KixLvKzwjekG00rm, udp: true}
+  - {name: 🇺🇸 美国+v2rayfree.eu.org 7, server: 69.50.95.218, port: 3306, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国 - 丹佛 - GTHost - 4, server: 69.50.95.218, port: 8888, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 15, server: 38.110.1.105, port: 5601, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 15 2, server: 38.110.1.105, port: 8080, type: ss, cipher: aes-256-gcm, password: KixLvKzwjekG00rm, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 2 2, server: 38.110.1.35, port: 8888, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 10 2, server: 38.110.1.12, port: 8888, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国 - 丹佛 - GTHost - 9, server: 69.50.92.99, port: 6379, type: ss, cipher: aes-256-gcm, password: zDNVedRFPQexG9v, udp: true}
+  - {name: 🇺🇸 _US_美国_4, server: 142.202.49.122, port: 8118, type: ss, cipher: aes-256-gcm, password: cdBIDV42DCwnfIN, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 18, server: 38.110.1.35, port: 8881, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 3, server: 38.110.1.105, port: 5498, type: ss, cipher: aes-256-gcm, password: lGqs95QkFHo2NV, udp: true}
+  - {name: 🇺🇸 _US_美国_3, server: 142.202.49.122, port: 9101, type: ss, cipher: aes-256-gcm, password: e4FCWrgpkji3QY, udp: true}
+  - {name: 🇨🇦 _CA_加拿大, server: 23.154.136.247, port: 2376, type: ss, cipher: aes-256-gcm, password: faBAoD54k87UJG7, udp: true}
+  - {name: 🇺🇸 _US_美国_20, server: 142.202.49.84, port: 8090, type: ss, cipher: aes-256-gcm, password: PCnnH6SQSnfoS27, udp: true}
+  - {name: 🇺🇸 _US_美国_23, server: 142.202.49.119, port: 443, type: ss, cipher: aes-256-gcm, password: pKEW8JPByTVTLtM, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 17, server: 38.110.1.12, port: 6379, type: ss, cipher: aes-256-gcm, password: zDNVedRFPQexG9v, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 6, server: 38.110.1.12, port: 3389, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 _US_美国_14, server: 142.202.49.119, port: 6679, type: ss, cipher: aes-256-gcm, password: TEzjfAYq2IjtuoS, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 5, server: 38.110.1.35, port: 5004, type: ss, cipher: aes-256-gcm, password: g5MeD6Ft3CWlJId, udp: true}
+  - {name: 🇨🇦 加拿大 V2CROSS.COM 2, server: 142.202.49.84, port: 8090, type: ss, cipher: aes-256-gcm, password: PCnnH6SQSnfoS27, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 12, server: 38.110.1.105, port: 5004, type: ss, cipher: aes-256-gcm, password: g5MeD6Ft3CWlJId, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 11 2, server: 38.110.1.35, port: 5004, type: ss, cipher: aes-256-gcm, password: g5MeD6Ft3CWlJId, udp: true}
+  - {name: 🇺🇸 北美地区+v2rayfree.eu.org, server: 169.197.141.84, port: 5499, type: ss, cipher: aes-256-gcm, password: lGqs95QkFHo2NV, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 9 2, server: 38.121.43.97, port: 5500, type: ss, cipher: aes-256-gcm, password: KixLvKzwjekG00rm, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 2 3, server: 38.114.114.69, port: 3389, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 4 2, server: 38.114.114.69, port: 5003, type: ss, cipher: aes-256-gcm, password: g5MeD6Ft3CWlJId, udp: true}
+  - {name: 🇺🇸 _US_美国_32, server: 167.88.61.235, port: 8882, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 美国 华盛顿Cogent通信公司 13, server: 38.114.114.69, port: 8000, type: ss, cipher: aes-256-gcm, password: KixLvKzwjekG00rm, udp: true}
+  - {name: 🇺🇸 美国 华盛顿Cogent通信公司 2, server: 38.114.114.69, port: 8090, type: ss, cipher: aes-256-gcm, password: PCnnH6SQSnfoS27, udp: true}
+  - {name: 🇺🇸 美国+v2rayfree.eu.org 6, server: 69.50.95.218, port: 3306, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇨🇦 加拿大 V2CROSS.COM, server: 142.202.49.84, port: 5004, type: ss, cipher: aes-256-gcm, password: g5MeD6Ft3CWlJId, udp: true}
+  - {name: 🇺🇸 _US_美国_35, server: 169.197.142.120, port: 5498, type: ss, cipher: aes-256-gcm, password: lGqs95QkFHo2NV, udp: true}
+  - {name: 🇺🇸 美国 V2CROSS.COM 7, server: 139.64.164.15, port: 8118, type: ss, cipher: aes-256-gcm, password: cdBIDV42DCwnfIN, udp: true}
+  - {name: 🇺🇸 _US_美国_4 2, server: 142.202.49.122, port: 8118, type: ss, cipher: aes-256-gcm, password: cdBIDV42DCwnfIN, udp: true}
+  - {name: 🇺🇸 _US_美国_17 2, server: 142.202.49.84, port: 6679, type: ss, cipher: aes-256-gcm, password: TEzjfAYq2IjtuoS, udp: true}
+  - {name: 🇺🇸 美国 华盛顿Cogent通信公司 11, server: 38.110.1.105, port: 5004, type: ss, cipher: aes-256-gcm, password: g5MeD6Ft3CWlJId, udp: true}
+  - {name: 🇨🇦 _CA_加拿大 2, server: 23.154.136.247, port: 2376, type: ss, cipher: aes-256-gcm, password: faBAoD54k87UJG7, udp: true}
+  - {name: 🇺🇸 _US_美国_30, server: 142.202.49.122, port: 9102, type: ss, cipher: aes-256-gcm, password: e4FCWrgpkji3QY, udp: true}
+  - {name: 🇺🇸 _US_美国_16, server: 142.202.49.119, port: 6379, type: ss, cipher: aes-256-gcm, password: zDNVedRFPQexG9v, udp: true}
+  - {name: 🇺🇸 _US_美国_16 2, server: 142.202.49.119, port: 6379, type: ss, cipher: aes-256-gcm, password: zDNVedRFPQexG9v, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 8 2, server: 38.110.1.105, port: 443, type: ss, cipher: aes-256-gcm, password: pKEW8JPByTVTLtM, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 5 2, server: 38.110.1.105, port: 8080, type: ss, cipher: aes-256-gcm, password: KixLvKzwjekG00rm, udp: true}
+  - {name: 🇺🇸 _US_美国_10, server: 142.202.49.119, port: 5499, type: ss, cipher: aes-256-gcm, password: lGqs95QkFHo2NV, udp: true}
+  - {name: 🇺🇸 _US_美国_19 2, server: 38.110.1.12, port: 3389, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 _US_美国_23 2, server: 142.202.49.119, port: 443, type: ss, cipher: aes-256-gcm, password: pKEW8JPByTVTLtM, udp: true}
+  - {name: 🇺🇸 美国 华盛顿Cogent通信公司 9, server: 38.114.114.69, port: 9101, type: ss, cipher: aes-256-gcm, password: e4FCWrgpkji3QY, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 16, server: 38.114.114.69, port: 6697, type: ss, cipher: aes-256-gcm, password: TEzjfAYq2IjtuoS, udp: true}
+  - {name: 🇺🇸 _US_美国_5, server: 142.202.49.84, port: 5004, type: ss, cipher: aes-256-gcm, password: g5MeD6Ft3CWlJId, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 6 2, server: 38.110.1.105, port: 7307, type: ss, cipher: aes-256-gcm, password: FoOiGlkAA9yPEGP, udp: true}
+  - {name: 🇺🇸 _US_美国_18, server: 142.202.49.84, port: 5003, type: ss, cipher: aes-256-gcm, password: g5MeD6Ft3CWlJId, udp: true}
+  - {name: 🇺🇸 _US_美国_30 2, server: 142.202.49.122, port: 9102, type: ss, cipher: aes-256-gcm, password: e4FCWrgpkji3QY, udp: true}
+  - {name: 🇺🇸 _US_美国_8, server: 38.110.1.12, port: 8888, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 _US_美国_5 2, server: 142.202.49.84, port: 5004, type: ss, cipher: aes-256-gcm, password: g5MeD6Ft3CWlJId, udp: true}
+  - {name: 🇺🇸 _US_美国_18 2, server: 142.202.49.84, port: 5003, type: ss, cipher: aes-256-gcm, password: g5MeD6Ft3CWlJId, udp: true}
+  - {name: 🇺🇸 _US_美国_20 2, server: 142.202.49.84, port: 8090, type: ss, cipher: aes-256-gcm, password: PCnnH6SQSnfoS27, udp: true}
+  - {name: 🇺🇸 _US_美国_10 2, server: 142.202.49.119, port: 5499, type: ss, cipher: aes-256-gcm, password: lGqs95QkFHo2NV, udp: true}
+  - {name: 🇺🇸 _US_美国_14 2, server: 142.202.49.119, port: 6679, type: ss, cipher: aes-256-gcm, password: TEzjfAYq2IjtuoS, udp: true}
+  - {name: 🇺🇸 美国 华盛顿Cogent通信公司 3, server: 38.114.114.69, port: 5003, type: ss, cipher: aes-256-gcm, password: g5MeD6Ft3CWlJId, udp: true}
+  - {name: 🇺🇸 _US_美国_3 2, server: 142.202.49.122, port: 9101, type: ss, cipher: aes-256-gcm, password: e4FCWrgpkji3QY, udp: true}
+  - {name: 🇺🇸 美国 华盛顿Cogent通信公司 7, server: 38.114.114.69, port: 6379, type: ss, cipher: aes-256-gcm, password: zDNVedRFPQexG9v, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 3 2, server: 38.114.114.69, port: 7306, type: ss, cipher: aes-256-gcm, password: FoOiGlkAA9yPEGP, udp: true}
+  - {name: 🇺🇸 _US_美国_33, server: 167.88.61.235, port: 6679, type: ss, cipher: aes-256-gcm, password: TEzjfAYq2IjtuoS, udp: true}
+  - {name: 🇺🇸 _US_美国_27 2, server: 169.197.142.120, port: 8882, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇫🇷 _FR_法国->🇷🇺_RU_俄罗斯 2, server: 163.172.64.22, port: 989, type: ss, cipher: aes-256-cfb, password: f8f7aCzcPKbsF8p3, udp: true}
+  - {name: 🇺🇸 美国+v2rayfree.eu.org 6 2, server: 69.50.95.218, port: 5001, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 _US_美国_33 2, server: 167.88.61.235, port: 6679, type: ss, cipher: aes-256-gcm, password: TEzjfAYq2IjtuoS, udp: true}
+  - {name: 🇺🇸 美国+华盛顿Cogent通信公司 12 2, server: 38.114.114.69, port: 8090, type: ss, cipher: aes-256-gcm, password: PCnnH6SQSnfoS27, udp: true}
+  - {name: 🇺🇸 _US_美国_22 2, server: 169.197.142.216, port: 7002, type: ss, cipher: aes-256-gcm, password: RexnBgU7EV5ADxG, udp: true}
+  - {name: 🇺🇸 _US_美国_35 2, server: 169.197.142.120, port: 5498, type: ss, cipher: aes-256-gcm, password: lGqs95QkFHo2NV, udp: true}
+  - {name: 🇺🇸 _US_美国_11, server: 167.88.61.235, port: 443, type: ss, cipher: aes-256-gcm, password: pKEW8JPByTVTLtM, udp: true}
+  - {name: 🇺🇸 _US_美国_32 2, server: 167.88.61.235, port: 8882, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 美国 华盛顿Cogent通信公司 10, server: 38.114.114.69, port: 5500, type: ss, cipher: aes-256-gcm, password: KixLvKzwjekG00rm, udp: true}
+  - {name: 🇺🇸 _US_美国_11 2, server: 167.88.61.235, port: 443, type: ss, cipher: aes-256-gcm, password: pKEW8JPByTVTLtM, udp: true}
+  - {name: 🇺🇸 美国 V2CROSS.COM 5, server: 69.50.95.218, port: 8881, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 美国+v2rayfree.eu.org 7 2, server: 69.50.95.218, port: 2375, type: ss, cipher: aes-256-gcm, password: faBAoD54k87UJG7, udp: true}
+  - {name: 🇺🇸 美国 V2CROSS.COM, server: 69.50.95.218, port: 7002, type: ss, cipher: aes-256-gcm, password: RexnBgU7EV5ADxG, udp: true}
+  - {name: 🇺🇸 美国 - 丹佛 - GTHost - 3, server: 69.50.95.218, port: 8000, type: ss, cipher: aes-256-gcm, password: KixLvKzwjekG00rm, udp: true}
+  - {name: 🇺🇸 美国 - 丹佛 - GTHost - 5, server: 69.50.95.218, port: 5499, type: ss, cipher: aes-256-gcm, password: lGqs95QkFHo2NV, udp: true}
+  - {name: 🇺🇸 美国 V2CROSS.COM 4, server: 69.50.95.218, port: 5000, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国 V2CROSS.COM 8, server: 69.50.95.218, port: 9090, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 _US_美国_8 2, server: 38.110.1.12, port: 8888, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_229, server: irvideo.cfd, port: 443, type: vmess, uuid: e537f2f5-2a0c-4f59-92c9-832ca6433bf3, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: irvideo.cfd}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_50, server: 172.67.130.140, port: 2082, type: vmess, uuid: 112ac36f-3f53-4e26-8371-d25c028e1b9a, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: s1c.v2.v001sss.xyz}}, udp: true}
+  - {name: 🇰🇷 韩国 - 首尔特别市 - Amazon Technologies Inc. - 3, server: 52.78.193.3, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国 - 丹佛 - GTHost - 7, server: 69.50.95.218, port: 8882, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 6, server: s1c.v2.v001sss.xyz, port: 2082, type: vmess, uuid: 112ac36f-3f53-4e26-8371-d25c028e1b9a, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: s1c.v2.v001sss.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 V2CROSS.COM 6, server: 69.50.95.218, port: 6697, type: ss, cipher: aes-256-gcm, password: TEzjfAYq2IjtuoS, udp: true}
+  - {name: 🇺🇸 美国+v2rayfree.eu.org 9, server: 69.50.95.218, port: 5499, type: ss, cipher: aes-256-gcm, password: lGqs95QkFHo2NV, udp: true}
+  - {name: 🇺🇸 美国 - 丹佛 - GTHost - 1, server: 69.50.95.218, port: 9090, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 3, server: s1c.v2.v001sss.xyz, port: 2082, type: vmess, uuid: 112ac36f-3f53-4e26-8371-d25c028e1b9a, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: s1c.v2.v001sss.xyz}}, udp: true}
+  - {name: 二爷免费翻墙 https://1808.free.hr 节点_39, server: 104.21.8.157, port: 2082, type: vmess, uuid: 112ac36f-3f53-4e26-8371-d25c028e1b9a, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: s1c.v2.v001sss.xyz}}, udp: true}
+  - {name: 中国 - 香港 - SunnyVision Limited -%�, server: 150.107.46.21, port: 8083, type: ssr, cipher: aes-256-cfb, password: iFqnzSscN, protocol: origin, obfs: tls1.2_ticket_auth, protocol-param: "", obfs-param: "", udp: true}
+  - {name: 🇮🇷 伊朗+v2rayfree.eu.org, server: exchange.gameaurela.click, port: 52952, type: ss, cipher: chacha20-ietf-poly1305, password: LMSNh21TrXjR2ok25Q2nE8ENT2zoBmPvka3RCCUAHZELCnWoekVjvaf89qwcRkdbxEfep2bc2aUtmnxqvF1ayQRez1JHjULj, udp: true}
+  - {name: 欧盟 V2CROSS.COM, server: beesyar.org, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: g9AJsrBPgW4Nhjoy3xCioC, udp: true}
+  - {name: 🇮🇷 伊朗 V2CROSS.COM, server: 185.24.151.214, port: 52952, type: ss, cipher: chacha20-ietf-poly1305, password: LMSNh21TrXjR2ok25Q2nE8ENT2zoBmPvka3RCCUAHZELCnWoekVjvaf89qwcRkdbxEfep2bc2aUtmnxqvF1ayQRez1JHjULj, udp: true}
+  - {name: 欧盟+v2rayfree.eu.org 2, server: 45.87.175.154, port: 8080, type: ss, cipher: chacha20-ietf-poly1305, password: gDFRe52uiIvVaxqPlqw439, udp: true}
+  - {name: 🇯🇵 日本 - 东京 - Amazon Technologies Inc - 2, server: 13.112.168.104, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇮🇷 伊朗+v2rayfree.eu.org 2, server: exchange.gameaurela.click, port: 52952, type: ss, cipher: chacha20-ietf-poly1305, password: LMSNh21TrXjR2ok25Q2nE8ENT2zoBmPvka3RCCUAHZELCnWoekVjvaf89qwcRkdbxEfep2bc2aUtmnxqvF1ayQRez1JHjULj, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 16, server: 104.19.45.9, port: 2095, type: vmess, uuid: 7a737f41-b792-4260-94ff-3d864da67b80, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: onea.flha.ru}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 4 2, server: 104.19.45.106, port: 2095, type: vmess, uuid: 7a737f41-b792-4260-94ff-3d864da67b80, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: onea.flha.ru}}, udp: true}
+  - {name: 🇯🇵 日本 - 东京 - G-Core Labs S.A. - 15, server: 15086.kuaiyin02.top, port: 15086, type: vmess, uuid: 9f513161-576b-3abc-9c98-06e52c3a24c6, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, udp: true}
+  - {name: 🇰🇷 韩国 - 首尔特别市 - Amazon.com  Inc. - 5, server: 43.203.197.215, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国+v2rayfree.eu.org 9 2, server: 69.50.95.218, port: 6379, type: ss, cipher: aes-256-gcm, password: zDNVedRFPQexG9v, udp: true}
+proxy-groups:
+  - name: 🚀 节点选择
+    type: select
+    proxies:
+      - ♻️ 自动选择
+      - ✅ 手动选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: ♻️ 自动选择
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+    proxies:
+      - 二爷免费翻墙 https://1808.free.hr 节点_178
+      - 二爷免费翻墙 https://1808.free.hr 节点_193
+      - 二爷免费翻墙 https://1808.free.hr 节点_191
+      - 二爷免费翻墙 https://1808.free.hr 节点_220
+      - 二爷免费翻墙 https://1808.free.hr 节点_202
+      - 二爷免费翻墙 https://1808.free.hr 节点_198
+      - 二爷免费翻墙 https://1808.free.hr 节点_195
+      - 二爷免费翻墙 https://1808.free.hr 节点_196
+      - 二爷免费翻墙 https://1808.free.hr 节点_199
+      - 二爷免费翻墙 https://1808.free.hr 节点_203
+      - 二爷免费翻墙 https://1808.free.hr 节点_194
+      - 二爷免费翻墙 https://1808.free.hr 节点_201
+      - 二爷免费翻墙 https://1808.free.hr 节点_189
+      - 二爷免费翻墙 https://1808.free.hr 节点_231
+      - 二爷免费翻墙 https://1808.free.hr 节点_200
+      - 二爷免费翻墙 https://1808.free.hr 节点_217
+      - 二爷免费翻墙 https://1808.free.hr 节点_188
+      - 🇺🇸 美国 CloudFlare节点 10
+      - 🇺🇸 美国 CloudFlare节点 18
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 180
+      - 二爷免费翻墙 https://1808.free.hr 节点_238
+      - 🇺🇸 美国 CloudFlare节点 13
+      - 🇺🇸 美国 CloudFlare节点 11
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 176
+      - 🇺🇸 美国 CloudFlare节点 17
+      - 🇺🇸 美国 CloudFlare节点 11 2
+      - 🇺🇸 美国 CloudFlare节点 5
+      - 二爷免费翻墙 https://1808.free.hr 节点_233
+      - 🇺🇸 美国 CloudFlare节点 7
+      - 二爷免费翻墙 https://1808.free.hr 节点_237
+      - 🇺🇸 美国 CloudFlare节点 20
+      - 🇺🇸 美国 CloudFlare节点 2
+      - 🇺🇸 美国 CloudFlare节点 2 2
+      - 🇺🇸 美国 CloudFlare节点 24
+      - 🇺🇸 美国 CloudFlare节点 19
+      - 🇺🇸 美国 CloudFlare节点 13 2
+      - 🇺🇸 美国 CloudFlare节点 10 2
+      - 🇺🇸 美国 CloudFlare节点 23
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 209
+      - 🇺🇸 美国 CloudFlare节点 17 2
+      - 🇺🇸 美国 CloudFlare节点 24 2
+      - 🇺🇸 美国 CloudFlare节点 22
+      - 🇺🇸 美国 CloudFlare节点 17 3
+      - 🇺🇸 美国 CloudFlare节点 7 2
+      - 🇺🇸 美国 CloudFlare节点
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 13
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 210
+      - 🇺🇸 美国 CloudFlare节点 18 2
+      - 🇺🇸 美国 CloudFlare节点 21
+      - 🇺🇸 美国 CloudFlare节点 14
+      - 🇺🇸 美国 CloudFlare节点 19 2
+      - 🇺🇸 美国 CloudFlare节点 22 2
+      - 🇺🇸 美国 v2rayfree.eu.org 2
+      - 二爷免费翻墙 https://1808.free.hr 节点_206
+      - 二爷免费翻墙 https://1808.free.hr 节点_157
+      - 二爷免费翻墙 https://1808.free.hr 节点_133
+      - 🇺🇸 美国 CloudFlare节点 5 2
+      - 🇺🇸 美国 CloudFlare节点 4
+      - 🇯🇵 日本 - 东京 - Amazon Technologies Inc - 1
+      - 🇯🇵 日本 - 东京 - Amazon Technologies Inc. - 3
+      - 🇩🇪 德国 - Frankfurt Am Main - Hetzner Online AG - 2
+      - 🇮🇪 爱尔兰 - 都柏林 - Microsoft Corporation - 1
+      - 二爷免费翻墙 https://1808.free.hr 节点_226
+      - 二爷免费翻墙 https://1808.free.hr 节点_186
+      - 二爷免费翻墙 https://1808.free.hr 节点_117
+      - 🇮🇹 意大利 V2CROSS.COM
+      - 二爷免费翻墙 https://1808.free.hr 节点_165
+      - 🇮🇹 意大利 V2CROSS.COM 2
+      - 二爷免费翻墙 https://1808.free.hr 节点_107
+      - 二爷免费翻墙 https://1808.free.hr 节点_109
+      - 二爷免费翻墙 https://1808.free.hr 节点_244
+      - 🇮🇹 意大利+v2rayfree.eu.org
+      - 🇬🇧 英国 - 伦敦 - Datacamp Limited - 1
+      - 二爷免费翻墙 https://1808.free.hr 节点_174
+      - 二爷免费翻墙 https://1808.free.hr 节点_110
+      - 二爷免费翻墙 https://1808.free.hr 节点_179
+      - 二爷免费翻墙 https://1808.free.hr 节点_175
+      - 二爷免费翻墙 https://1808.free.hr 节点_210
+      - 二爷免费翻墙 https://1808.free.hr 节点_209
+      - 二爷免费翻墙 https://1808.free.hr 节点_112
+      - 二爷免费翻墙 https://1808.free.hr 节点_166
+      - 二爷免费翻墙 https://1808.free.hr 节点_106
+      - 🇫🇷 法国 国际航空电讯集团公司(SITA)
+      - 二爷免费翻墙 https://1808.free.hr 节点_184
+      - 🇺🇸 美国 V2CROSS.COM 11
+      - 欧盟+v2rayfree.eu.org
+      - 二爷免费翻墙 https://1808.free.hr 节点_183
+      - 二爷免费翻墙 https://1808.free.hr 节点_211
+      - 🇸🇬 新加坡 - 新加坡 - Amazon Technologies Inc. - 4
+      - 🇸🇬 新加坡 - 新加坡 - Amazon Technologies Inc. - 1
+      - 🇷🇺 俄罗斯+v2rayfree.eu.org
+      - 🇰🇷 韩国 - 首尔特别市 - Amazon.com  Inc. - 2
+      - 🇭🇰 中国 - 香港 - Hong Kong Cable Television Limited - 5
+      - 🇰🇷 韩国 - 首尔特别市 - Amazon.com  Inc. - 1
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 178
+      - 亚太地区+v2rayfree.eu.org
+      - 🇺🇸 美国 CloudFlare节点 25
+      - 亚太地区+v2rayfree.eu.org 2
+      - 🇫🇷 _FR_法国->🇷🇺_RU_俄罗斯
+      - 🇺🇸 美国 华盛顿Cogent通信公司 6
+      - 🇺🇸 _US_美国_13
+      - 🇺🇸 美国+华盛顿Cogent通信公司 7
+      - 🇺🇸 美国+v2rayfree.eu.org 5
+      - 🇺🇸 美国+华盛顿Cogent通信公司
+      - 🇺🇸 美国+华盛顿Cogent通信公司 14
+      - 🇺🇸 美国+华盛顿Cogent通信公司 11
+      - 🇺🇸 美国 华盛顿Cogent通信公司
+      - 🇺🇸 美国 华盛顿Cogent通信公司 4
+      - 🇺🇸 美国 - 丹佛 - GTHost - 12
+      - 🇺🇸 _US_美国_29
+      - 🇺🇸 美国+v2rayfree.eu.org 4
+      - 🇺🇸 _US_美国_21
+      - 🇺🇸 _US_美国_15
+      - 🇺🇸 美国+v2rayfree.eu.org 8
+      - 🇺🇸 美国 - 丹佛 - GTHost - 173
+      - 🇺🇸 美国+v2rayfree.eu.org 2
+      - 🇺🇸 美国 华盛顿Cogent通信公司 12
+      - 🇺🇸 _US_美国_27
+      - 🇺🇸 _US_美国_22
+      - 🇺🇸 美国+v2rayfree.eu.org 4 2
+      - 🇺🇸 _US_美国_25
+      - 🇺🇸 _US_美国_24
+      - 🇺🇸 _US_美国_17
+      - 🇺🇸 美国+华盛顿Cogent通信公司 13
+      - 🇺🇸 _US_美国_24 2
+      - 🇺🇸 _US_美国_7
+      - 🇺🇸 _US_美国_26
+      - 🇺🇸 _US_美国_13 2
+      - 🇺🇸 美国+v2rayfree.eu.org 3
+      - 🇺🇸 美国+v2rayfree.eu.org
+      - 🇺🇸 _US_美国_26 2
+      - 🇺🇸 美国 - 丹佛 - GTHost - 8
+      - 🇺🇸 _US_美国_28
+      - 🇺🇸 美国+华盛顿Cogent通信公司 14 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 4
+      - 🇺🇸 美国+v2rayfree.eu.org 2 2
+      - 🇺🇸 _US_美国_29 2
+      - 🇺🇸 美国+v2rayfree.eu.org 8 2
+      - 🇺🇸 _US_美国_15 2
+      - 🇺🇸 美国 V2CROSS.COM 10
+      - 🇺🇸 _US_美国_21 2
+      - 🇺🇸 美国 V2CROSS.COM 2
+      - 🇺🇸 美国+v2rayfree.eu.org 5 2
+      - 🇺🇸 _US_美国_25 2
+      - 🇺🇸 美国 - 丹佛 - GTHost - 6
+      - 🇺🇸 _US_美国_1
+      - 🇺🇸 _US_美国_7 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 10
+      - 🇺🇸 美国 华盛顿Cogent通信公司 5
+      - 🇺🇸 美国+华盛顿Cogent通信公司 19
+      - 🇺🇸 _US_美国_19
+      - 🇺🇸 美国 - 丹佛 - GTHost - 179
+      - 🇺🇸 美国 - 丹佛 - GTHost - 177
+      - 🇺🇸 美国 - 丹佛 - GTHost - 10
+      - 🇺🇸 美国+华盛顿Cogent通信公司 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 13 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 9
+      - 🇺🇸 美国+华盛顿Cogent通信公司 8
+      - 🇺🇸 美国+华盛顿Cogent通信公司 7 2
+      - 🇺🇸 _US_美国_28 2
+      - 🇺🇸 美国 - 丹佛 - GTHost - 2
+      - 🇺🇸 美国 华盛顿Cogent通信公司 8
+      - 🇺🇸 美国 - 丹佛 - GTHost - 174
+      - 🇺🇸 美国+v2rayfree.eu.org 3 2
+      - 🇺🇸 _US_美国_1 2
+      - 🇺🇸 美国+v2rayfree.eu.org 7
+      - 🇺🇸 美国 - 丹佛 - GTHost - 4
+      - 🇺🇸 美国+华盛顿Cogent通信公司 15
+      - 🇺🇸 美国+华盛顿Cogent通信公司 15 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 2 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 10 2
+      - 🇺🇸 美国 - 丹佛 - GTHost - 9
+      - 🇺🇸 _US_美国_4
+      - 🇺🇸 美国+华盛顿Cogent通信公司 18
+      - 🇺🇸 美国+华盛顿Cogent通信公司 3
+      - 🇺🇸 _US_美国_3
+      - 🇨🇦 _CA_加拿大
+      - 🇺🇸 _US_美国_20
+      - 🇺🇸 _US_美国_23
+      - 🇺🇸 美国+华盛顿Cogent通信公司 17
+      - 🇺🇸 美国+华盛顿Cogent通信公司 6
+      - 🇺🇸 _US_美国_14
+      - 🇺🇸 美国+华盛顿Cogent通信公司 5
+      - 🇨🇦 加拿大 V2CROSS.COM 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 12
+      - 🇺🇸 美国+华盛顿Cogent通信公司 11 2
+      - 🇺🇸 北美地区+v2rayfree.eu.org
+      - 🇺🇸 美国+华盛顿Cogent通信公司 9 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 2 3
+      - 🇺🇸 美国+华盛顿Cogent通信公司 4 2
+      - 🇺🇸 _US_美国_32
+      - 🇺🇸 美国 华盛顿Cogent通信公司 13
+      - 🇺🇸 美国 华盛顿Cogent通信公司 2
+      - 🇺🇸 美国+v2rayfree.eu.org 6
+      - 🇨🇦 加拿大 V2CROSS.COM
+      - 🇺🇸 _US_美国_35
+      - 🇺🇸 美国 V2CROSS.COM 7
+      - 🇺🇸 _US_美国_4 2
+      - 🇺🇸 _US_美国_17 2
+      - 🇺🇸 美国 华盛顿Cogent通信公司 11
+      - 🇨🇦 _CA_加拿大 2
+      - 🇺🇸 _US_美国_30
+      - 🇺🇸 _US_美国_16
+      - 🇺🇸 _US_美国_16 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 8 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 5 2
+      - 🇺🇸 _US_美国_10
+      - 🇺🇸 _US_美国_19 2
+      - 🇺🇸 _US_美国_23 2
+      - 🇺🇸 美国 华盛顿Cogent通信公司 9
+      - 🇺🇸 美国+华盛顿Cogent通信公司 16
+      - 🇺🇸 _US_美国_5
+      - 🇺🇸 美国+华盛顿Cogent通信公司 6 2
+      - 🇺🇸 _US_美国_18
+      - 🇺🇸 _US_美国_30 2
+      - 🇺🇸 _US_美国_8
+      - 🇺🇸 _US_美国_5 2
+      - 🇺🇸 _US_美国_18 2
+      - 🇺🇸 _US_美国_20 2
+      - 🇺🇸 _US_美国_10 2
+      - 🇺🇸 _US_美国_14 2
+      - 🇺🇸 美国 华盛顿Cogent通信公司 3
+      - 🇺🇸 _US_美国_3 2
+      - 🇺🇸 美国 华盛顿Cogent通信公司 7
+      - 🇺🇸 美国+华盛顿Cogent通信公司 3 2
+      - 🇺🇸 _US_美国_33
+      - 🇺🇸 _US_美国_27 2
+      - 🇫🇷 _FR_法国->🇷🇺_RU_俄罗斯 2
+      - 🇺🇸 美国+v2rayfree.eu.org 6 2
+      - 🇺🇸 _US_美国_33 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 12 2
+      - 🇺🇸 _US_美国_22 2
+      - 🇺🇸 _US_美国_35 2
+      - 🇺🇸 _US_美国_11
+      - 🇺🇸 _US_美国_32 2
+      - 🇺🇸 美国 华盛顿Cogent通信公司 10
+      - 🇺🇸 _US_美国_11 2
+      - 🇺🇸 美国 V2CROSS.COM 5
+      - 🇺🇸 美国+v2rayfree.eu.org 7 2
+      - 🇺🇸 美国 V2CROSS.COM
+      - 🇺🇸 美国 - 丹佛 - GTHost - 3
+      - 🇺🇸 美国 - 丹佛 - GTHost - 5
+      - 🇺🇸 美国 V2CROSS.COM 4
+      - 🇺🇸 美国 V2CROSS.COM 8
+      - 🇺🇸 _US_美国_8 2
+      - 二爷免费翻墙 https://1808.free.hr 节点_229
+      - 二爷免费翻墙 https://1808.free.hr 节点_50
+      - 🇰🇷 韩国 - 首尔特别市 - Amazon Technologies Inc. - 3
+      - 🇺🇸 美国 - 丹佛 - GTHost - 7
+      - 🇺🇸 美国 CloudFlare节点 6
+      - 🇺🇸 美国 V2CROSS.COM 6
+      - 🇺🇸 美国+v2rayfree.eu.org 9
+      - 🇺🇸 美国 - 丹佛 - GTHost - 1
+      - 🇺🇸 美国 CloudFlare节点 3
+      - 二爷免费翻墙 https://1808.free.hr 节点_39
+      - 🇮🇷 伊朗+v2rayfree.eu.org
+      - 欧盟 V2CROSS.COM
+      - 🇮🇷 伊朗 V2CROSS.COM
+      - 欧盟+v2rayfree.eu.org 2
+      - 🇯🇵 日本 - 东京 - Amazon Technologies Inc - 2
+      - 🇮🇷 伊朗+v2rayfree.eu.org 2
+      - 🇺🇸 美国 CloudFlare节点 16
+      - 🇺🇸 美国 CloudFlare节点 4 2
+      - 🇯🇵 日本 - 东京 - G-Core Labs S.A. - 15
+      - 🇰🇷 韩国 - 首尔特别市 - Amazon.com  Inc. - 5
+      - 🇺🇸 美国+v2rayfree.eu.org 9 2
+  - name: ✅ 手动选择
+    type: select
+    proxies:
+      - 二爷免费翻墙 https://1808.free.hr 节点_178
+      - 二爷免费翻墙 https://1808.free.hr 节点_193
+      - 二爷免费翻墙 https://1808.free.hr 节点_191
+      - 二爷免费翻墙 https://1808.free.hr 节点_220
+      - 二爷免费翻墙 https://1808.free.hr 节点_202
+      - 二爷免费翻墙 https://1808.free.hr 节点_198
+      - 二爷免费翻墙 https://1808.free.hr 节点_195
+      - 二爷免费翻墙 https://1808.free.hr 节点_196
+      - 二爷免费翻墙 https://1808.free.hr 节点_199
+      - 二爷免费翻墙 https://1808.free.hr 节点_203
+      - 二爷免费翻墙 https://1808.free.hr 节点_194
+      - 二爷免费翻墙 https://1808.free.hr 节点_201
+      - 二爷免费翻墙 https://1808.free.hr 节点_189
+      - 二爷免费翻墙 https://1808.free.hr 节点_231
+      - 二爷免费翻墙 https://1808.free.hr 节点_200
+      - 二爷免费翻墙 https://1808.free.hr 节点_217
+      - 二爷免费翻墙 https://1808.free.hr 节点_188
+      - 🇺🇸 美国 CloudFlare节点 10
+      - 🇺🇸 美国 CloudFlare节点 18
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 180
+      - 二爷免费翻墙 https://1808.free.hr 节点_238
+      - 🇺🇸 美国 CloudFlare节点 13
+      - 🇺🇸 美国 CloudFlare节点 11
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 176
+      - 🇺🇸 美国 CloudFlare节点 17
+      - 🇺🇸 美国 CloudFlare节点 11 2
+      - 🇺🇸 美国 CloudFlare节点 5
+      - 二爷免费翻墙 https://1808.free.hr 节点_233
+      - 🇺🇸 美国 CloudFlare节点 7
+      - 二爷免费翻墙 https://1808.free.hr 节点_237
+      - 🇺🇸 美国 CloudFlare节点 20
+      - 🇺🇸 美国 CloudFlare节点 2
+      - 🇺🇸 美国 CloudFlare节点 2 2
+      - 🇺🇸 美国 CloudFlare节点 24
+      - 🇺🇸 美国 CloudFlare节点 19
+      - 🇺🇸 美国 CloudFlare节点 13 2
+      - 🇺🇸 美国 CloudFlare节点 10 2
+      - 🇺🇸 美国 CloudFlare节点 23
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 209
+      - 🇺🇸 美国 CloudFlare节点 17 2
+      - 🇺🇸 美国 CloudFlare节点 24 2
+      - 🇺🇸 美国 CloudFlare节点 22
+      - 🇺🇸 美国 CloudFlare节点 17 3
+      - 🇺🇸 美国 CloudFlare节点 7 2
+      - 🇺🇸 美国 CloudFlare节点
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 13
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 210
+      - 🇺🇸 美国 CloudFlare节点 18 2
+      - 🇺🇸 美国 CloudFlare节点 21
+      - 🇺🇸 美国 CloudFlare节点 14
+      - 🇺🇸 美国 CloudFlare节点 19 2
+      - 🇺🇸 美国 CloudFlare节点 22 2
+      - 🇺🇸 美国 v2rayfree.eu.org 2
+      - 二爷免费翻墙 https://1808.free.hr 节点_206
+      - 二爷免费翻墙 https://1808.free.hr 节点_157
+      - 二爷免费翻墙 https://1808.free.hr 节点_133
+      - 🇺🇸 美国 CloudFlare节点 5 2
+      - 🇺🇸 美国 CloudFlare节点 4
+      - 🇯🇵 日本 - 东京 - Amazon Technologies Inc - 1
+      - 🇯🇵 日本 - 东京 - Amazon Technologies Inc. - 3
+      - 🇩🇪 德国 - Frankfurt Am Main - Hetzner Online AG - 2
+      - 🇮🇪 爱尔兰 - 都柏林 - Microsoft Corporation - 1
+      - 二爷免费翻墙 https://1808.free.hr 节点_226
+      - 二爷免费翻墙 https://1808.free.hr 节点_186
+      - 二爷免费翻墙 https://1808.free.hr 节点_117
+      - 🇮🇹 意大利 V2CROSS.COM
+      - 二爷免费翻墙 https://1808.free.hr 节点_165
+      - 🇮🇹 意大利 V2CROSS.COM 2
+      - 二爷免费翻墙 https://1808.free.hr 节点_107
+      - 二爷免费翻墙 https://1808.free.hr 节点_109
+      - 二爷免费翻墙 https://1808.free.hr 节点_244
+      - 🇮🇹 意大利+v2rayfree.eu.org
+      - 🇬🇧 英国 - 伦敦 - Datacamp Limited - 1
+      - 二爷免费翻墙 https://1808.free.hr 节点_174
+      - 二爷免费翻墙 https://1808.free.hr 节点_110
+      - 二爷免费翻墙 https://1808.free.hr 节点_179
+      - 二爷免费翻墙 https://1808.free.hr 节点_175
+      - 二爷免费翻墙 https://1808.free.hr 节点_210
+      - 二爷免费翻墙 https://1808.free.hr 节点_209
+      - 二爷免费翻墙 https://1808.free.hr 节点_112
+      - 二爷免费翻墙 https://1808.free.hr 节点_166
+      - 二爷免费翻墙 https://1808.free.hr 节点_106
+      - 🇫🇷 法国 国际航空电讯集团公司(SITA)
+      - 二爷免费翻墙 https://1808.free.hr 节点_184
+      - 🇺🇸 美国 V2CROSS.COM 11
+      - 欧盟+v2rayfree.eu.org
+      - 二爷免费翻墙 https://1808.free.hr 节点_183
+      - 二爷免费翻墙 https://1808.free.hr 节点_211
+      - 🇸🇬 新加坡 - 新加坡 - Amazon Technologies Inc. - 4
+      - 🇸🇬 新加坡 - 新加坡 - Amazon Technologies Inc. - 1
+      - 🇷🇺 俄罗斯+v2rayfree.eu.org
+      - 🇰🇷 韩国 - 首尔特别市 - Amazon.com  Inc. - 2
+      - 🇭🇰 中国 - 香港 - Hong Kong Cable Television Limited - 5
+      - 🇰🇷 韩国 - 首尔特别市 - Amazon.com  Inc. - 1
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 178
+      - 亚太地区+v2rayfree.eu.org
+      - 🇺🇸 美国 CloudFlare节点 25
+      - 亚太地区+v2rayfree.eu.org 2
+      - 🇫🇷 _FR_法国->🇷🇺_RU_俄罗斯
+      - 🇺🇸 美国 华盛顿Cogent通信公司 6
+      - 🇺🇸 _US_美国_13
+      - 🇺🇸 美国+华盛顿Cogent通信公司 7
+      - 🇺🇸 美国+v2rayfree.eu.org 5
+      - 🇺🇸 美国+华盛顿Cogent通信公司
+      - 🇺🇸 美国+华盛顿Cogent通信公司 14
+      - 🇺🇸 美国+华盛顿Cogent通信公司 11
+      - 🇺🇸 美国 华盛顿Cogent通信公司
+      - 🇺🇸 美国 华盛顿Cogent通信公司 4
+      - 🇺🇸 美国 - 丹佛 - GTHost - 12
+      - 🇺🇸 _US_美国_29
+      - 🇺🇸 美国+v2rayfree.eu.org 4
+      - 🇺🇸 _US_美国_21
+      - 🇺🇸 _US_美国_15
+      - 🇺🇸 美国+v2rayfree.eu.org 8
+      - 🇺🇸 美国 - 丹佛 - GTHost - 173
+      - 🇺🇸 美国+v2rayfree.eu.org 2
+      - 🇺🇸 美国 华盛顿Cogent通信公司 12
+      - 🇺🇸 _US_美国_27
+      - 🇺🇸 _US_美国_22
+      - 🇺🇸 美国+v2rayfree.eu.org 4 2
+      - 🇺🇸 _US_美国_25
+      - 🇺🇸 _US_美国_24
+      - 🇺🇸 _US_美国_17
+      - 🇺🇸 美国+华盛顿Cogent通信公司 13
+      - 🇺🇸 _US_美国_24 2
+      - 🇺🇸 _US_美国_7
+      - 🇺🇸 _US_美国_26
+      - 🇺🇸 _US_美国_13 2
+      - 🇺🇸 美国+v2rayfree.eu.org 3
+      - 🇺🇸 美国+v2rayfree.eu.org
+      - 🇺🇸 _US_美国_26 2
+      - 🇺🇸 美国 - 丹佛 - GTHost - 8
+      - 🇺🇸 _US_美国_28
+      - 🇺🇸 美国+华盛顿Cogent通信公司 14 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 4
+      - 🇺🇸 美国+v2rayfree.eu.org 2 2
+      - 🇺🇸 _US_美国_29 2
+      - 🇺🇸 美国+v2rayfree.eu.org 8 2
+      - 🇺🇸 _US_美国_15 2
+      - 🇺🇸 美国 V2CROSS.COM 10
+      - 🇺🇸 _US_美国_21 2
+      - 🇺🇸 美国 V2CROSS.COM 2
+      - 🇺🇸 美国+v2rayfree.eu.org 5 2
+      - 🇺🇸 _US_美国_25 2
+      - 🇺🇸 美国 - 丹佛 - GTHost - 6
+      - 🇺🇸 _US_美国_1
+      - 🇺🇸 _US_美国_7 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 10
+      - 🇺🇸 美国 华盛顿Cogent通信公司 5
+      - 🇺🇸 美国+华盛顿Cogent通信公司 19
+      - 🇺🇸 _US_美国_19
+      - 🇺🇸 美国 - 丹佛 - GTHost - 179
+      - 🇺🇸 美国 - 丹佛 - GTHost - 177
+      - 🇺🇸 美国 - 丹佛 - GTHost - 10
+      - 🇺🇸 美国+华盛顿Cogent通信公司 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 13 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 9
+      - 🇺🇸 美国+华盛顿Cogent通信公司 8
+      - 🇺🇸 美国+华盛顿Cogent通信公司 7 2
+      - 🇺🇸 _US_美国_28 2
+      - 🇺🇸 美国 - 丹佛 - GTHost - 2
+      - 🇺🇸 美国 华盛顿Cogent通信公司 8
+      - 🇺🇸 美国 - 丹佛 - GTHost - 174
+      - 🇺🇸 美国+v2rayfree.eu.org 3 2
+      - 🇺🇸 _US_美国_1 2
+      - 🇺🇸 美国+v2rayfree.eu.org 7
+      - 🇺🇸 美国 - 丹佛 - GTHost - 4
+      - 🇺🇸 美国+华盛顿Cogent通信公司 15
+      - 🇺🇸 美国+华盛顿Cogent通信公司 15 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 2 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 10 2
+      - 🇺🇸 美国 - 丹佛 - GTHost - 9
+      - 🇺🇸 _US_美国_4
+      - 🇺🇸 美国+华盛顿Cogent通信公司 18
+      - 🇺🇸 美国+华盛顿Cogent通信公司 3
+      - 🇺🇸 _US_美国_3
+      - 🇨🇦 _CA_加拿大
+      - 🇺🇸 _US_美国_20
+      - 🇺🇸 _US_美国_23
+      - 🇺🇸 美国+华盛顿Cogent通信公司 17
+      - 🇺🇸 美国+华盛顿Cogent通信公司 6
+      - 🇺🇸 _US_美国_14
+      - 🇺🇸 美国+华盛顿Cogent通信公司 5
+      - 🇨🇦 加拿大 V2CROSS.COM 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 12
+      - 🇺🇸 美国+华盛顿Cogent通信公司 11 2
+      - 🇺🇸 北美地区+v2rayfree.eu.org
+      - 🇺🇸 美国+华盛顿Cogent通信公司 9 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 2 3
+      - 🇺🇸 美国+华盛顿Cogent通信公司 4 2
+      - 🇺🇸 _US_美国_32
+      - 🇺🇸 美国 华盛顿Cogent通信公司 13
+      - 🇺🇸 美国 华盛顿Cogent通信公司 2
+      - 🇺🇸 美国+v2rayfree.eu.org 6
+      - 🇨🇦 加拿大 V2CROSS.COM
+      - 🇺🇸 _US_美国_35
+      - 🇺🇸 美国 V2CROSS.COM 7
+      - 🇺🇸 _US_美国_4 2
+      - 🇺🇸 _US_美国_17 2
+      - 🇺🇸 美国 华盛顿Cogent通信公司 11
+      - 🇨🇦 _CA_加拿大 2
+      - 🇺🇸 _US_美国_30
+      - 🇺🇸 _US_美国_16
+      - 🇺🇸 _US_美国_16 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 8 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 5 2
+      - 🇺🇸 _US_美国_10
+      - 🇺🇸 _US_美国_19 2
+      - 🇺🇸 _US_美国_23 2
+      - 🇺🇸 美国 华盛顿Cogent通信公司 9
+      - 🇺🇸 美国+华盛顿Cogent通信公司 16
+      - 🇺🇸 _US_美国_5
+      - 🇺🇸 美国+华盛顿Cogent通信公司 6 2
+      - 🇺🇸 _US_美国_18
+      - 🇺🇸 _US_美国_30 2
+      - 🇺🇸 _US_美国_8
+      - 🇺🇸 _US_美国_5 2
+      - 🇺🇸 _US_美国_18 2
+      - 🇺🇸 _US_美国_20 2
+      - 🇺🇸 _US_美国_10 2
+      - 🇺🇸 _US_美国_14 2
+      - 🇺🇸 美国 华盛顿Cogent通信公司 3
+      - 🇺🇸 _US_美国_3 2
+      - 🇺🇸 美国 华盛顿Cogent通信公司 7
+      - 🇺🇸 美国+华盛顿Cogent通信公司 3 2
+      - 🇺🇸 _US_美国_33
+      - 🇺🇸 _US_美国_27 2
+      - 🇫🇷 _FR_法国->🇷🇺_RU_俄罗斯 2
+      - 🇺🇸 美国+v2rayfree.eu.org 6 2
+      - 🇺🇸 _US_美国_33 2
+      - 🇺🇸 美国+华盛顿Cogent通信公司 12 2
+      - 🇺🇸 _US_美国_22 2
+      - 🇺🇸 _US_美国_35 2
+      - 🇺🇸 _US_美国_11
+      - 🇺🇸 _US_美国_32 2
+      - 🇺🇸 美国 华盛顿Cogent通信公司 10
+      - 🇺🇸 _US_美国_11 2
+      - 🇺🇸 美国 V2CROSS.COM 5
+      - 🇺🇸 美国+v2rayfree.eu.org 7 2
+      - 🇺🇸 美国 V2CROSS.COM
+      - 🇺🇸 美国 - 丹佛 - GTHost - 3
+      - 🇺🇸 美国 - 丹佛 - GTHost - 5
+      - 🇺🇸 美国 V2CROSS.COM 4
+      - 🇺🇸 美国 V2CROSS.COM 8
+      - 🇺🇸 _US_美国_8 2
+      - 二爷免费翻墙 https://1808.free.hr 节点_229
+      - 二爷免费翻墙 https://1808.free.hr 节点_50
+      - 🇰🇷 韩国 - 首尔特别市 - Amazon Technologies Inc. - 3
+      - 🇺🇸 美国 - 丹佛 - GTHost - 7
+      - 🇺🇸 美国 CloudFlare节点 6
+      - 🇺🇸 美国 V2CROSS.COM 6
+      - 🇺🇸 美国+v2rayfree.eu.org 9
+      - 🇺🇸 美国 - 丹佛 - GTHost - 1
+      - 🇺🇸 美国 CloudFlare节点 3
+      - 二爷免费翻墙 https://1808.free.hr 节点_39
+      - 🇮🇷 伊朗+v2rayfree.eu.org
+      - 欧盟 V2CROSS.COM
+      - 🇮🇷 伊朗 V2CROSS.COM
+      - 欧盟+v2rayfree.eu.org 2
+      - 🇯🇵 日本 - 东京 - Amazon Technologies Inc - 2
+      - 🇮🇷 伊朗+v2rayfree.eu.org 2
+      - 🇺🇸 美国 CloudFlare节点 16
+      - 🇺🇸 美国 CloudFlare节点 4 2
+      - 🇯🇵 日本 - 东京 - G-Core Labs S.A. - 15
+      - 🇰🇷 韩国 - 首尔特别市 - Amazon.com  Inc. - 5
+      - 🇺🇸 美国+v2rayfree.eu.org 9 2
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 🐟 漏网之鱼
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 🚫 拒接访问
+    type: select
+    proxies:
+      - REJECT
+  - name: 🎯 全球直连
+    type: select
+    proxies:
+      - DIRECT
+  - name: 🌍 国外加速
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 📲 电报信息
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+  - name: Ⓜ️ 微软服务
+    type: select
+    proxies:
+      - 🎯 全球直连
+      - 🚀 节点选择
+  - name: 🛑 全球拦截
+    type: select
+    proxies:
+      - 🚫 拒接访问
+      - 🎯 全球直连
+rules:
+  - DOMAIN-SUFFIX,googleapis.cn,🌍 国外加速
+  - DOMAIN-SUFFIX,xn--ngstr-lra8j.com,🎯 全球直连
+  - DOMAIN-SUFFIX,xn--ngstr-cn-8za9o.com,🎯 全球直连
+  - DOMAIN-KEYWORD,kgithub,🎯 全球直连
+  - DOMAIN-KEYWORD,fastgit,🎯 全球直连
+  - DOMAIN-KEYWORD,ghproxy,🎯 全球直连
+  - DOMAIN-KEYWORD,gitmirror,🎯 全球直连
+  - DOMAIN-SUFFIX,gitclone.com,🎯 全球直连
+  - DOMAIN-SUFFIX,gh.api.99988866.xyz,🎯 全球直连
+  - DOMAIN-SUFFIX,weserv.nl,🎯 全球直连
+  - DOMAIN-SUFFIX,wsrv.nl,🎯 全球直连
+  - PROCESS-NAME,v2ray,🎯 全球直连
+  - PROCESS-NAME,xray,🎯 全球直连
+  - PROCESS-NAME,naive,🎯 全球直连
+  - PROCESS-NAME,trojan,🎯 全球直连
+  - PROCESS-NAME,trojan-go,🎯 全球直连
+  - PROCESS-NAME,ss-local,🎯 全球直连
+  - PROCESS-NAME,privoxy,🎯 全球直连
+  - PROCESS-NAME,leaf,🎯 全球直连
+  - PROCESS-NAME,v2ray.exe,🎯 全球直连
+  - PROCESS-NAME,xray.exe,🎯 全球直连
+  - PROCESS-NAME,naive.exe,🎯 全球直连
+  - PROCESS-NAME,trojan.exe,🎯 全球直连
+  - PROCESS-NAME,trojan-go.exe,🎯 全球直连
+  - PROCESS-NAME,ss-local.exe,🎯 全球直连
+  - PROCESS-NAME,privoxy.exe,🎯 全球直连
+  - PROCESS-NAME,leaf.exe,🎯 全球直连
+  - PROCESS-NAME,Surge,🎯 全球直连
+  - PROCESS-NAME,Surge 2,🎯 全球直连
+  - PROCESS-NAME,Surge 3,🎯 全球直连
+  - PROCESS-NAME,Surge 4,🎯 全球直连
+  - PROCESS-NAME,Surge%202,🎯 全球直连
+  - PROCESS-NAME,Surge%203,🎯 全球直连
+  - PROCESS-NAME,Surge%204,🎯 全球直连
+  - PROCESS-NAME,Thunder,🎯 全球直连
+  - PROCESS-NAME,DownloadService,🎯 全球直连
+  - PROCESS-NAME,qBittorrent,🎯 全球直连
+  - PROCESS-NAME,Transmission,🎯 全球直连
+  - PROCESS-NAME,fdm,🎯 全球直连
+  - PROCESS-NAME,aria2c,🎯 全球直连
+  - PROCESS-NAME,Folx,🎯 全球直连
+  - PROCESS-NAME,NetTransport,🎯 全球直连
+  - PROCESS-NAME,uTorrent,🎯 全球直连
+  - PROCESS-NAME,WebTorrent,🎯 全球直连
+  - PROCESS-NAME,aria2c.exe,🎯 全球直连
+  - PROCESS-NAME,BitComet.exe,🎯 全球直连
+  - PROCESS-NAME,fdm.exe,🎯 全球直连
+  - PROCESS-NAME,NetTransport.exe,🎯 全球直连
+  - PROCESS-NAME,qbittorrent.exe,🎯 全球直连
+  - PROCESS-NAME,Thunder.exe,🎯 全球直连
+  - PROCESS-NAME,ThunderVIP.exe,🎯 全球直连
+  - PROCESS-NAME,transmission-daemon.exe,🎯 全球直连
+  - PROCESS-NAME,transmission-qt.exe,🎯 全球直连
+  - PROCESS-NAME,uTorrent.exe,🎯 全球直连
+  - PROCESS-NAME,WebTorrent.exe,🎯 全球直连
+  - DOMAIN,steamstore-a.akamaihd.net,🎯 全球直连
+  - DOMAIN,steamcdn-a.akamaihd.net,🎯 全球直连
+  - DOMAIN,api.steampowered.com,🎯 全球直连
+  - DOMAIN,store.steampowered.com,🎯 全球直连
+  - DOMAIN,clash.razord.top,🎯 全球直连
+  - DOMAIN,yacd.haishan.me,🎯 全球直连
+  - DOMAIN,www.biqugeu.net,🌍 国外加速
+  - DOMAIN,www.cool18.com,🌍 国外加速
+  - DOMAIN-KEYWORD,diyibanzhu,🌍 国外加速
+  - DOMAIN-SUFFIX,cool18.com,🌍 国外加速
+  - DOMAIN-KEYWORD,cunhua,🌍 国外加速
+  - RULE-SET,自定义广告白名单,🎯 全球直连
+  - RULE-SET,自定义广告拦截,🛑 全球拦截
+  - RULE-SET,adblock,🛑 全球拦截
+  - IP-CIDR,0.0.0.0/32,🛑 全球拦截
+  - RULE-SET,MetaCubeX-cn-domain,🎯 全球直连
+  - GEOIP,private,🎯 全球直连,no-resolve
+  - GEOIP,JP,🌍 国外加速
+  - GEOIP,CN,🎯 全球直连
+  - RULE-SET,ChinaCompanyIp,🎯 全球直连
+  - RULE-SET,ChinaDomain,🎯 全球直连
+  - RULE-SET,ChinaMedia,🎯 全球直连
+  - RULE-SET,ChinaIp,🎯 全球直连
+  - RULE-SET,LocalAreaNetwork,🎯 全球直连
+  - DOMAIN-SUFFIX,cn,🎯 全球直连
+  - DOMAIN-KEYWORD,-cn,🎯 全球直连
+  - RULE-SET,region,🌍 国外加速
+  - RULE-SET,direct,🎯 全球直连
+  - RULE-SET,direct2,🎯 全球直连
+  - RULE-SET,ProxyGFWlist,🌍 国外加速
+  - RULE-SET,telegramcidr,📲 电报信息
+  - GEOIP,CN,🎯 全球直连
+  - RULE-SET,proxy,🌍 国外加速
+  - MATCH,🐟 漏网之鱼
