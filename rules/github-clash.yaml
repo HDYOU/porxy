@@ -1,0 +1,1030 @@
+mixed-port: 7890
+allow-lan: true
+bind-address: "*"
+mode: rule
+log-level: info
+external-controller: 127.0.0.1:9090
+dns:
+  enable: true
+  ipv6: false
+  default-nameserver: [223.5.5.5, 119.29.29.29]
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  use-hosts: true
+  nameserver: [https://853.66a.net:443/dns-query, https://doh.pub/dns-query, https://dns.alidns.com/dns-query]
+  fallback: [https://doh.dns.sb/dns-query, https://dns.cloudflare.com/dns-query, https://dns.twnic.tw/dns-query, tls://8.8.4.4:853]
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    geosite:
+      - gfw
+    ipcidr:
+      - 240.0.0.0/4
+    domain:
+      - +.google.com
+      - +.facebook.com
+      - +.youtube.com
+  nameserver-policy:
+    geosite:cn,private,apple:
+      - https://doh.pub/dns-query
+      - https://dns.alidns.com/dns-query
+    www.baidu.com,+.google.cn: [223.5.5.5, https://dns.alidns.com/dns-query]
+    rule-set:自定义广告白名单: [223.5.5.5, https://dns.alidns.com/dns-query]
+    rule-set:adblock,自定义广告拦截: rcode://success
+  fake-ip-filter:
+    - "*.lan"
+    - localhost.ptlogin2.qq.com
+rule-providers:
+  adblock:
+    type: http
+    behavior: classical
+    path: ./rule_providers/adblock.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/adblock.yml
+    interval: 21600
+    format: yaml
+  proxy:
+    type: http
+    behavior: classical
+    path: ./rule_providers/proxy.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/proxy.yml
+    interval: 86400
+    format: yaml
+  direct:
+    type: http
+    behavior: classical
+    path: ./rule_providers/direct.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/direct.yml
+    interval: 86400
+    format: yaml
+  region:
+    type: http
+    behavior: classical
+    path: ./rule_providers/region.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/region.yml
+    interval: 86400
+    format: yaml
+  direct2:
+    behavior: domain
+    type: http
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt
+    interval: 86400
+    path: ./ruleset/direct2.yaml
+    format: yaml
+  telegramcidr:
+    type: http
+    behavior: ipcidr
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt
+    path: ./ruleset/telegramcidr.yaml
+    interval: 86400
+    format: yaml
+  ProxyGFWlist:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ProxyGFWlist.yaml
+    path: ./ruleset/ProxyGFWlist.yaml
+    interval: 86400
+    format: yaml
+  ChinaCompanyIp:
+    type: http
+    behavior: ipcidr
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaCompanyIp.yaml
+    path: ./ruleset/gfw.yaml
+    interval: 86400
+    format: yaml
+  ChinaDomain:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaDomain.yaml
+    path: ./ruleset/ChinaDomain.yaml
+    interval: 86400
+    format: yaml
+  ChinaIp:
+    type: http
+    behavior: ipcidr
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaIp.yaml
+    path: ./ruleset/ChinaIp.yaml
+    interval: 86400
+    format: yaml
+  ChinaMedia:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaMedia.yaml
+    path: ./ruleset/ChinaMedia.yaml
+    interval: 86400
+    format: yaml
+  LocalAreaNetwork:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/LocalAreaNetwork.yaml
+    path: ./ruleset/LocalAreaNetwork.yaml
+    interval: 86400
+    format: yaml
+  自定义广告拦截:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com//HDYOU/ClashADRule/main/self_payload_ad.yml
+    path: ./ruleset/自定义广告拦截.yaml
+    interval: 86400
+    format: yaml
+  自定义广告白名单:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/HDYOU/ClashADRule/main/self_payload_whitelist.yml
+    path: ./ruleset/自定义广告白名单.yaml
+    interval: 86400
+    format: yaml
+  MetaCubeX-cn-domain:
+    behavior: domain
+    interval: 86400
+    path: ./ruleset/cn_domain.yaml
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/cn_domain.yaml
+proxies:
+  - {name: 🇯🇵 日本 - 东京 - Amazon Technologies Inc. - 4, server: 52.196.152.62, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇯🇵 日本 - 东京 - Amazon.com  Inc. - 3, server: 54.199.12.31, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国 - 聖荷西 - PEG TECH INC - 19, server: 137.175.113.215, port: 8388, type: ss, cipher: chacha20-ietf, password: asd123456, udp: true}
+  - {name: 🇸🇬 新加坡 - 新加坡 - DigitalOcean  LLC - 1, server: 68.183.227.45, port: 8080, type: ss, cipher: rc4-md5, password: 14fFPrbezE3HDZzsMOr6, udp: true}
+  - {name: 🇸🇬 新加坡 - 新加坡 - Amazon Technologies Inc. - 4, server: 13.212.36.13, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点, server: 104.18.114.147, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 122, server: 104.26.0.49, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: m11.106778.xyz, network: ws, ws-opts: {path: /, headers: {Host: m11.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 17, server: 35.88.126.102, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 34, server: 104.21.238.182, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: m1.106778.xyz, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇰🇷 韩国 - 首尔特别市 - Amazon Technologies Inc. - 4, server: 13.124.203.141, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 2, server: 104.18.114.184, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 88, server: 104.26.0.40, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 100, server: 104.21.238.243, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 258, server: 104.21.238.240, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 44, server: 104.21.238.194, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 87, server: 104.26.0.204, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 46, server: 104.21.238.16, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 31, server: 104.18.114.145, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 71, server: 104.21.238.217, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - GTHost - 16, server: 38.75.136.21, port: 5601, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - GTHost - 6, server: 38.75.136.21, port: 7306, type: ss, cipher: aes-256-gcm, password: FoOiGlkAA9yPEGP, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - GTHost - 3, server: 38.75.136.21, port: 6697, type: ss, cipher: aes-256-gcm, password: TEzjfAYq2IjtuoS, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - GTHost - 2, server: 38.75.136.21, port: 8882, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - GTHost - 15, server: 38.75.136.21, port: 8881, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - GTHost - 5, server: 38.75.136.21, port: 2375, type: ss, cipher: aes-256-gcm, password: faBAoD54k87UJG7, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - GTHost - 12, server: 38.75.136.21, port: 6679, type: ss, cipher: aes-256-gcm, password: TEzjfAYq2IjtuoS, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - GTHost - 9, server: 38.75.136.21, port: 5600, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - GTHost - 8, server: 38.75.136.21, port: 6379, type: ss, cipher: aes-256-gcm, password: zDNVedRFPQexG9v, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 54, server: 104.21.238.129, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 123, server: 104.26.0.214, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 62, server: 104.26.0.105, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 236, server: 104.18.114.96, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - GTHost - 4, server: 38.75.136.21, port: 8888, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 25, server: 104.26.0.123, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - GTHost - 7, server: 38.75.136.21, port: 3389, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 15, server: 104.18.114.68, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 63, server: 104.18.114.100, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 84, server: 104.21.238.14, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 52, server: 104.21.238.250, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 33, server: 104.21.238.37, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 32, server: 104.21.238.75, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 11, server: 162.159.45.16, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 154, server: 54.185.18.43, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 86, server: 104.18.114.243, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇰🇷 韩国 - 首尔特别市 - Amazon.com  Inc. - 1, server: 3.38.151.109, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 16, server: 104.21.238.79, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 14, server: 104.26.0.99, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 42, server: 104.17.213.241, port: 80, type: vmess, uuid: e6543319-0574-42ac-b778-1c4325d626f5, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: chunchuan.kejixiaoqi666.store}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 61, server: 104.21.238.177, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 39, server: 104.18.114.198, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 243, server: 104.18.114.33, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 70, server: 104.21.238.45, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 55, server: 104.21.238.117, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 81, server: 104.26.0.133, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 20, server: 104.18.114.227, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 17, server: 104.26.0.230, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 41, server: 104.26.0.176, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 101, server: 104.18.114.194, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 8, server: 104.18.114.92, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 201, server: 104.26.0.180, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 121, server: 185.221.160.12, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip18.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 97, server: 104.18.114.140, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 77, server: 104.21.238.184, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 216, server: 104.26.0.32, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 153, server: 34.216.74.178, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 68, server: 104.21.238.42, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 73, server: 104.18.114.80, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 72, server: 104.18.114.146, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 63, server: 104.18.114.88, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 53, server: 104.21.238.101, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 78, server: 104.21.238.111, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 105, server: 104.18.114.74, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 66, server: 104.18.114.43, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 37, server: 104.26.0.232, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 80, server: 104.18.114.164, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 83, server: 104.18.114.15, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 49, server: 104.18.114.42, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 12, server: 104.26.0.81, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 29, server: 162.159.140.19, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 81, server: 104.21.238.151, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 160, server: 104.18.114.185, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 85, server: 104.18.114.36, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 49, server: 104.18.114.130, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 13, server: 54.200.220.184, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 220, server: 162.159.45.128, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 23, server: 104.18.114.22, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 72, server: 104.21.238.211, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 177, server: 104.21.238.203, port: 8880, type: vmess, uuid: 90f8f4dc-8092-4355-9047-05f506f5e9ab, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m1.106778.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 28, server: 104.18.114.226, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 91, server: 104.18.114.112, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 18, server: 104.26.0.69, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 82, server: 104.21.238.49, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 74, server: 104.18.114.204, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 90, server: 104.18.114.105, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 92, server: 104.18.114.50, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 34, server: 162.159.45.246, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 48, server: 104.21.238.104, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 86, server: 104.18.114.45, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 99, server: 104.18.114.86, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 120, server: 104.18.114.90, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 104, server: 104.21.238.230, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 207, server: 104.18.114.16, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 98, server: 104.18.114.188, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 7, server: 104.18.114.237, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 245, server: 104.18.114.142, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 182, server: 104.26.0.194, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 102, server: 104.18.114.157, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 95, server: 104.18.114.69, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 261, server: 162.159.45.102, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 3, server: 104.26.0.217, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 40, server: 104.21.238.193, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 4, server: 104.26.0.192, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 22, server: 104.26.0.63, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 55, server: 104.18.114.97, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 60, server: 104.18.114.128, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 56, server: 104.26.0.214, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 112, server: 104.18.114.207, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 54, server: 162.159.45.208, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 40, server: 104.18.114.98, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 11, server: 52.33.189.33, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 26, server: 104.18.114.41, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 77, server: 104.18.114.49, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 32, server: 104.18.114.146, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 115, server: 104.18.114.40, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 27, server: 104.26.12.31, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip8.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 248, server: 104.18.114.81, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 58, server: 104.18.114.159, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 67, server: 104.18.114.28, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 167, server: 104.18.114.9, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 222, server: 104.18.114.102, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: c14.6016725.xyz, network: ws, ws-opts: {path: /, headers: {Host: c14.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 226, server: 104.21.238.81, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: c3.6016725.xyz, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 67, server: 104.19.45.15, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 65, server: 104.26.0.250, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 59, server: 104.21.238.73, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 68, server: 104.18.114.209, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 108, server: 104.18.114.23, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 26, server: 104.18.114.196, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 205, server: 104.18.114.214, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 85, server: 104.18.114.36, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 35, server: 104.18.114.237, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 194, server: 104.26.5.56, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 64, server: 104.21.238.35, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 106, server: 162.159.45.181, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 113, server: 104.18.114.79, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 209, server: 104.21.238.129, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 75, server: 104.21.238.217, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 93, server: 104.18.114.31, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 59, server: 104.21.238.178, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 35, server: 104.18.114.220, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 50, server: 104.18.114.25, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 29, server: 104.18.114.80, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 5, server: 104.18.114.232, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 52, server: 104.18.114.208, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 10, server: 104.26.0.134, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 28, server: 104.18.114.164, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 83, server: 104.18.114.33, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 43, server: 104.26.0.138, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 47, server: 104.18.114.121, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 199, server: 104.18.114.216, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 103, server: 104.21.238.205, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 31, server: 104.18.114.101, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 114, server: 104.18.114.96, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 96, server: 104.18.114.179, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 56, server: 104.18.114.232, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 69, server: 104.18.114.230, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 190, server: 190.93.245.76, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip18.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 144, server: 45.80.111.9, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip18.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 184, server: 104.18.114.174, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 45, server: 104.18.114.236, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 200, server: 104.21.238.86, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: e4.6929198.xyz, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 42, server: 104.18.114.235, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇰🇷 韩国 - 首尔特别市 - Amazon.com  Inc. - 2, server: 3.36.86.96, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 145, server: 94.247.142.209, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip18.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 25, server: 162.159.45.167, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 89, server: 104.18.114.92, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 46, server: 104.18.114.245, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 64, server: 104.18.114.59, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 94, server: 162.159.45.124, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 73, server: 104.18.114.231, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 38, server: 104.18.114.125, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 70, server: 104.21.238.244, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 118, server: 104.18.114.65, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 237, server: 190.93.245.168, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip18.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 150, server: 45.131.211.23, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip18.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 266, server: 104.18.114.151, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: e4.6929198.xyz, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 21, server: 104.26.0.55, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 183, server: 190.93.246.178, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip18.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 267, server: 190.93.244.1, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip18.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 84, server: 104.18.114.234, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 78, server: 104.18.114.87, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 262, server: 190.93.245.174, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip18.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 6, server: 104.26.0.233, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 173, server: 104.18.114.38, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: e4.6929198.xyz, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 50, server: 190.93.245.168, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip18.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 60, server: 104.18.114.195, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 24, server: 104.26.0.165, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 87, server: 104.18.114.170, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 238, server: 104.18.114.182, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: e4.6929198.xyz, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 218, server: 104.18.114.150, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 125, server: 190.93.244.64, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip18.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 158, server: 104.21.238.230, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: e4.6929198.xyz, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 149, server: 194.152.44.218, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip18.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 79, server: 162.159.45.63, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 143, server: 213.109.205.63, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip18.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 51, server: 104.18.114.242, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 57, server: 162.159.45.192, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 223, server: 104.21.238.126, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: e4.6929198.xyz, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 159, server: 104.21.238.80, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: e9.6929198.xyz, network: ws, ws-opts: {path: /, headers: {Host: e9.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 164, server: 104.26.0.179, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: e4.6929198.xyz, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 27, server: 104.21.238.199, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 66, server: 104.18.114.165, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 270, server: 104.21.238.24, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇸🇬 新加坡 - 新加坡 - Amazon Technologies Inc - 3, server: 47.128.215.67, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 57, server: 104.18.114.222, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 169, server: 104.18.114.222, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: e4.6929198.xyz, network: ws, ws-opts: {path: /, headers: {Host: e4.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 116, server: 104.18.114.55, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 252, server: 104.18.114.237, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 151, server: 45.131.4.208, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip18.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 110, server: 104.18.114.162, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 62, server: 104.18.114.173, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 53, server: 104.18.114.29, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 65, server: 104.18.114.201, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 24, server: 104.18.114.185, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 119, server: 104.18.114.17, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 107, server: 104.18.114.187, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 61, server: 104.18.114.102, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 117, server: 104.18.114.114, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 225, server: 104.18.114.75, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 109, server: 104.18.114.118, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 88, server: 104.18.114.219, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 76, server: 104.18.114.229, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 44, server: 104.18.114.191, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 185, server: 190.93.247.23, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip18.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 80, server: 104.18.114.11, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 71, server: 162.159.45.108, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 22, server: 104.18.114.33, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 82, server: 104.18.114.46, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 242, server: 104.18.114.240, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: p1.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 74, server: 104.19.45.42, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip2.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 69, server: 104.26.0.146, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 111, server: 104.18.114.247, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 36, server: 104.18.114.107, port: 2086, type: vmess, uuid: bc65fac2-7dc7-426f-acdd-0779a5035bde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: p12.613055.xyz, network: ws, ws-opts: {path: /, headers: {Host: p12.613055.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 23, server: 104.26.0.36, port: 2095, type: vmess, uuid: 18d96190-c10f-448f-a82a-2d36df5c3cde, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c3.6016725.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 西雅圖 - PEG TECH INC - 1, server: 142.4.108.131, port: 38007, type: vmess, uuid: 418048af-a293-4b99-9b0c-98ca3580dd24, alterId: 64, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /}, udp: true}
+  - {name: 🇺🇸 美国 - 西雅圖 - PEG TECH INC - 136, server: 38.174.190.72, port: 38007, type: vmess, uuid: 418048af-a293-4b99-9b0c-98ca3580dd24, alterId: 64, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 14, server: 185.148.107.11, port: 2082, type: vmess, uuid: 5f3f09ad-89cb-4e94-a7ad-aa8239913555, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: ip18.6929198.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 18, server: 34.219.118.99, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇯🇵 日本 - 东京 - Amazon Technologies Inc. - 1, server: 52.193.184.18, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+proxy-groups:
+  - name: 🚀 节点选择
+    type: select
+    proxies:
+      - ♻️ 自动选择
+      - ✅ 手动选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: ♻️ 自动选择
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+    proxies:
+      - 🇯🇵 日本 - 东京 - Amazon Technologies Inc. - 4
+      - 🇯🇵 日本 - 东京 - Amazon.com  Inc. - 3
+      - 🇺🇸 美国 - 聖荷西 - PEG TECH INC - 19
+      - 🇸🇬 新加坡 - 新加坡 - DigitalOcean  LLC - 1
+      - 🇸🇬 新加坡 - 新加坡 - Amazon Technologies Inc. - 4
+      - 🇺🇸 美国 CloudFlare节点
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 122
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 17
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 34
+      - 🇰🇷 韩国 - 首尔特别市 - Amazon Technologies Inc. - 4
+      - 🇺🇸 美国 CloudFlare节点 2
+      - 🇺🇸 美国 CloudFlare节点 88
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 100
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 258
+      - 🇺🇸 美国 CloudFlare节点 44
+      - 🇺🇸 美国 CloudFlare节点 87
+      - 🇺🇸 美国 CloudFlare节点 46
+      - 🇺🇸 美国 CloudFlare节点 31
+      - 🇺🇸 美国 CloudFlare节点 71
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 16
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 6
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 3
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 2
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 15
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 5
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 12
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 9
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 8
+      - 🇺🇸 美国 CloudFlare节点 54
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 123
+      - 🇺🇸 美国 CloudFlare节点 62
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 236
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 4
+      - 🇺🇸 美国 CloudFlare节点 25
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 7
+      - 🇺🇸 美国 CloudFlare节点 15
+      - 🇺🇸 美国 CloudFlare节点 63
+      - 🇺🇸 美国 CloudFlare节点 84
+      - 🇺🇸 美国 CloudFlare节点 52
+      - 🇺🇸 美国 CloudFlare节点 33
+      - 🇺🇸 美国 CloudFlare节点 32
+      - 🇺🇸 美国 CloudFlare节点 11
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 154
+      - 🇺🇸 美国 CloudFlare节点 86
+      - 🇰🇷 韩国 - 首尔特别市 - Amazon.com  Inc. - 1
+      - 🇺🇸 美国 CloudFlare节点 16
+      - 🇺🇸 美国 CloudFlare节点 14
+      - 🇺🇸 美国 CloudFlare节点 42
+      - 🇺🇸 美国 CloudFlare节点 61
+      - 🇺🇸 美国 CloudFlare节点 39
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 243
+      - 🇺🇸 美国 CloudFlare节点 70
+      - 🇺🇸 美国 CloudFlare节点 55
+      - 🇺🇸 美国 CloudFlare节点 81
+      - 🇺🇸 美国 CloudFlare节点 20
+      - 🇺🇸 美国 CloudFlare节点 17
+      - 🇺🇸 美国 CloudFlare节点 41
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 101
+      - 🇺🇸 美国 CloudFlare节点 8
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 201
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 121
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 97
+      - 🇺🇸 美国 CloudFlare节点 77
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 216
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 153
+      - 🇺🇸 美国 CloudFlare节点 68
+      - 🇺🇸 美国 CloudFlare节点 73
+      - 🇺🇸 美国 CloudFlare节点 72
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 63
+      - 🇺🇸 美国 CloudFlare节点 53
+      - 🇺🇸 美国 CloudFlare节点 78
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 105
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 66
+      - 🇺🇸 美国 CloudFlare节点 37
+      - 🇺🇸 美国 CloudFlare节点 80
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 83
+      - 🇺🇸 美国 CloudFlare节点 49
+      - 🇺🇸 美国 CloudFlare节点 12
+      - 🇺🇸 美国 CloudFlare节点 29
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 81
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 160
+      - 🇺🇸 美国 CloudFlare节点 85
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 49
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 13
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 220
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 23
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 72
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 177
+      - 🇺🇸 美国 CloudFlare节点 28
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 91
+      - 🇺🇸 美国 CloudFlare节点 18
+      - 🇺🇸 美国 CloudFlare节点 82
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 74
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 90
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 92
+      - 🇺🇸 美国 CloudFlare节点 34
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 48
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 86
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 99
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 120
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 104
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 207
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 98
+      - 🇺🇸 美国 CloudFlare节点 7
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 245
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 182
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 102
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 95
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 261
+      - 🇺🇸 美国 CloudFlare节点 3
+      - 🇺🇸 美国 CloudFlare节点 40
+      - 🇺🇸 美国 CloudFlare节点 4
+      - 🇺🇸 美国 CloudFlare节点 22
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 55
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 60
+      - 🇺🇸 美国 CloudFlare节点 56
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 112
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 54
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 40
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 11
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 26
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 77
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 32
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 115
+      - 🇺🇸 美国 CloudFlare节点 27
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 248
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 58
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 67
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 167
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 222
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 226
+      - 🇺🇸 美国 CloudFlare节点 67
+      - 🇺🇸 美国 CloudFlare节点 65
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 59
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 68
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 108
+      - 🇺🇸 美国 CloudFlare节点 26
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 205
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 85
+      - 🇺🇸 美国 CloudFlare节点 35
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 194
+      - 🇺🇸 美国 CloudFlare节点 64
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 106
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 113
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 209
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 75
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 93
+      - 🇺🇸 美国 CloudFlare节点 59
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 35
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 50
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 29
+      - 🇺🇸 美国 CloudFlare节点 5
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 52
+      - 🇺🇸 美国 CloudFlare节点 10
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 28
+      - 🇺🇸 美国 CloudFlare节点 83
+      - 🇺🇸 美国 CloudFlare节点 43
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 47
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 199
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 103
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 31
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 114
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 96
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 56
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 69
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 190
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 144
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 184
+      - 🇺🇸 美国 CloudFlare节点 45
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 200
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 42
+      - 🇰🇷 韩国 - 首尔特别市 - Amazon.com  Inc. - 2
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 145
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 25
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 89
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 46
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 64
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 94
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 73
+      - 🇺🇸 美国 CloudFlare节点 38
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 70
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 118
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 237
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 150
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 266
+      - 🇺🇸 美国 CloudFlare节点 21
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 183
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 267
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 84
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 78
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 262
+      - 🇺🇸 美国 CloudFlare节点 6
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 173
+      - 🇺🇸 美国 CloudFlare节点 50
+      - 🇺🇸 美国 CloudFlare节点 60
+      - 🇺🇸 美国 CloudFlare节点 24
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 87
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 238
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 218
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 125
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 158
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 149
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 79
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 143
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 51
+      - 🇺🇸 美国 CloudFlare节点 57
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 223
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 159
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 164
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 27
+      - 🇺🇸 美国 CloudFlare节点 66
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 270
+      - 🇸🇬 新加坡 - 新加坡 - Amazon Technologies Inc - 3
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 57
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 169
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 116
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 252
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 151
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 110
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 62
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 53
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 65
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 24
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 119
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 107
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 61
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 117
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 225
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 109
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 88
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 76
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 44
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 185
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 80
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 71
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 22
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 82
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 242
+      - 🇺🇸 美国 CloudFlare节点 74
+      - 🇺🇸 美国 CloudFlare节点 69
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 111
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 36
+      - 🇺🇸 美国 CloudFlare节点 23
+      - 🇺🇸 美国 - 西雅圖 - PEG TECH INC - 1
+      - 🇺🇸 美国 - 西雅圖 - PEG TECH INC - 136
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 14
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 18
+      - 🇯🇵 日本 - 东京 - Amazon Technologies Inc. - 1
+  - name: ✅ 手动选择
+    type: select
+    proxies:
+      - 🇯🇵 日本 - 东京 - Amazon Technologies Inc. - 4
+      - 🇯🇵 日本 - 东京 - Amazon.com  Inc. - 3
+      - 🇺🇸 美国 - 聖荷西 - PEG TECH INC - 19
+      - 🇸🇬 新加坡 - 新加坡 - DigitalOcean  LLC - 1
+      - 🇸🇬 新加坡 - 新加坡 - Amazon Technologies Inc. - 4
+      - 🇺🇸 美国 CloudFlare节点
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 122
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 17
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 34
+      - 🇰🇷 韩国 - 首尔特别市 - Amazon Technologies Inc. - 4
+      - 🇺🇸 美国 CloudFlare节点 2
+      - 🇺🇸 美国 CloudFlare节点 88
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 100
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 258
+      - 🇺🇸 美国 CloudFlare节点 44
+      - 🇺🇸 美国 CloudFlare节点 87
+      - 🇺🇸 美国 CloudFlare节点 46
+      - 🇺🇸 美国 CloudFlare节点 31
+      - 🇺🇸 美国 CloudFlare节点 71
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 16
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 6
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 3
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 2
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 15
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 5
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 12
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 9
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 8
+      - 🇺🇸 美国 CloudFlare节点 54
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 123
+      - 🇺🇸 美国 CloudFlare节点 62
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 236
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 4
+      - 🇺🇸 美国 CloudFlare节点 25
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 7
+      - 🇺🇸 美国 CloudFlare节点 15
+      - 🇺🇸 美国 CloudFlare节点 63
+      - 🇺🇸 美国 CloudFlare节点 84
+      - 🇺🇸 美国 CloudFlare节点 52
+      - 🇺🇸 美国 CloudFlare节点 33
+      - 🇺🇸 美国 CloudFlare节点 32
+      - 🇺🇸 美国 CloudFlare节点 11
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 154
+      - 🇺🇸 美国 CloudFlare节点 86
+      - 🇰🇷 韩国 - 首尔特别市 - Amazon.com  Inc. - 1
+      - 🇺🇸 美国 CloudFlare节点 16
+      - 🇺🇸 美国 CloudFlare节点 14
+      - 🇺🇸 美国 CloudFlare节点 42
+      - 🇺🇸 美国 CloudFlare节点 61
+      - 🇺🇸 美国 CloudFlare节点 39
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 243
+      - 🇺🇸 美国 CloudFlare节点 70
+      - 🇺🇸 美国 CloudFlare节点 55
+      - 🇺🇸 美国 CloudFlare节点 81
+      - 🇺🇸 美国 CloudFlare节点 20
+      - 🇺🇸 美国 CloudFlare节点 17
+      - 🇺🇸 美国 CloudFlare节点 41
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 101
+      - 🇺🇸 美国 CloudFlare节点 8
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 201
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 121
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 97
+      - 🇺🇸 美国 CloudFlare节点 77
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 216
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 153
+      - 🇺🇸 美国 CloudFlare节点 68
+      - 🇺🇸 美国 CloudFlare节点 73
+      - 🇺🇸 美国 CloudFlare节点 72
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 63
+      - 🇺🇸 美国 CloudFlare节点 53
+      - 🇺🇸 美国 CloudFlare节点 78
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 105
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 66
+      - 🇺🇸 美国 CloudFlare节点 37
+      - 🇺🇸 美国 CloudFlare节点 80
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 83
+      - 🇺🇸 美国 CloudFlare节点 49
+      - 🇺🇸 美国 CloudFlare节点 12
+      - 🇺🇸 美国 CloudFlare节点 29
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 81
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 160
+      - 🇺🇸 美国 CloudFlare节点 85
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 49
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 13
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 220
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 23
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 72
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 177
+      - 🇺🇸 美国 CloudFlare节点 28
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 91
+      - 🇺🇸 美国 CloudFlare节点 18
+      - 🇺🇸 美国 CloudFlare节点 82
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 74
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 90
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 92
+      - 🇺🇸 美国 CloudFlare节点 34
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 48
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 86
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 99
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 120
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 104
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 207
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 98
+      - 🇺🇸 美国 CloudFlare节点 7
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 245
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 182
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 102
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 95
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 261
+      - 🇺🇸 美国 CloudFlare节点 3
+      - 🇺🇸 美国 CloudFlare节点 40
+      - 🇺🇸 美国 CloudFlare节点 4
+      - 🇺🇸 美国 CloudFlare节点 22
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 55
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 60
+      - 🇺🇸 美国 CloudFlare节点 56
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 112
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 54
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 40
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 11
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 26
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 77
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 32
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 115
+      - 🇺🇸 美国 CloudFlare节点 27
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 248
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 58
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 67
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 167
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 222
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 226
+      - 🇺🇸 美国 CloudFlare节点 67
+      - 🇺🇸 美国 CloudFlare节点 65
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 59
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 68
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 108
+      - 🇺🇸 美国 CloudFlare节点 26
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 205
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 85
+      - 🇺🇸 美国 CloudFlare节点 35
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 194
+      - 🇺🇸 美国 CloudFlare节点 64
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 106
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 113
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 209
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 75
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 93
+      - 🇺🇸 美国 CloudFlare节点 59
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 35
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 50
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 29
+      - 🇺🇸 美国 CloudFlare节点 5
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 52
+      - 🇺🇸 美国 CloudFlare节点 10
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 28
+      - 🇺🇸 美国 CloudFlare节点 83
+      - 🇺🇸 美国 CloudFlare节点 43
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 47
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 199
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 103
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 31
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 114
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 96
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 56
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 69
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 190
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 144
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 184
+      - 🇺🇸 美国 CloudFlare节点 45
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 200
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 42
+      - 🇰🇷 韩国 - 首尔特别市 - Amazon.com  Inc. - 2
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 145
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 25
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 89
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 46
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 64
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 94
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 73
+      - 🇺🇸 美国 CloudFlare节点 38
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 70
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 118
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 237
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 150
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 266
+      - 🇺🇸 美国 CloudFlare节点 21
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 183
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 267
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 84
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 78
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 262
+      - 🇺🇸 美国 CloudFlare节点 6
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 173
+      - 🇺🇸 美国 CloudFlare节点 50
+      - 🇺🇸 美国 CloudFlare节点 60
+      - 🇺🇸 美国 CloudFlare节点 24
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 87
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 238
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 218
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 125
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 158
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 149
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 79
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 143
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 51
+      - 🇺🇸 美国 CloudFlare节点 57
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 223
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 159
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 164
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 27
+      - 🇺🇸 美国 CloudFlare节点 66
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 270
+      - 🇸🇬 新加坡 - 新加坡 - Amazon Technologies Inc - 3
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 57
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 169
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 116
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 252
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 151
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 110
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 62
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 53
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 65
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 24
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 119
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 107
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 61
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 117
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 225
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 109
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 88
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 76
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 44
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 185
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 80
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 71
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 22
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 82
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 242
+      - 🇺🇸 美国 CloudFlare节点 74
+      - 🇺🇸 美国 CloudFlare节点 69
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 111
+      - 🇺🇸 美国 - 沃尔纳特 - Psychz Networks - 36
+      - 🇺🇸 美国 CloudFlare节点 23
+      - 🇺🇸 美国 - 西雅圖 - PEG TECH INC - 1
+      - 🇺🇸 美国 - 西雅圖 - PEG TECH INC - 136
+      - 🇺🇸 美国 - 洛杉矶 - Psychz Networks - 14
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 18
+      - 🇯🇵 日本 - 东京 - Amazon Technologies Inc. - 1
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 🐟 漏网之鱼
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 🚫 拒接访问
+    type: select
+    proxies:
+      - REJECT
+  - name: 🎯 全球直连
+    type: select
+    proxies:
+      - DIRECT
+  - name: 🌍 国外加速
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 📲 电报信息
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+  - name: Ⓜ️ 微软服务
+    type: select
+    proxies:
+      - 🎯 全球直连
+      - 🚀 节点选择
+  - name: 🛑 全球拦截
+    type: select
+    proxies:
+      - 🚫 拒接访问
+      - 🎯 全球直连
+rules:
+  - DOMAIN-SUFFIX,googleapis.cn,🌍 国外加速
+  - DOMAIN-SUFFIX,xn--ngstr-lra8j.com,🎯 全球直连
+  - DOMAIN-SUFFIX,xn--ngstr-cn-8za9o.com,🎯 全球直连
+  - DOMAIN-KEYWORD,kgithub,🎯 全球直连
+  - DOMAIN-KEYWORD,fastgit,🎯 全球直连
+  - DOMAIN-KEYWORD,ghproxy,🎯 全球直连
+  - DOMAIN-KEYWORD,gitmirror,🎯 全球直连
+  - DOMAIN-SUFFIX,gitclone.com,🎯 全球直连
+  - DOMAIN-SUFFIX,gh.api.99988866.xyz,🎯 全球直连
+  - DOMAIN-SUFFIX,weserv.nl,🎯 全球直连
+  - DOMAIN-SUFFIX,wsrv.nl,🎯 全球直连
+  - PROCESS-NAME,v2ray,🎯 全球直连
+  - PROCESS-NAME,xray,🎯 全球直连
+  - PROCESS-NAME,naive,🎯 全球直连
+  - PROCESS-NAME,trojan,🎯 全球直连
+  - PROCESS-NAME,trojan-go,🎯 全球直连
+  - PROCESS-NAME,ss-local,🎯 全球直连
+  - PROCESS-NAME,privoxy,🎯 全球直连
+  - PROCESS-NAME,leaf,🎯 全球直连
+  - PROCESS-NAME,v2ray.exe,🎯 全球直连
+  - PROCESS-NAME,xray.exe,🎯 全球直连
+  - PROCESS-NAME,naive.exe,🎯 全球直连
+  - PROCESS-NAME,trojan.exe,🎯 全球直连
+  - PROCESS-NAME,trojan-go.exe,🎯 全球直连
+  - PROCESS-NAME,ss-local.exe,🎯 全球直连
+  - PROCESS-NAME,privoxy.exe,🎯 全球直连
+  - PROCESS-NAME,leaf.exe,🎯 全球直连
+  - PROCESS-NAME,Surge,🎯 全球直连
+  - PROCESS-NAME,Surge 2,🎯 全球直连
+  - PROCESS-NAME,Surge 3,🎯 全球直连
+  - PROCESS-NAME,Surge 4,🎯 全球直连
+  - PROCESS-NAME,Surge%202,🎯 全球直连
+  - PROCESS-NAME,Surge%203,🎯 全球直连
+  - PROCESS-NAME,Surge%204,🎯 全球直连
+  - PROCESS-NAME,Thunder,🎯 全球直连
+  - PROCESS-NAME,DownloadService,🎯 全球直连
+  - PROCESS-NAME,qBittorrent,🎯 全球直连
+  - PROCESS-NAME,Transmission,🎯 全球直连
+  - PROCESS-NAME,fdm,🎯 全球直连
+  - PROCESS-NAME,aria2c,🎯 全球直连
+  - PROCESS-NAME,Folx,🎯 全球直连
+  - PROCESS-NAME,NetTransport,🎯 全球直连
+  - PROCESS-NAME,uTorrent,🎯 全球直连
+  - PROCESS-NAME,WebTorrent,🎯 全球直连
+  - PROCESS-NAME,aria2c.exe,🎯 全球直连
+  - PROCESS-NAME,BitComet.exe,🎯 全球直连
+  - PROCESS-NAME,fdm.exe,🎯 全球直连
+  - PROCESS-NAME,NetTransport.exe,🎯 全球直连
+  - PROCESS-NAME,qbittorrent.exe,🎯 全球直连
+  - PROCESS-NAME,Thunder.exe,🎯 全球直连
+  - PROCESS-NAME,ThunderVIP.exe,🎯 全球直连
+  - PROCESS-NAME,transmission-daemon.exe,🎯 全球直连
+  - PROCESS-NAME,transmission-qt.exe,🎯 全球直连
+  - PROCESS-NAME,uTorrent.exe,🎯 全球直连
+  - PROCESS-NAME,WebTorrent.exe,🎯 全球直连
+  - DOMAIN,steamstore-a.akamaihd.net,🎯 全球直连
+  - DOMAIN,steamcdn-a.akamaihd.net,🎯 全球直连
+  - DOMAIN,api.steampowered.com,🎯 全球直连
+  - DOMAIN,store.steampowered.com,🎯 全球直连
+  - DOMAIN,clash.razord.top,🎯 全球直连
+  - DOMAIN,yacd.haishan.me,🎯 全球直连
+  - DOMAIN,www.biqugeu.net,🌍 国外加速
+  - DOMAIN,www.cool18.com,🌍 国外加速
+  - DOMAIN-KEYWORD,diyibanzhu,🌍 国外加速
+  - DOMAIN-SUFFIX,cool18.com,🌍 国外加速
+  - DOMAIN-KEYWORD,cunhua,🌍 国外加速
+  - RULE-SET,自定义广告白名单,🎯 全球直连
+  - RULE-SET,自定义广告拦截,🛑 全球拦截
+  - RULE-SET,adblock,🛑 全球拦截
+  - IP-CIDR,0.0.0.0/32,🛑 全球拦截
+  - RULE-SET,MetaCubeX-cn-domain,🎯 全球直连
+  - GEOIP,private,🎯 全球直连,no-resolve
+  - GEOIP,JP,🌍 国外加速
+  - GEOIP,CN,🎯 全球直连
+  - RULE-SET,ChinaCompanyIp,🎯 全球直连
+  - RULE-SET,ChinaDomain,🎯 全球直连
+  - RULE-SET,ChinaMedia,🎯 全球直连
+  - RULE-SET,ChinaIp,🎯 全球直连
+  - RULE-SET,LocalAreaNetwork,🎯 全球直连
+  - DOMAIN-SUFFIX,cn,🎯 全球直连
+  - DOMAIN-KEYWORD,-cn,🎯 全球直连
+  - RULE-SET,region,🌍 国外加速
+  - RULE-SET,direct,🎯 全球直连
+  - RULE-SET,direct2,🎯 全球直连
+  - RULE-SET,ProxyGFWlist,🌍 国外加速
+  - RULE-SET,telegramcidr,📲 电报信息
+  - GEOIP,CN,🎯 全球直连
+  - RULE-SET,proxy,🌍 国外加速
+  - MATCH,🐟 漏网之鱼
