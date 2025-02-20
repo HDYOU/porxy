@@ -1,0 +1,433 @@
+mixed-port: 7890
+allow-lan: true
+bind-address: "*"
+mode: rule
+log-level: info
+external-controller: 127.0.0.1:9090
+dns:
+  enable: true
+  ipv6: false
+  default-nameserver: [223.5.5.5, 119.29.29.29]
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  use-hosts: true
+  nameserver: [https://853.66a.net:443/dns-query, https://doh.pub/dns-query, https://dns.alidns.com/dns-query]
+  fallback: [https://doh.dns.sb/dns-query, https://dns.cloudflare.com/dns-query, https://dns.twnic.tw/dns-query, tls://8.8.4.4:853]
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    geosite:
+      - gfw
+    ipcidr:
+      - 240.0.0.0/4
+    domain:
+      - +.google.com
+      - +.facebook.com
+      - +.youtube.com
+  nameserver-policy:
+    geosite:cn,private,apple:
+      - https://doh.pub/dns-query
+      - https://dns.alidns.com/dns-query
+    www.baidu.com,+.google.cn: [223.5.5.5, https://dns.alidns.com/dns-query]
+    rule-set:自定义广告白名单: [223.5.5.5, https://dns.alidns.com/dns-query]
+    rule-set:adblock,自定义广告拦截: rcode://success
+  fake-ip-filter:
+    - "*.lan"
+    - localhost.ptlogin2.qq.com
+rule-providers:
+  adblock:
+    type: http
+    behavior: classical
+    path: ./rule_providers/adblock.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/adblock.yml
+    interval: 21600
+    format: yaml
+  proxy:
+    type: http
+    behavior: classical
+    path: ./rule_providers/proxy.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/proxy.yml
+    interval: 86400
+    format: yaml
+  direct:
+    type: http
+    behavior: classical
+    path: ./rule_providers/direct.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/direct.yml
+    interval: 86400
+    format: yaml
+  region:
+    type: http
+    behavior: classical
+    path: ./rule_providers/region.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/region.yml
+    interval: 86400
+    format: yaml
+  direct2:
+    behavior: domain
+    type: http
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt
+    interval: 86400
+    path: ./ruleset/direct2.yaml
+    format: yaml
+  telegramcidr:
+    type: http
+    behavior: ipcidr
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt
+    path: ./ruleset/telegramcidr.yaml
+    interval: 86400
+    format: yaml
+  ProxyGFWlist:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ProxyGFWlist.yaml
+    path: ./ruleset/ProxyGFWlist.yaml
+    interval: 86400
+    format: yaml
+  ChinaCompanyIp:
+    type: http
+    behavior: ipcidr
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaCompanyIp.yaml
+    path: ./ruleset/gfw.yaml
+    interval: 86400
+    format: yaml
+  ChinaDomain:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaDomain.yaml
+    path: ./ruleset/ChinaDomain.yaml
+    interval: 86400
+    format: yaml
+  ChinaIp:
+    type: http
+    behavior: ipcidr
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaIp.yaml
+    path: ./ruleset/ChinaIp.yaml
+    interval: 86400
+    format: yaml
+  ChinaMedia:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaMedia.yaml
+    path: ./ruleset/ChinaMedia.yaml
+    interval: 86400
+    format: yaml
+  LocalAreaNetwork:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/LocalAreaNetwork.yaml
+    path: ./ruleset/LocalAreaNetwork.yaml
+    interval: 86400
+    format: yaml
+  自定义广告拦截:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com//HDYOU/ClashADRule/main/self_payload_ad.yml
+    path: ./ruleset/自定义广告拦截.yaml
+    interval: 86400
+    format: yaml
+  自定义广告白名单:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/HDYOU/ClashADRule/main/self_payload_whitelist.yml
+    path: ./ruleset/自定义广告白名单.yaml
+    interval: 86400
+    format: yaml
+  MetaCubeX-cn-domain:
+    behavior: domain
+    interval: 86400
+    path: ./ruleset/cn_domain.yaml
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/cn_domain.yaml
+proxies:
+  - {name: 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 8, server: 54.184.126.174, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 7, server: 35.94.110.89, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - PEG TECH INC - 58, server: 198.200.48.230, port: 37006, type: vmess, uuid: 418048af-a293-4b99-9b0c-98ca3580dd24, alterId: 64, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: www.46281147.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - PEG TECH INC - 60, server: 199.180.101.28, port: 38004, type: vmess, uuid: 418048af-a293-4b99-9b0c-98ca3580dd24, alterId: 64, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: www.11733511.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 - 聖荷西 - PEG TECH INC - 6, server: 107.148.207.249, port: 48712, type: vmess, uuid: 418048af-a293-4b99-9b0c-98ca3580dd24, alterId: 64, cipher: auto, tls: false, skip-cert-verify: true, servername: appsvs.shop, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 2, server: 104.17.221.248, port: 80, type: vmess, uuid: 4b36625c-b9d9-3ea6-aed5-86d62c70e16d, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 100-49-141-209.s1.db-link02.top}}, udp: true}
+  - {name: 🇺🇸 美国 - 拉斯维加斯 - FranTech Solutions - 56, server: tk.hzlt.tkddns.xyz, port: 22643, type: vmess, uuid: 98e96c9f-4bb3-39d4-9a2c-fac04257f7c7, alterId: 2, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: zxjp-c.tkong.cc}}, udp: true}
+  - {name: 🇺🇸 美国 - 拉斯维加斯 - FranTech Solutions - 57, server: tk.hzlt.tkddns.xyz, port: 22641, type: vmess, uuid: 98e96c9f-4bb3-39d4-9a2c-fac04257f7c7, alterId: 2, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: zxjp-a.tkong.cc}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 4, server: s1.db-link01.top, port: 2086, type: vmess, uuid: 4b36625c-b9d9-3ea6-aed5-86d62c70e16d, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 100-191-129-167.s1.db-link01.top}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 6, server: anycast.cf.030419.xyz, port: 80, type: vmess, uuid: b9a3206d-278c-4614-b352-eef632d1c8d5, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 33.bycf.us.kg}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 9, server: s1.db-link02.top, port: 2086, type: vmess, uuid: 532e1541-4b65-3409-81f1-43f206846615, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 100-236-195-61.s1.db-link02.top}}, udp: true}
+  - {name: 🇨🇳 台湾省台北市 中华电信, server: kkkghdragxc.fask511.cfd, port: 25777, type: vmess, uuid: 50b3fb1b-5591-4743-8e9b-0601c5dfe86d, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: kkkghdragxc.fask511.cfd}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - CTG Server Ltd. - 4, server: 183.236.51.38, port: 59104, type: vmess, uuid: 418048af-a293-4b99-9b0c-98ca3580dd24, alterId: 64, cipher: auto, tls: false, skip-cert-verify: true, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 30, server: 169.197.142.187, port: 7306, type: ss, cipher: aes-256-gcm, password: FoOiGlkAA9yPEGP, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 29, server: 169.197.142.187, port: 5600, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 10, server: 169.197.142.187, port: 8888, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 28, server: 169.197.142.187, port: 7307, type: ss, cipher: aes-256-gcm, password: FoOiGlkAA9yPEGP, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 2, server: 169.197.142.187, port: 6679, type: ss, cipher: aes-256-gcm, password: TEzjfAYq2IjtuoS, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 3, server: 169.197.142.187, port: 9101, type: ss, cipher: aes-256-gcm, password: e4FCWrgpkji3QY, udp: true}
+  - {name: 🇺🇸 美国 - 芝加哥 - GTHost - 15, server: 38.64.138.212, port: 2375, type: ss, cipher: aes-256-gcm, password: faBAoD54k87UJG7, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 27, server: 169.197.142.187, port: 8008, type: ss, cipher: aes-256-gcm, password: XKFKl2rULjIp74, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 13, server: 169.197.142.187, port: 8009, type: ss, cipher: aes-256-gcm, password: XKFKl2rULjIp74, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 14, server: 169.197.142.187, port: 2375, type: ss, cipher: aes-256-gcm, password: faBAoD54k87UJG7, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 31, server: 169.197.142.187, port: 5003, type: ss, cipher: aes-256-gcm, password: g5MeD6Ft3CWlJId, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 20, server: 169.197.142.187, port: 5001, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 21, server: 169.197.142.187, port: 6697, type: ss, cipher: aes-256-gcm, password: TEzjfAYq2IjtuoS, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 18, server: 169.197.142.187, port: 5004, type: ss, cipher: aes-256-gcm, password: g5MeD6Ft3CWlJId, udp: true}
+  - {name: 🇺🇸 美国 - 芝加哥 - GTHost - 16, server: 38.64.138.212, port: 2376, type: ss, cipher: aes-256-gcm, password: faBAoD54k87UJG7, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 5, server: 169.197.142.187, port: 7001, type: ss, cipher: aes-256-gcm, password: RexnBgU7EV5ADxG, udp: true}
+  - {name: 🇺🇸 美国 - 华盛顿特区 - GTHost - 32, server: 23.154.136.162, port: 7002, type: ss, cipher: aes-256-gcm, password: RexnBgU7EV5ADxG, udp: true}
+  - {name: 🇺🇸 美国 - 芝加哥 - GTHost - 17, server: 38.64.138.212, port: 7306, type: ss, cipher: aes-256-gcm, password: FoOiGlkAA9yPEGP, udp: true}
+  - {name: 🇺🇸 美国 - 华盛顿特区 - GTHost - 11, server: 23.154.136.162, port: 6697, type: ss, cipher: aes-256-gcm, password: TEzjfAYq2IjtuoS, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 26, server: 169.197.142.187, port: 443, type: ss, cipher: aes-256-gcm, password: pKEW8JPByTVTLtM, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 19, server: 169.197.142.187, port: 6379, type: ss, cipher: aes-256-gcm, password: zDNVedRFPQexG9v, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 4, server: 169.197.142.187, port: 9102, type: ss, cipher: aes-256-gcm, password: e4FCWrgpkji3QY, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 1, server: 169.197.142.187, port: 8882, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 24, server: 169.197.142.187, port: 2376, type: ss, cipher: aes-256-gcm, password: faBAoD54k87UJG7, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 23, server: 169.197.142.187, port: 5601, type: ss, cipher: aes-256-gcm, password: Y6R9pAtvxxzmGC, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 22, server: 169.197.142.187, port: 8119, type: ss, cipher: aes-256-gcm, password: cdBIDV42DCwnfIN, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - GTHost - 25, server: 169.197.142.187, port: 8080, type: ss, cipher: aes-256-gcm, password: KixLvKzwjekG00rm, udp: true}
+  - {name: 🇰🇷 韩国 - Yongin-si - SK Broadband Co Ltd - 1, server: 211.178.105.134, port: 51633, type: ss, cipher: aes-256-cfb, password: qwerREWQ@@, udp: true}
+  - {name: 🇰🇷 韩国 - 首尔特别市 - MOACK.Co.LTD - 4, server: kr.fastsoonlink.com, port: 40032, type: ss, cipher: chacha20-ietf-poly1305, password: 72bb3072-7efd-4d67-9beb-2cd9c18e69f4, udp: true}
+  - {name: 🇭🇰 中国 - 台湾 - Kaopu Cloud HK Limited - 3, server: 154.223.20.79, port: 989, type: ss, cipher: aes-256-cfb, password: f8f7aCzcPKbsF8p3, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 3, server: tasnim.ITN24.IR, port: 443, type: vmess, uuid: 8c9a6382-2bbe-41c4-bfa7-c1f518533023, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: tasnim.ITN24.IR}}, udp: true}
+  - {name: 🇰🇷 韩国 - 首尔特别市 - Amazon Technologies Inc. - 3, server: 52.79.101.162, port: 443, type: ss, cipher: aes-256-cfb, password: amazonskr05, udp: true}
+  - {name: 🇸🇬 新加坡 - 新加坡 - Akari Networks - 3, server: sgp.fastsoonlink.com, port: 40005, type: ss, cipher: chacha20-ietf-poly1305, password: 72bb3072-7efd-4d67-9beb-2cd9c18e69f4, udp: true}
+  - {name: 🇭🇰 韩国 - 首尔特别市 - Kaopu Cloud HK Limited - 2, server: 154.90.62.168, port: 989, type: ss, cipher: aes-256-cfb, password: f8f7aCzcPKbsF8p3, udp: true}
+  - {name: 🇺🇸 美国 - 肯特 - The Constant Company - 9, server: 119.167.230.252, port: 22040, type: ss, cipher: aes-128-gcm, password: b637f2e47b7827b308ebf399008075d2, udp: true}
+  - {name: 🇨🇳 中国 - 鞍山市 - PEG TECH INC - 6, server: 38.11.49.57, port: 38003, type: vmess, uuid: 418048af-a293-4b99-9b0c-98ca3580dd24, alterId: 64, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: www.45700497.xyz}}, udp: true}
+proxy-groups:
+  - name: 🚀 节点选择
+    type: select
+    proxies:
+      - ♻️ 自动选择
+      - ✅ 手动选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: ♻️ 自动选择
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+    proxies:
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 8
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 7
+      - 🇺🇸 美国 - 圣克拉拉 - PEG TECH INC - 58
+      - 🇺🇸 美国 - 圣克拉拉 - PEG TECH INC - 60
+      - 🇺🇸 美国 - 聖荷西 - PEG TECH INC - 6
+      - 🇺🇸 美国 CloudFlare节点 2
+      - 🇺🇸 美国 - 拉斯维加斯 - FranTech Solutions - 56
+      - 🇺🇸 美国 - 拉斯维加斯 - FranTech Solutions - 57
+      - 🇺🇸 美国 CloudFlare节点 4
+      - 🇺🇸 美国 CloudFlare节点 6
+      - 🇺🇸 美国 CloudFlare节点 9
+      - 🇨🇳 台湾省台北市 中华电信
+      - 🇭🇰 中国 - 香港 - CTG Server Ltd. - 4
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 30
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 29
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 10
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 28
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 2
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 3
+      - 🇺🇸 美国 - 芝加哥 - GTHost - 15
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 27
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 13
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 14
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 31
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 20
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 21
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 18
+      - 🇺🇸 美国 - 芝加哥 - GTHost - 16
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 5
+      - 🇺🇸 美国 - 华盛顿特区 - GTHost - 32
+      - 🇺🇸 美国 - 芝加哥 - GTHost - 17
+      - 🇺🇸 美国 - 华盛顿特区 - GTHost - 11
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 26
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 19
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 4
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 1
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 24
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 23
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 22
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 25
+      - 🇰🇷 韩国 - Yongin-si - SK Broadband Co Ltd - 1
+      - 🇰🇷 韩国 - 首尔特别市 - MOACK.Co.LTD - 4
+      - 🇭🇰 中国 - 台湾 - Kaopu Cloud HK Limited - 3
+      - 🇺🇸 美国 CloudFlare节点 3
+      - 🇰🇷 韩国 - 首尔特别市 - Amazon Technologies Inc. - 3
+      - 🇸🇬 新加坡 - 新加坡 - Akari Networks - 3
+      - 🇭🇰 韩国 - 首尔特别市 - Kaopu Cloud HK Limited - 2
+      - 🇺🇸 美国 - 肯特 - The Constant Company - 9
+      - 🇨🇳 中国 - 鞍山市 - PEG TECH INC - 6
+  - name: ✅ 手动选择
+    type: select
+    proxies:
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 8
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 7
+      - 🇺🇸 美国 - 圣克拉拉 - PEG TECH INC - 58
+      - 🇺🇸 美国 - 圣克拉拉 - PEG TECH INC - 60
+      - 🇺🇸 美国 - 聖荷西 - PEG TECH INC - 6
+      - 🇺🇸 美国 CloudFlare节点 2
+      - 🇺🇸 美国 - 拉斯维加斯 - FranTech Solutions - 56
+      - 🇺🇸 美国 - 拉斯维加斯 - FranTech Solutions - 57
+      - 🇺🇸 美国 CloudFlare节点 4
+      - 🇺🇸 美国 CloudFlare节点 6
+      - 🇺🇸 美国 CloudFlare节点 9
+      - 🇨🇳 台湾省台北市 中华电信
+      - 🇭🇰 中国 - 香港 - CTG Server Ltd. - 4
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 30
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 29
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 10
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 28
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 2
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 3
+      - 🇺🇸 美国 - 芝加哥 - GTHost - 15
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 27
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 13
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 14
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 31
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 20
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 21
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 18
+      - 🇺🇸 美国 - 芝加哥 - GTHost - 16
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 5
+      - 🇺🇸 美国 - 华盛顿特区 - GTHost - 32
+      - 🇺🇸 美国 - 芝加哥 - GTHost - 17
+      - 🇺🇸 美国 - 华盛顿特区 - GTHost - 11
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 26
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 19
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 4
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 1
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 24
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 23
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 22
+      - 🇺🇸 美国 - 圣克拉拉 - GTHost - 25
+      - 🇰🇷 韩国 - Yongin-si - SK Broadband Co Ltd - 1
+      - 🇰🇷 韩国 - 首尔特别市 - MOACK.Co.LTD - 4
+      - 🇭🇰 中国 - 台湾 - Kaopu Cloud HK Limited - 3
+      - 🇺🇸 美国 CloudFlare节点 3
+      - 🇰🇷 韩国 - 首尔特别市 - Amazon Technologies Inc. - 3
+      - 🇸🇬 新加坡 - 新加坡 - Akari Networks - 3
+      - 🇭🇰 韩国 - 首尔特别市 - Kaopu Cloud HK Limited - 2
+      - 🇺🇸 美国 - 肯特 - The Constant Company - 9
+      - 🇨🇳 中国 - 鞍山市 - PEG TECH INC - 6
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 🐟 漏网之鱼
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 🚫 拒接访问
+    type: select
+    proxies:
+      - REJECT
+  - name: 🎯 全球直连
+    type: select
+    proxies:
+      - DIRECT
+  - name: 🌍 国外加速
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 📲 电报信息
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+  - name: Ⓜ️ 微软服务
+    type: select
+    proxies:
+      - 🎯 全球直连
+      - 🚀 节点选择
+  - name: 🛑 全球拦截
+    type: select
+    proxies:
+      - 🚫 拒接访问
+      - 🎯 全球直连
+rules:
+  - DOMAIN-SUFFIX,googleapis.cn,🌍 国外加速
+  - DOMAIN-SUFFIX,xn--ngstr-lra8j.com,🎯 全球直连
+  - DOMAIN-SUFFIX,xn--ngstr-cn-8za9o.com,🎯 全球直连
+  - DOMAIN-KEYWORD,kgithub,🎯 全球直连
+  - DOMAIN-KEYWORD,fastgit,🎯 全球直连
+  - DOMAIN-KEYWORD,ghproxy,🎯 全球直连
+  - DOMAIN-KEYWORD,gitmirror,🎯 全球直连
+  - DOMAIN-SUFFIX,gitclone.com,🎯 全球直连
+  - DOMAIN-SUFFIX,gh.api.99988866.xyz,🎯 全球直连
+  - DOMAIN-SUFFIX,weserv.nl,🎯 全球直连
+  - DOMAIN-SUFFIX,wsrv.nl,🎯 全球直连
+  - PROCESS-NAME,v2ray,🎯 全球直连
+  - PROCESS-NAME,xray,🎯 全球直连
+  - PROCESS-NAME,naive,🎯 全球直连
+  - PROCESS-NAME,trojan,🎯 全球直连
+  - PROCESS-NAME,trojan-go,🎯 全球直连
+  - PROCESS-NAME,ss-local,🎯 全球直连
+  - PROCESS-NAME,privoxy,🎯 全球直连
+  - PROCESS-NAME,leaf,🎯 全球直连
+  - PROCESS-NAME,v2ray.exe,🎯 全球直连
+  - PROCESS-NAME,xray.exe,🎯 全球直连
+  - PROCESS-NAME,naive.exe,🎯 全球直连
+  - PROCESS-NAME,trojan.exe,🎯 全球直连
+  - PROCESS-NAME,trojan-go.exe,🎯 全球直连
+  - PROCESS-NAME,ss-local.exe,🎯 全球直连
+  - PROCESS-NAME,privoxy.exe,🎯 全球直连
+  - PROCESS-NAME,leaf.exe,🎯 全球直连
+  - PROCESS-NAME,Surge,🎯 全球直连
+  - PROCESS-NAME,Surge 2,🎯 全球直连
+  - PROCESS-NAME,Surge 3,🎯 全球直连
+  - PROCESS-NAME,Surge 4,🎯 全球直连
+  - PROCESS-NAME,Surge%202,🎯 全球直连
+  - PROCESS-NAME,Surge%203,🎯 全球直连
+  - PROCESS-NAME,Surge%204,🎯 全球直连
+  - PROCESS-NAME,Thunder,🎯 全球直连
+  - PROCESS-NAME,DownloadService,🎯 全球直连
+  - PROCESS-NAME,qBittorrent,🎯 全球直连
+  - PROCESS-NAME,Transmission,🎯 全球直连
+  - PROCESS-NAME,fdm,🎯 全球直连
+  - PROCESS-NAME,aria2c,🎯 全球直连
+  - PROCESS-NAME,Folx,🎯 全球直连
+  - PROCESS-NAME,NetTransport,🎯 全球直连
+  - PROCESS-NAME,uTorrent,🎯 全球直连
+  - PROCESS-NAME,WebTorrent,🎯 全球直连
+  - PROCESS-NAME,aria2c.exe,🎯 全球直连
+  - PROCESS-NAME,BitComet.exe,🎯 全球直连
+  - PROCESS-NAME,fdm.exe,🎯 全球直连
+  - PROCESS-NAME,NetTransport.exe,🎯 全球直连
+  - PROCESS-NAME,qbittorrent.exe,🎯 全球直连
+  - PROCESS-NAME,Thunder.exe,🎯 全球直连
+  - PROCESS-NAME,ThunderVIP.exe,🎯 全球直连
+  - PROCESS-NAME,transmission-daemon.exe,🎯 全球直连
+  - PROCESS-NAME,transmission-qt.exe,🎯 全球直连
+  - PROCESS-NAME,uTorrent.exe,🎯 全球直连
+  - PROCESS-NAME,WebTorrent.exe,🎯 全球直连
+  - DOMAIN,steamstore-a.akamaihd.net,🎯 全球直连
+  - DOMAIN,steamcdn-a.akamaihd.net,🎯 全球直连
+  - DOMAIN,api.steampowered.com,🎯 全球直连
+  - DOMAIN,store.steampowered.com,🎯 全球直连
+  - DOMAIN,clash.razord.top,🎯 全球直连
+  - DOMAIN,yacd.haishan.me,🎯 全球直连
+  - DOMAIN,www.biqugeu.net,🌍 国外加速
+  - DOMAIN,www.cool18.com,🌍 国外加速
+  - DOMAIN-KEYWORD,diyibanzhu,🌍 国外加速
+  - DOMAIN-SUFFIX,cool18.com,🌍 国外加速
+  - DOMAIN-KEYWORD,cunhua,🌍 国外加速
+  - RULE-SET,自定义广告白名单,🎯 全球直连
+  - RULE-SET,自定义广告拦截,🛑 全球拦截
+  - RULE-SET,adblock,🛑 全球拦截
+  - IP-CIDR,0.0.0.0/32,🛑 全球拦截
+  - RULE-SET,MetaCubeX-cn-domain,🎯 全球直连
+  - GEOIP,private,🎯 全球直连,no-resolve
+  - GEOIP,JP,🌍 国外加速
+  - GEOIP,CN,🎯 全球直连
+  - RULE-SET,ChinaCompanyIp,🎯 全球直连
+  - RULE-SET,ChinaDomain,🎯 全球直连
+  - RULE-SET,ChinaMedia,🎯 全球直连
+  - RULE-SET,ChinaIp,🎯 全球直连
+  - RULE-SET,LocalAreaNetwork,🎯 全球直连
+  - DOMAIN-SUFFIX,cn,🎯 全球直连
+  - DOMAIN-KEYWORD,-cn,🎯 全球直连
+  - RULE-SET,region,🌍 国外加速
+  - RULE-SET,direct,🎯 全球直连
+  - RULE-SET,direct2,🎯 全球直连
+  - RULE-SET,ProxyGFWlist,🌍 国外加速
+  - RULE-SET,telegramcidr,📲 电报信息
+  - GEOIP,CN,🎯 全球直连
+  - RULE-SET,proxy,🌍 国外加速
+  - MATCH,🐟 漏网之鱼
