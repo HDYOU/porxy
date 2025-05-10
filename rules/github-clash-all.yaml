@@ -1,0 +1,556 @@
+mixed-port: 7890
+allow-lan: true
+bind-address: "*"
+mode: rule
+log-level: info
+external-controller: 127.0.0.1:9090
+dns:
+  enable: true
+  ipv6: false
+  default-nameserver: [223.5.5.5, 119.29.29.29]
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  use-hosts: true
+  nameserver: [https://853.66a.net:443/dns-query, https://doh.pub/dns-query, https://dns.alidns.com/dns-query]
+  fallback: [https://doh.dns.sb/dns-query, https://dns.cloudflare.com/dns-query, https://dns.twnic.tw/dns-query, tls://8.8.4.4:853]
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    geosite:
+      - gfw
+    ipcidr:
+      - 240.0.0.0/4
+    domain:
+      - +.google.com
+      - +.facebook.com
+      - +.youtube.com
+  nameserver-policy:
+    geosite:cn,private,apple:
+      - https://doh.pub/dns-query
+      - https://dns.alidns.com/dns-query
+    www.baidu.com,+.google.cn: [223.5.5.5, https://dns.alidns.com/dns-query]
+    rule-set:自定义广告白名单: [223.5.5.5, https://dns.alidns.com/dns-query]
+    rule-set:adblock,自定义广告拦截: rcode://success
+  fake-ip-filter:
+    - "*.lan"
+    - localhost.ptlogin2.qq.com
+rule-providers:
+  adblock:
+    type: http
+    behavior: classical
+    path: ./rule_providers/adblock.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/adblock.yml
+    interval: 21600
+    format: yaml
+  proxy:
+    type: http
+    behavior: classical
+    path: ./rule_providers/proxy.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/proxy.yml
+    interval: 86400
+    format: yaml
+  direct:
+    type: http
+    behavior: classical
+    path: ./rule_providers/direct.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/direct.yml
+    interval: 86400
+    format: yaml
+  region:
+    type: http
+    behavior: classical
+    path: ./rule_providers/region.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/region.yml
+    interval: 86400
+    format: yaml
+  direct2:
+    behavior: domain
+    type: http
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt
+    interval: 86400
+    path: ./ruleset/direct2.yaml
+    format: yaml
+  telegramcidr:
+    type: http
+    behavior: ipcidr
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt
+    path: ./ruleset/telegramcidr.yaml
+    interval: 86400
+    format: yaml
+  ProxyGFWlist:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ProxyGFWlist.yaml
+    path: ./ruleset/ProxyGFWlist.yaml
+    interval: 86400
+    format: yaml
+  ChinaCompanyIp:
+    type: http
+    behavior: ipcidr
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaCompanyIp.yaml
+    path: ./ruleset/gfw.yaml
+    interval: 86400
+    format: yaml
+  ChinaDomain:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaDomain.yaml
+    path: ./ruleset/ChinaDomain.yaml
+    interval: 86400
+    format: yaml
+  ChinaIp:
+    type: http
+    behavior: ipcidr
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaIp.yaml
+    path: ./ruleset/ChinaIp.yaml
+    interval: 86400
+    format: yaml
+  ChinaMedia:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaMedia.yaml
+    path: ./ruleset/ChinaMedia.yaml
+    interval: 86400
+    format: yaml
+  LocalAreaNetwork:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/LocalAreaNetwork.yaml
+    path: ./ruleset/LocalAreaNetwork.yaml
+    interval: 86400
+    format: yaml
+  自定义广告拦截:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com//HDYOU/ClashADRule/main/self_payload_ad.yml
+    path: ./ruleset/自定义广告拦截.yaml
+    interval: 86400
+    format: yaml
+  自定义广告白名单:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/HDYOU/ClashADRule/main/self_payload_whitelist.yml
+    path: ./ruleset/自定义广告白名单.yaml
+    interval: 86400
+    format: yaml
+  MetaCubeX-cn-domain:
+    behavior: domain
+    interval: 86400
+    path: ./ruleset/cn_domain.yaml
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/cn_domain.yaml
+proxies:
+  - {name: 🇦🇿 阿塞拜疆 V2CROSS.COM, server: 5.10.244.41, port: 443, type: vmess, uuid: 569dda85-bc76-4f8b-ae03-609d97f9e76c, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: cry-sf-analyses-latina.trycloudflare.com}}, udp: true}
+  - {name: 🇺🇸 美国61 | ⬇️ 2.7MB/s, server: 37.19.198.236, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇺🇸 美国5 | ⬇️ 1.0MB/s, server: 156.146.38.170, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇺🇸 美国3 | ⬇️ 2.2MB/s, server: 37.19.198.160, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇺🇸 美国2 | ⬇️ 1.6MB/s, server: 37.19.198.244, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇺🇸 美国4 | ⬇️ 2.2MB/s, server: 37.19.198.243, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇺🇸 美国123 | ⬇️ 3.8MB/s, server: 212.102.47.129, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇺🇸 美国 - 拉斯维加斯 - FranTech Solutions - 1, server: new3.huvicloud.com, port: 443, type: vmess, uuid: a10476b9-1c07-4de3-9d84-c51d24be599f, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: new3.huvicloud.com, network: ws, ws-opts: {path: /, headers: {Host: new3.huvicloud.com}}, udp: true}
+  - {name: 🇺🇸 美国7 | ⬇️ 1.8MB/s, server: 212.102.47.131, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇺🇸 美国104 | ⬇️ 3.3MB/s, server: cloudgetservice.mcloudservice.site, port: 443, type: vmess, uuid: 5428dcc2-9950-4404-b8a5-9dac82acb210, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: cloudgetservice.mcloudservice.site, network: ws, ws-opts: {path: /, headers: {Host: maXNEtVIP-usA-VP3.nETKH3.SiTE}}, udp: true}
+  - {name: 🇺🇸 美国28 | ⬇️ 1.2MB/s, server: 172.66.168.209, port: 443, type: vmess, uuid: 5428dcc2-9950-4404-b8a5-9dac82acb210, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: maXNEtVIP-usA-VP3.nETKH3.SiTE, network: ws, ws-opts: {path: /, headers: {Host: maXNEtVIP-usA-VP3.nETKH3.SiTE}}, udp: true}
+  - {name: 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 186, server: 54.187.175.85, port: 443, type: ss, cipher: aes-256-cfb, password: awsps0501, udp: true}
+  - {name: 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 156, server: 35.91.223.234, port: 443, type: ss, cipher: aes-256-cfb, password: awsps0501, udp: true}
+  - {name: 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 136, server: 52.35.51.80, port: 443, type: ss, cipher: aes-256-cfb, password: awsps0501, udp: true}
+  - {name: 🇺🇸 美国68 | ⬇️ 4.7MB/s, server: 173.244.56.9, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇺🇸 美国8 | ⬇️ 4.8MB/s, server: 212.102.47.132, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇨🇦 加拿大3 | ⬇️ 3.4MB/s, server: 149.22.95.183, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇬🇧 英国 - 倫敦金融城 - Krystal Hosting Ltd - 1, server: 62.100.205.48, port: 989, type: ss, cipher: aes-256-cfb, password: f8f7aCzcPKbsF8p3, udp: true}
+  - {name: 🇺🇸 美国 - San Jose - Oracle Corporation - 91, server: ora2.aihi.uk, port: 3306, type: vmess, uuid: 6b414f6a-9cfd-46c3-bcc8-af2c3447871d, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: ora2.aihi.uk, network: ws, ws-opts: {path: /, headers: {Host: ora2.aihi.uk}}, udp: true}
+  - {name: 🇺🇸 美国6 | ⬇️ 2.4MB/s, server: 173.244.56.6, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇬🇧 英国2 | ⬇️ 1.4MB/s, server: 212.102.53.195, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇬🇧 英国1 | ⬇️ 4.1MB/s, server: 212.102.53.194, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇬🇧 英国10 | ⬇️ 2.1MB/s, server: admin.c3.webramz.co, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: Bog0ELmMM9DSxDdQ, udp: true}
+  - {name: 🇬🇧 英国14 | ⬇️ 4.3MB/s, server: series-a2-me.samanehha.co, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: Bog0ELmMM9DSxDdQ, udp: true}
+  - {name: 🇬🇧 英国9 | ⬇️ 4.0MB/s, server: series-a2-me.varzesh360.co, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: Bog0ELmMM9DSxDdQ, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 11, server: 104.21.64.1, port: 2096, type: vmess, uuid: 8f78e709-2c5f-4c19-9f44-b5b5f80ab74c, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: cc2d1.988988.shop}}, udp: true}
+  - {name: 🇬🇧 英国17 | ⬇️ 3.4MB/s, server: freakconfig13.felafel.org, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: 1xO2cqPazqjGfCfd, udp: true}
+  - {name: 🇬🇧 英国18 | ⬇️ 3.0MB/s, server: series-a1.samanehha.co, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: W74XFALLLuw6m5IA, udp: true}
+  - {name: 🇨🇭 瑞士2 | ⬇️ 1.9MB/s, server: 156.146.62.161, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇬🇧 英国12 | ⬇️ 2.4MB/s, server: 85.210.120.237, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: Bog0ELmMM9DSxDdQ, udp: true}
+  - {name: 🇫🇷 法国4 | ⬇️ 4.0MB/s, server: irvideo.cfd, port: 443, type: vmess, uuid: e537f2f5-2a0c-4f59-92c9-832ca6433bf3, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: irvideo.cfd, network: ws, ws-opts: {path: /, headers: {Host: irvideo.cfd}}, udp: true}
+  - {name: 🇬🇧 英国13 | ⬇️ 3.6MB/s, server: series-a2.varzesh360.co, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: mps3FwmDjLrWaOVg, udp: true}
+  - {name: 🇬🇧 英国16 | ⬇️ 3.2MB/s, server: series-a2.samanehha.co, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: mps3FwmDjLrWaOVg, udp: true}
+  - {name: 🇬🇧 英国11 | ⬇️ 3.7MB/s, server: admin.c1.webramz.co, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: 1xO2cqPazqjGfCfd, udp: true}
+  - {name: 🇬🇧 英国22 | ⬇️ 4.0MB/s, server: admin.c4.webramz.co, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: 69MUii7VDwMqh7Hz, udp: true}
+  - {name: 🇫🇷 法国1 | ⬇️ 2.3MB/s, server: 172.67.198.187, port: 443, type: vmess, uuid: 93ea486a-bada-42a4-ac38-d088b320fa1e, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: xmivideo.cfd, network: ws, ws-opts: {path: /, headers: {Host: xmivideo.cfd}}, udp: true}
+  - {name: 🇬🇧 英国26 | ⬇️ 4.0MB/s, server: admin.c2.webramz.co, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: WstuSnlu4ieA9M0L, udp: true}
+  - {name: 🇫🇷 法国3 | ⬇️ 3.1MB/s, server: 172.67.200.13, port: 443, type: vmess, uuid: 5f726fe3-d82e-4da5-a711-8af0cbb2b682, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: 1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top, network: ws, ws-opts: {path: /, headers: {Host: 1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top}}, udp: true}
+  - {name: 🇫🇷 法国2 | ⬇️ 4.1MB/s, server: 104.19.32.0, port: 443, type: vmess, uuid: 93ea486a-bada-42a4-ac38-d088b320fa1e, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: xmivideo.cfd, network: ws, ws-opts: {path: /, headers: {Host: xmivideo.cfd}}, udp: true}
+  - {name: 🇬🇧 英国24 | ⬇️ 4.5MB/s, server: series-a1.samanehha.co, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: mps3FwmDjLrWaOVg, udp: true}
+  - {name: 🇬🇧 英国25 | ⬇️ 3.9MB/s, server: api.namasha.co, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: u17T3BvpYaaiuW2c, udp: true}
+  - {name: 🇬🇧 英国8 | ⬇️ 3.5MB/s, server: series-a2-mec.samanehha.co, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: u17T3BvpYaaiuW2c, udp: true}
+  - {name: 🇬🇧 英国15 | ⬇️ 2.5MB/s, server: series-a2-mec.varzesh360.co, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: u17T3BvpYaaiuW2c, udp: true}
+  - {name: 🇨🇭 瑞士3 | ⬇️ 2.9MB/s, server: 156.146.62.164, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇬🇧 英国4 | ⬇️ 2.4MB/s, server: 212.102.53.198, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇬🇧 英国3 | ⬇️ 2.1MB/s, server: 212.102.53.78, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇨🇭 瑞士4 | ⬇️ 3.3MB/s, server: 156.146.62.163, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇫🇮 芬兰 - 赫尔辛基 - Global Connectivity Solutions LLP - 1, server: 185.42.163.45, port: 25108, type: ss, cipher: chacha20-ietf-poly1305, password: 1AU6NgupolqNdSJ0Dx1nk7, udp: true}
+  - {name: 🇺🇸 美国 - 西雅圖 - GTHost - 134, server: xc132.meiziba5566.com, port: 443, type: vmess, uuid: 28b33c85-3e14-4323-ed50-d6e4d4d773a8, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: xc132.meiziba5566.com, network: ws, ws-opts: {path: /, headers: {Host: xc132.meiziba5566.com}}, udp: true}
+  - {name: 🇳🇱 荷兰1 | ⬇️ 2.4MB/s, server: 109.201.152.181, port: 443, type: ss, cipher: aes-128-cfb, password: shadowsocks, udp: true}
+  - {name: 🇫🇷 法国 - 马赛 - Oracle Corporation - 1, server: www.hdmoli.com, port: 80, type: vmess, uuid: 2f38f848-a899-4c87-9807-207a41615e3c, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: fr.freeyyds.dpdns.org}}, udp: true}
+  - {name: 🇯🇵 日本13 | ⬇️ 2.7MB/s, server: 149.22.87.204, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇯🇵 日本1 | ⬇️ 2.6MB/s, server: 149.22.87.241, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇨🇭 瑞士1 | ⬇️ 1.5MB/s, server: 156.146.62.162, port: 443, type: ss, cipher: aes-128-gcm, password: shadowsocks, udp: true}
+  - {name: 🇻🇳 越南 - Hải Dương - FASTLY - 3, server: 103.186.154.27, port: 38388, type: ss, cipher: aes-256-cfb, password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV, udp: true}
+  - {name: 🇻🇳 越南 - Hải Dương - FASTLY - 4, server: 103.186.154.38, port: 38388, type: ss, cipher: aes-256-cfb, password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV, udp: true}
+  - {name: 🇰🇷 韩国 - 首尔特别市 - Oracle Corporation - 15, server: lv4.789900.xyz, port: 2087, type: vmess, uuid: 7dd16ab1-2a36-4b32-86fd-eb49fb039752, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: lv4.789900.xyz, network: ws, ws-opts: {path: /, headers: {Host: lv4.789900.xyz}}, udp: true}
+  - {name: 🇻🇳 越南 - An Phong - VIETPN Company Limited - 10, server: 103.151.57.123, port: 38388, type: ss, cipher: aes-256-cfb, password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV, udp: true}
+  - {name: 🇰🇷 韩国 - 首尔特别市 - Oracle Corporation - 17, server: dv4.789900.xyz, port: 2096, type: vmess, uuid: 0c8f3e29-4ec9-4ba6-a6ef-4487873f5d05, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: dv4.789900.xyz, network: ws, ws-opts: {path: /, headers: {Host: dv4.789900.xyz}}, udp: true}
+  - {name: 🇰🇷 韩国 - Gwanak-gu - Korea Telecom - 2, server: p231.panda004.net, port: 11389, type: ss, cipher: aes-256-cfb, password: qwerREWQ@@, udp: true}
+  - {name: 🇰🇷 韩国 - Gwanak-gu - Korea Telecom - 3, server: 125.141.31.72, port: 15098, type: ss, cipher: aes-256-cfb, password: qwerREWQ@@, udp: true}
+  - {name: 🇻🇳 越南 - Hải Dương - FASTLY - 6, server: 103.186.154.33, port: 38388, type: ss, cipher: aes-256-cfb, password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - HostPapa - 151, server: C1swEw.777159.XYZ, port: 80, type: vmess, uuid: cad5a49f-14e5-4a05-aae9-c5df8fad394f, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: c1swew.777159.xyz}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Velo Link  Inc. - 46, server: 156.245.190.18, port: 15009, type: ss, cipher: aes-256-gcm, password: UDAKN2HJM6TYYJSP, udp: true}
+  - {name: 🇺🇸 美国71 | ⬇️ 1.6MB/s, server: 2e21cedc-fa8b-4020-8ce0-390e7287d276.890603.pp.ua, port: 443, type: vmess, uuid: 5453ae26-250d-4e79-b4ec-016baf806865, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: 2e21cedc-fa8b-4020-8ce0-390e7287d276.890603.pp.ua, network: ws, ws-opts: {path: /, headers: {Host: 2E21CEDc-fA8B-4020-8Ce0-390e7287D276.890603.Pp.uA}}, udp: true}
+  - {name: 🇺🇸 美国 - 紐約 - Massivegrid LTD - 292, server: m11sERFGH.459.pP.uA, port: 443, type: vmess, uuid: 0a28b420-4f7c-43ad-a29e-80068ce08263, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: m11SERFGh.459.Pp.Ua, network: ws, ws-opts: {path: /, headers: {Host: m11serfgh.459.pp.ua}}, udp: true}
+  - {name: 🇺🇸 美国 - 紐約 - Massivegrid LTD - 9, server: m11wer56.859886.xyz, port: 80, type: vmess, uuid: 0a28b420-4f7c-43ad-a29e-80068ce08263, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m11wer56.859886.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 3, server: www.xinjuc.com, port: 80, type: vmess, uuid: 2f38f848-a899-4c87-9807-207a41615e3c, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hk.freeyyds.dpdns.org}}, udp: true}
+  - {name: 🇺🇸 美国 - 紐約 - Massivegrid LTD - 8, server: m11sdfg.890604.dpdns.org, port: 80, type: vmess, uuid: 0a28b420-4f7c-43ad-a29e-80068ce08263, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m11sdfg.890604.dpdns.org}}, udp: true}
+  - {name: 🇺🇸 美国 - 紐約 - Massivegrid LTD - 291, server: m11wER56.859886.XYZ, port: 80, type: vmess, uuid: 0a28b420-4f7c-43ad-a29e-80068ce08263, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: m11wer56.859886.xyz}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 10, server: 104.21.77.79, port: 2053, type: vmess, uuid: 9747fbc4-c2c6-4321-bcd9-3d61ee8f1e7b, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: rak1m1.986986.shop}}, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - PEG TECH INC - 3, server: rak1.986986.shop, port: 2083, type: vmess, uuid: a29e2386-7445-424d-9be1-501f2b2b4d4e, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: rak1.986986.shop, network: ws, ws-opts: {path: /, headers: {Host: rak1.986986.shop}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 4, server: 2e21ceDC-fa8B-4020-8Ce0-390e7287d276.890603.pp.Ua, port: 443, type: vmess, uuid: 5453ae26-250d-4e79-b4ec-016baf806865, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 2e21ceDC-fa8B-4020-8Ce0-390e7287d276.890603.pp.Ua}}, udp: true}
+  - {name: 🇬🇧 英国 - 伦敦 - OVH SAS - 3, server: 120.210.205.134, port: 47459, type: vmess, uuid: 83a424d8-4bcb-4cee-b016-2c8f1db4a921, alterId: 64, cipher: auto, tls: false, skip-cert-verify: true, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - PEG TECH INC - 4, server: 104.21.77.79, port: 2053, type: vmess, uuid: 9747fbc4-c2c6-4321-bcd9-3d61ee8f1e7b, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: rak1m1.986986.shop, network: ws, ws-opts: {path: /, headers: {Host: rak1m1.986986.shop}}, udp: true}
+  - {name: 🇻🇳 越南 - Hải Dương - FASTLY - 5, server: 103.186.154.25, port: 38388, type: ss, cipher: aes-256-cfb, password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV, udp: true}
+  - {name: 🇻🇳 越南 - Hải Dương - FASTLY - 1, server: 103.186.154.18, port: 38388, type: ss, cipher: aes-256-cfb, password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV, udp: true}
+  - {name: 🇭🇰 哥伦比亚 - 波哥大 - Kaopu Cloud HK Limited - 1, server: 154.223.16.212, port: 989, type: ss, cipher: aes-256-cfb, password: f8f7aCzcPKbsF8p3, udp: true}
+  - {name: 🇻🇳 越南 - Hải Dương - FASTLY - 2, server: 103.186.154.30, port: 38388, type: ss, cipher: aes-256-cfb, password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV, udp: true}
+  - {name: 🇰🇷 韩国 - 首尔特别市 - SK Broadband Co Ltd - 7, server: p141.panda001.net, port: 4652, type: ss, cipher: aes-256-cfb, password: qwerREWQ@@, udp: true}
+  - {name: 🇺🇸 美国 - 纽约 - FranTech Solutions - 10, server: 45.147.201.231, port: 22037, type: vmess, uuid: a5ba7dfd-aba4-4911-b006-d679efd754cf, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /}, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - GTHost - 94, server: 38.114.114.108, port: 8881, type: ss, cipher: aes-256-gcm, password: kDWvXYZoTBcGkC4, udp: true}
+  - {name: 🇩🇪 德国 - 法兰克福 - Cloud Hosting Solutions  Limited. - 9, server: 212.192.31.173, port: 2287, type: ss, cipher: chacha20-ietf-poly1305, password: ziWP0A1dSz98CcPKqpOSeC, udp: true}
+  - {name: 🇰🇷 韩国 - Gasan-dong - LG DACOM Corporation - 6, server: p080.panda001.net, port: 36379, type: ss, cipher: aes-256-cfb, password: qwerREWQ@@, udp: true}
+  - {name: 🇺🇸 美国 华盛顿Cogent通信公司, server: 38.114.114.108, port: 8119, type: ss, cipher: aes-256-gcm, password: cdBIDV42DCwnfIN, udp: true}
+  - {name: 🇻🇳 越南 - Bo - VNPT Corp - 7, server: arxfw2b78fi2q9hzylhn.freesocks.work, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: Nk9asglDzHzjktVzTkvhaA, udp: true}
+  - {name: 🇺🇸 美国 - 圣克拉拉 - DigitalOcean  LLC - 5, server: 134.199.232.110, port: 30832, type: vmess, uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: baidu.com, network: ws, ws-opts: {path: /}, udp: true}
+  - {name: 🇨🇦 加拿大 V2CROSS.COM, server: 134.199.232.110, port: 30832, type: vmess, uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: baidu.com}}, udp: true}
+  - {name: 🇰🇷 韩国 - Gwanak-gu - Korea Telecom - 1, server: 221.150.109.89, port: 11389, type: ss, cipher: aes-256-cfb, password: qwerREWQ@@, udp: true}
+  - {name: 🇺🇸 美国 - 洛杉矶 - Cloudflare  Inc. - 12, server: 104.16.0.0, port: 443, type: vmess, uuid: 01f75b6a-935f-466c-ba3d-9f561d9bf191, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, servername: attendance-determine-hunt-studying.trycloudflare.com, network: ws, ws-opts: {path: /, headers: {Host: attendance-determine-hunt-studying.trycloudflare.com}}, udp: true}
+proxy-groups:
+  - name: 🚀 节点选择
+    type: select
+    proxies:
+      - ♻️ 自动选择
+      - ✅ 手动选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: ♻️ 自动选择
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+    proxies:
+      - 🇦🇿 阿塞拜疆 V2CROSS.COM
+      - 🇺🇸 美国61 | ⬇️ 2.7MB/s
+      - 🇺🇸 美国5 | ⬇️ 1.0MB/s
+      - 🇺🇸 美国3 | ⬇️ 2.2MB/s
+      - 🇺🇸 美国2 | ⬇️ 1.6MB/s
+      - 🇺🇸 美国4 | ⬇️ 2.2MB/s
+      - 🇺🇸 美国123 | ⬇️ 3.8MB/s
+      - 🇺🇸 美国 - 拉斯维加斯 - FranTech Solutions - 1
+      - 🇺🇸 美国7 | ⬇️ 1.8MB/s
+      - 🇺🇸 美国104 | ⬇️ 3.3MB/s
+      - 🇺🇸 美国28 | ⬇️ 1.2MB/s
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 186
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 156
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 136
+      - 🇺🇸 美国68 | ⬇️ 4.7MB/s
+      - 🇺🇸 美国8 | ⬇️ 4.8MB/s
+      - 🇨🇦 加拿大3 | ⬇️ 3.4MB/s
+      - 🇬🇧 英国 - 倫敦金融城 - Krystal Hosting Ltd - 1
+      - 🇺🇸 美国 - San Jose - Oracle Corporation - 91
+      - 🇺🇸 美国6 | ⬇️ 2.4MB/s
+      - 🇬🇧 英国2 | ⬇️ 1.4MB/s
+      - 🇬🇧 英国1 | ⬇️ 4.1MB/s
+      - 🇬🇧 英国10 | ⬇️ 2.1MB/s
+      - 🇬🇧 英国14 | ⬇️ 4.3MB/s
+      - 🇬🇧 英国9 | ⬇️ 4.0MB/s
+      - 🇺🇸 美国 CloudFlare节点 11
+      - 🇬🇧 英国17 | ⬇️ 3.4MB/s
+      - 🇬🇧 英国18 | ⬇️ 3.0MB/s
+      - 🇨🇭 瑞士2 | ⬇️ 1.9MB/s
+      - 🇬🇧 英国12 | ⬇️ 2.4MB/s
+      - 🇫🇷 法国4 | ⬇️ 4.0MB/s
+      - 🇬🇧 英国13 | ⬇️ 3.6MB/s
+      - 🇬🇧 英国16 | ⬇️ 3.2MB/s
+      - 🇬🇧 英国11 | ⬇️ 3.7MB/s
+      - 🇬🇧 英国22 | ⬇️ 4.0MB/s
+      - 🇫🇷 法国1 | ⬇️ 2.3MB/s
+      - 🇬🇧 英国26 | ⬇️ 4.0MB/s
+      - 🇫🇷 法国3 | ⬇️ 3.1MB/s
+      - 🇫🇷 法国2 | ⬇️ 4.1MB/s
+      - 🇬🇧 英国24 | ⬇️ 4.5MB/s
+      - 🇬🇧 英国25 | ⬇️ 3.9MB/s
+      - 🇬🇧 英国8 | ⬇️ 3.5MB/s
+      - 🇬🇧 英国15 | ⬇️ 2.5MB/s
+      - 🇨🇭 瑞士3 | ⬇️ 2.9MB/s
+      - 🇬🇧 英国4 | ⬇️ 2.4MB/s
+      - 🇬🇧 英国3 | ⬇️ 2.1MB/s
+      - 🇨🇭 瑞士4 | ⬇️ 3.3MB/s
+      - 🇫🇮 芬兰 - 赫尔辛基 - Global Connectivity Solutions LLP - 1
+      - 🇺🇸 美国 - 西雅圖 - GTHost - 134
+      - 🇳🇱 荷兰1 | ⬇️ 2.4MB/s
+      - 🇫🇷 法国 - 马赛 - Oracle Corporation - 1
+      - 🇯🇵 日本13 | ⬇️ 2.7MB/s
+      - 🇯🇵 日本1 | ⬇️ 2.6MB/s
+      - 🇨🇭 瑞士1 | ⬇️ 1.5MB/s
+      - 🇻🇳 越南 - Hải Dương - FASTLY - 3
+      - 🇻🇳 越南 - Hải Dương - FASTLY - 4
+      - 🇰🇷 韩国 - 首尔特别市 - Oracle Corporation - 15
+      - 🇻🇳 越南 - An Phong - VIETPN Company Limited - 10
+      - 🇰🇷 韩国 - 首尔特别市 - Oracle Corporation - 17
+      - 🇰🇷 韩国 - Gwanak-gu - Korea Telecom - 2
+      - 🇰🇷 韩国 - Gwanak-gu - Korea Telecom - 3
+      - 🇻🇳 越南 - Hải Dương - FASTLY - 6
+      - 🇺🇸 美国 - 洛杉矶 - HostPapa - 151
+      - 🇭🇰 中国 - 香港 - Velo Link  Inc. - 46
+      - 🇺🇸 美国71 | ⬇️ 1.6MB/s
+      - 🇺🇸 美国 - 紐約 - Massivegrid LTD - 292
+      - 🇺🇸 美国 - 紐約 - Massivegrid LTD - 9
+      - 🇺🇸 美国 CloudFlare节点 3
+      - 🇺🇸 美国 - 紐約 - Massivegrid LTD - 8
+      - 🇺🇸 美国 - 紐約 - Massivegrid LTD - 291
+      - 🇺🇸 美国 CloudFlare节点 10
+      - 🇺🇸 美国 - 圣克拉拉 - PEG TECH INC - 3
+      - 🇺🇸 美国 CloudFlare节点 4
+      - 🇬🇧 英国 - 伦敦 - OVH SAS - 3
+      - 🇺🇸 美国 - 圣克拉拉 - PEG TECH INC - 4
+      - 🇻🇳 越南 - Hải Dương - FASTLY - 5
+      - 🇻🇳 越南 - Hải Dương - FASTLY - 1
+      - 🇭🇰 哥伦比亚 - 波哥大 - Kaopu Cloud HK Limited - 1
+      - 🇻🇳 越南 - Hải Dương - FASTLY - 2
+      - 🇰🇷 韩国 - 首尔特别市 - SK Broadband Co Ltd - 7
+      - 🇺🇸 美国 - 纽约 - FranTech Solutions - 10
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 94
+      - 🇩🇪 德国 - 法兰克福 - Cloud Hosting Solutions  Limited. - 9
+      - 🇰🇷 韩国 - Gasan-dong - LG DACOM Corporation - 6
+      - 🇺🇸 美国 华盛顿Cogent通信公司
+      - 🇻🇳 越南 - Bo - VNPT Corp - 7
+      - 🇺🇸 美国 - 圣克拉拉 - DigitalOcean  LLC - 5
+      - 🇨🇦 加拿大 V2CROSS.COM
+      - 🇰🇷 韩国 - Gwanak-gu - Korea Telecom - 1
+      - 🇺🇸 美国 - 洛杉矶 - Cloudflare  Inc. - 12
+  - name: ✅ 手动选择
+    type: select
+    proxies:
+      - 🇦🇿 阿塞拜疆 V2CROSS.COM
+      - 🇺🇸 美国61 | ⬇️ 2.7MB/s
+      - 🇺🇸 美国5 | ⬇️ 1.0MB/s
+      - 🇺🇸 美国3 | ⬇️ 2.2MB/s
+      - 🇺🇸 美国2 | ⬇️ 1.6MB/s
+      - 🇺🇸 美国4 | ⬇️ 2.2MB/s
+      - 🇺🇸 美国123 | ⬇️ 3.8MB/s
+      - 🇺🇸 美国 - 拉斯维加斯 - FranTech Solutions - 1
+      - 🇺🇸 美国7 | ⬇️ 1.8MB/s
+      - 🇺🇸 美国104 | ⬇️ 3.3MB/s
+      - 🇺🇸 美国28 | ⬇️ 1.2MB/s
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 186
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 156
+      - 🇺🇸 美国 - 波特蘭 - Amazon.com  Inc. - 136
+      - 🇺🇸 美国68 | ⬇️ 4.7MB/s
+      - 🇺🇸 美国8 | ⬇️ 4.8MB/s
+      - 🇨🇦 加拿大3 | ⬇️ 3.4MB/s
+      - 🇬🇧 英国 - 倫敦金融城 - Krystal Hosting Ltd - 1
+      - 🇺🇸 美国 - San Jose - Oracle Corporation - 91
+      - 🇺🇸 美国6 | ⬇️ 2.4MB/s
+      - 🇬🇧 英国2 | ⬇️ 1.4MB/s
+      - 🇬🇧 英国1 | ⬇️ 4.1MB/s
+      - 🇬🇧 英国10 | ⬇️ 2.1MB/s
+      - 🇬🇧 英国14 | ⬇️ 4.3MB/s
+      - 🇬🇧 英国9 | ⬇️ 4.0MB/s
+      - 🇺🇸 美国 CloudFlare节点 11
+      - 🇬🇧 英国17 | ⬇️ 3.4MB/s
+      - 🇬🇧 英国18 | ⬇️ 3.0MB/s
+      - 🇨🇭 瑞士2 | ⬇️ 1.9MB/s
+      - 🇬🇧 英国12 | ⬇️ 2.4MB/s
+      - 🇫🇷 法国4 | ⬇️ 4.0MB/s
+      - 🇬🇧 英国13 | ⬇️ 3.6MB/s
+      - 🇬🇧 英国16 | ⬇️ 3.2MB/s
+      - 🇬🇧 英国11 | ⬇️ 3.7MB/s
+      - 🇬🇧 英国22 | ⬇️ 4.0MB/s
+      - 🇫🇷 法国1 | ⬇️ 2.3MB/s
+      - 🇬🇧 英国26 | ⬇️ 4.0MB/s
+      - 🇫🇷 法国3 | ⬇️ 3.1MB/s
+      - 🇫🇷 法国2 | ⬇️ 4.1MB/s
+      - 🇬🇧 英国24 | ⬇️ 4.5MB/s
+      - 🇬🇧 英国25 | ⬇️ 3.9MB/s
+      - 🇬🇧 英国8 | ⬇️ 3.5MB/s
+      - 🇬🇧 英国15 | ⬇️ 2.5MB/s
+      - 🇨🇭 瑞士3 | ⬇️ 2.9MB/s
+      - 🇬🇧 英国4 | ⬇️ 2.4MB/s
+      - 🇬🇧 英国3 | ⬇️ 2.1MB/s
+      - 🇨🇭 瑞士4 | ⬇️ 3.3MB/s
+      - 🇫🇮 芬兰 - 赫尔辛基 - Global Connectivity Solutions LLP - 1
+      - 🇺🇸 美国 - 西雅圖 - GTHost - 134
+      - 🇳🇱 荷兰1 | ⬇️ 2.4MB/s
+      - 🇫🇷 法国 - 马赛 - Oracle Corporation - 1
+      - 🇯🇵 日本13 | ⬇️ 2.7MB/s
+      - 🇯🇵 日本1 | ⬇️ 2.6MB/s
+      - 🇨🇭 瑞士1 | ⬇️ 1.5MB/s
+      - 🇻🇳 越南 - Hải Dương - FASTLY - 3
+      - 🇻🇳 越南 - Hải Dương - FASTLY - 4
+      - 🇰🇷 韩国 - 首尔特别市 - Oracle Corporation - 15
+      - 🇻🇳 越南 - An Phong - VIETPN Company Limited - 10
+      - 🇰🇷 韩国 - 首尔特别市 - Oracle Corporation - 17
+      - 🇰🇷 韩国 - Gwanak-gu - Korea Telecom - 2
+      - 🇰🇷 韩国 - Gwanak-gu - Korea Telecom - 3
+      - 🇻🇳 越南 - Hải Dương - FASTLY - 6
+      - 🇺🇸 美国 - 洛杉矶 - HostPapa - 151
+      - 🇭🇰 中国 - 香港 - Velo Link  Inc. - 46
+      - 🇺🇸 美国71 | ⬇️ 1.6MB/s
+      - 🇺🇸 美国 - 紐約 - Massivegrid LTD - 292
+      - 🇺🇸 美国 - 紐約 - Massivegrid LTD - 9
+      - 🇺🇸 美国 CloudFlare节点 3
+      - 🇺🇸 美国 - 紐約 - Massivegrid LTD - 8
+      - 🇺🇸 美国 - 紐約 - Massivegrid LTD - 291
+      - 🇺🇸 美国 CloudFlare节点 10
+      - 🇺🇸 美国 - 圣克拉拉 - PEG TECH INC - 3
+      - 🇺🇸 美国 CloudFlare节点 4
+      - 🇬🇧 英国 - 伦敦 - OVH SAS - 3
+      - 🇺🇸 美国 - 圣克拉拉 - PEG TECH INC - 4
+      - 🇻🇳 越南 - Hải Dương - FASTLY - 5
+      - 🇻🇳 越南 - Hải Dương - FASTLY - 1
+      - 🇭🇰 哥伦比亚 - 波哥大 - Kaopu Cloud HK Limited - 1
+      - 🇻🇳 越南 - Hải Dương - FASTLY - 2
+      - 🇰🇷 韩国 - 首尔特别市 - SK Broadband Co Ltd - 7
+      - 🇺🇸 美国 - 纽约 - FranTech Solutions - 10
+      - 🇺🇸 美国 - 洛杉矶 - GTHost - 94
+      - 🇩🇪 德国 - 法兰克福 - Cloud Hosting Solutions  Limited. - 9
+      - 🇰🇷 韩国 - Gasan-dong - LG DACOM Corporation - 6
+      - 🇺🇸 美国 华盛顿Cogent通信公司
+      - 🇻🇳 越南 - Bo - VNPT Corp - 7
+      - 🇺🇸 美国 - 圣克拉拉 - DigitalOcean  LLC - 5
+      - 🇨🇦 加拿大 V2CROSS.COM
+      - 🇰🇷 韩国 - Gwanak-gu - Korea Telecom - 1
+      - 🇺🇸 美国 - 洛杉矶 - Cloudflare  Inc. - 12
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 🐟 漏网之鱼
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 🚫 拒接访问
+    type: select
+    proxies:
+      - REJECT
+  - name: 🎯 全球直连
+    type: select
+    proxies:
+      - DIRECT
+  - name: 🌍 国外加速
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 📲 电报信息
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+  - name: Ⓜ️ 微软服务
+    type: select
+    proxies:
+      - 🎯 全球直连
+      - 🚀 节点选择
+  - name: 🛑 全球拦截
+    type: select
+    proxies:
+      - 🚫 拒接访问
+      - 🎯 全球直连
+rules:
+  - DOMAIN-SUFFIX,googleapis.cn,🌍 国外加速
+  - DOMAIN-SUFFIX,xn--ngstr-lra8j.com,🎯 全球直连
+  - DOMAIN-SUFFIX,xn--ngstr-cn-8za9o.com,🎯 全球直连
+  - DOMAIN-KEYWORD,kgithub,🎯 全球直连
+  - DOMAIN-KEYWORD,fastgit,🎯 全球直连
+  - DOMAIN-KEYWORD,ghproxy,🎯 全球直连
+  - DOMAIN-KEYWORD,gitmirror,🎯 全球直连
+  - DOMAIN-SUFFIX,gitclone.com,🎯 全球直连
+  - DOMAIN-SUFFIX,gh.api.99988866.xyz,🎯 全球直连
+  - DOMAIN-SUFFIX,weserv.nl,🎯 全球直连
+  - DOMAIN-SUFFIX,wsrv.nl,🎯 全球直连
+  - PROCESS-NAME,v2ray,🎯 全球直连
+  - PROCESS-NAME,xray,🎯 全球直连
+  - PROCESS-NAME,naive,🎯 全球直连
+  - PROCESS-NAME,trojan,🎯 全球直连
+  - PROCESS-NAME,trojan-go,🎯 全球直连
+  - PROCESS-NAME,ss-local,🎯 全球直连
+  - PROCESS-NAME,privoxy,🎯 全球直连
+  - PROCESS-NAME,leaf,🎯 全球直连
+  - PROCESS-NAME,v2ray.exe,🎯 全球直连
+  - PROCESS-NAME,xray.exe,🎯 全球直连
+  - PROCESS-NAME,naive.exe,🎯 全球直连
+  - PROCESS-NAME,trojan.exe,🎯 全球直连
+  - PROCESS-NAME,trojan-go.exe,🎯 全球直连
+  - PROCESS-NAME,ss-local.exe,🎯 全球直连
+  - PROCESS-NAME,privoxy.exe,🎯 全球直连
+  - PROCESS-NAME,leaf.exe,🎯 全球直连
+  - PROCESS-NAME,Surge,🎯 全球直连
+  - PROCESS-NAME,Surge 2,🎯 全球直连
+  - PROCESS-NAME,Surge 3,🎯 全球直连
+  - PROCESS-NAME,Surge 4,🎯 全球直连
+  - PROCESS-NAME,Surge%202,🎯 全球直连
+  - PROCESS-NAME,Surge%203,🎯 全球直连
+  - PROCESS-NAME,Surge%204,🎯 全球直连
+  - PROCESS-NAME,Thunder,🎯 全球直连
+  - PROCESS-NAME,DownloadService,🎯 全球直连
+  - PROCESS-NAME,qBittorrent,🎯 全球直连
+  - PROCESS-NAME,Transmission,🎯 全球直连
+  - PROCESS-NAME,fdm,🎯 全球直连
+  - PROCESS-NAME,aria2c,🎯 全球直连
+  - PROCESS-NAME,Folx,🎯 全球直连
+  - PROCESS-NAME,NetTransport,🎯 全球直连
+  - PROCESS-NAME,uTorrent,🎯 全球直连
+  - PROCESS-NAME,WebTorrent,🎯 全球直连
+  - PROCESS-NAME,aria2c.exe,🎯 全球直连
+  - PROCESS-NAME,BitComet.exe,🎯 全球直连
+  - PROCESS-NAME,fdm.exe,🎯 全球直连
+  - PROCESS-NAME,NetTransport.exe,🎯 全球直连
+  - PROCESS-NAME,qbittorrent.exe,🎯 全球直连
+  - PROCESS-NAME,Thunder.exe,🎯 全球直连
+  - PROCESS-NAME,ThunderVIP.exe,🎯 全球直连
+  - PROCESS-NAME,transmission-daemon.exe,🎯 全球直连
+  - PROCESS-NAME,transmission-qt.exe,🎯 全球直连
+  - PROCESS-NAME,uTorrent.exe,🎯 全球直连
+  - PROCESS-NAME,WebTorrent.exe,🎯 全球直连
+  - DOMAIN,steamstore-a.akamaihd.net,🎯 全球直连
+  - DOMAIN,steamcdn-a.akamaihd.net,🎯 全球直连
+  - DOMAIN,api.steampowered.com,🎯 全球直连
+  - DOMAIN,store.steampowered.com,🎯 全球直连
+  - DOMAIN,clash.razord.top,🎯 全球直连
+  - DOMAIN,yacd.haishan.me,🎯 全球直连
+  - DOMAIN,www.biqugeu.net,🌍 国外加速
+  - DOMAIN,www.cool18.com,🌍 国外加速
+  - DOMAIN-KEYWORD,diyibanzhu,🌍 国外加速
+  - DOMAIN-SUFFIX,cool18.com,🌍 国外加速
+  - DOMAIN-KEYWORD,cunhua,🌍 国外加速
+  - RULE-SET,自定义广告白名单,🎯 全球直连
+  - RULE-SET,自定义广告拦截,🛑 全球拦截
+  - RULE-SET,adblock,🛑 全球拦截
+  - IP-CIDR,0.0.0.0/32,🛑 全球拦截
+  - RULE-SET,MetaCubeX-cn-domain,🎯 全球直连
+  - GEOIP,private,🎯 全球直连,no-resolve
+  - GEOIP,JP,🌍 国外加速
+  - GEOIP,CN,🎯 全球直连
+  - RULE-SET,ChinaCompanyIp,🎯 全球直连
+  - RULE-SET,ChinaDomain,🎯 全球直连
+  - RULE-SET,ChinaMedia,🎯 全球直连
+  - RULE-SET,ChinaIp,🎯 全球直连
+  - RULE-SET,LocalAreaNetwork,🎯 全球直连
+  - DOMAIN-SUFFIX,cn,🎯 全球直连
+  - DOMAIN-KEYWORD,-cn,🎯 全球直连
+  - RULE-SET,region,🌍 国外加速
+  - RULE-SET,direct,🎯 全球直连
+  - RULE-SET,direct2,🎯 全球直连
+  - RULE-SET,ProxyGFWlist,🌍 国外加速
+  - RULE-SET,telegramcidr,📲 电报信息
+  - GEOIP,CN,🎯 全球直连
+  - RULE-SET,proxy,🌍 国外加速
+  - MATCH,🐟 漏网之鱼
