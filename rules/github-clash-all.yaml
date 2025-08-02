@@ -1,0 +1,628 @@
+mixed-port: 7890
+allow-lan: true
+bind-address: "*"
+mode: rule
+log-level: info
+external-controller: 127.0.0.1:9090
+dns:
+  enable: true
+  ipv6: false
+  default-nameserver: [223.5.5.5, 119.29.29.29]
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  use-hosts: true
+  nameserver: [https://853.66a.net:443/dns-query, https://doh.pub/dns-query, https://dns.alidns.com/dns-query]
+  fallback: [https://doh.dns.sb/dns-query, https://dns.cloudflare.com/dns-query, https://dns.twnic.tw/dns-query, tls://8.8.4.4:853]
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    geosite:
+      - gfw
+    ipcidr:
+      - 240.0.0.0/4
+    domain:
+      - +.google.com
+      - +.facebook.com
+      - +.youtube.com
+  nameserver-policy:
+    geosite:cn,private,apple:
+      - https://doh.pub/dns-query
+      - https://dns.alidns.com/dns-query
+    www.baidu.com,+.google.cn: [223.5.5.5, https://dns.alidns.com/dns-query]
+    rule-set:自定义广告白名单: [223.5.5.5, https://dns.alidns.com/dns-query]
+    rule-set:adblock,自定义广告拦截: rcode://success
+  fake-ip-filter:
+    - "*.lan"
+    - localhost.ptlogin2.qq.com
+rule-providers:
+  adblock:
+    type: http
+    behavior: classical
+    path: ./rule_providers/adblock.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/adblock.yml
+    interval: 21600
+    format: yaml
+  proxy:
+    type: http
+    behavior: classical
+    path: ./rule_providers/proxy.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/proxy.yml
+    interval: 86400
+    format: yaml
+  direct:
+    type: http
+    behavior: classical
+    path: ./rule_providers/direct.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/direct.yml
+    interval: 86400
+    format: yaml
+  region:
+    type: http
+    behavior: classical
+    path: ./rule_providers/region.yml
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/snippets/region.yml
+    interval: 86400
+    format: yaml
+  direct2:
+    behavior: domain
+    type: http
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt
+    interval: 86400
+    path: ./ruleset/direct2.yaml
+    format: yaml
+  telegramcidr:
+    type: http
+    behavior: ipcidr
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt
+    path: ./ruleset/telegramcidr.yaml
+    interval: 86400
+    format: yaml
+  ProxyGFWlist:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ProxyGFWlist.yaml
+    path: ./ruleset/ProxyGFWlist.yaml
+    interval: 86400
+    format: yaml
+  ChinaCompanyIp:
+    type: http
+    behavior: ipcidr
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaCompanyIp.yaml
+    path: ./ruleset/gfw.yaml
+    interval: 86400
+    format: yaml
+  ChinaDomain:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaDomain.yaml
+    path: ./ruleset/ChinaDomain.yaml
+    interval: 86400
+    format: yaml
+  ChinaIp:
+    type: http
+    behavior: ipcidr
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaIp.yaml
+    path: ./ruleset/ChinaIp.yaml
+    interval: 86400
+    format: yaml
+  ChinaMedia:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaMedia.yaml
+    path: ./ruleset/ChinaMedia.yaml
+    interval: 86400
+    format: yaml
+  LocalAreaNetwork:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/LocalAreaNetwork.yaml
+    path: ./ruleset/LocalAreaNetwork.yaml
+    interval: 86400
+    format: yaml
+  自定义广告拦截:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com//HDYOU/ClashADRule/main/self_payload_ad.yml
+    path: ./ruleset/自定义广告拦截.yaml
+    interval: 86400
+    format: yaml
+  自定义广告白名单:
+    type: http
+    behavior: classical
+    url: https://mirror.ghproxy.com/https://raw.githubusercontent.com/HDYOU/ClashADRule/main/self_payload_whitelist.yml
+    path: ./ruleset/自定义广告白名单.yaml
+    interval: 86400
+    format: yaml
+  MetaCubeX-cn-domain:
+    behavior: domain
+    interval: 86400
+    path: ./ruleset/cn_domain.yaml
+    type: http
+    url: https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/cn_domain.yaml
+proxies:
+  - {name: 🇺🇸 美国 CloudFlare节点 4, server: 141.101.120.64, port: 2053, type: vmess, uuid: 381cb6d1-6ad4-4909-8494-b8d786cf78ce, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 1744007578.speed.zjgza.cccp.freefly.pp.ua}}, udp: true}
+  - {name: 🇩🇪 德国 - Falkenstein - Hetzner Online GmbH - 1, server: fast5.daallygold.com, port: 14090, type: vmess, uuid: 37fc85cf-30d6-4f25-a19b-cfa5732ff6ca, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, servername: telewebion.com, udp: true}
+  - {name: 🇫🇮 芬兰 - 赫尔辛基 - Hetzner Online GmbH - 5, server: ytrrtp3e665b555t4rffr4.peymanribvar.xyz, port: 8880, type: vmess, uuid: e60c7710-dd8f-4572-ac12-c5903030bc7a, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: www.bing.com}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点, server: www.meter.net, port: 2083, type: vmess, uuid: c208e0ae-6f6d-4745-99da-44a44744c530, alterId: 0, cipher: auto, tls: true, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: blaze-ger-248.blazecloudmain.site}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 37, server: b1601217-sv2sg0-tcdlur-1qwom.hk3.p5pv.com, port: 80, type: vmess, uuid: 8d0ec7cc-eefa-11ee-9b59-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: b1601217-sv2sg0-tcdlur-1qwom.hk3.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 63, server: aeb50015-t02f40-t9byd7-1jfvb.hk3.p5pv.com, port: 80, type: vmess, uuid: 06b2ac52-fcc6-11ec-bb74-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: aeb50015-t02f40-t9byd7-1jfvb.hk3.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 46, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: bb85e074-b0c2-11ea-ad28-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 1, server: ac3105fa-sv2sg0-t30eih-jm0w.hk3.p5pv.com, port: 80, type: vmess, uuid: e3004917-ad9d-b8a2-a2ee-65a54830e020, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: ac3105fa-sv2sg0-t30eih-jm0w.hk3.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 49, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: dcccacba-fa44-11ef-8400-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 52, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 91365a7a-46d7-11ee-a8b9-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 56, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 20f87b02-0eaa-11eb-8684-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 51, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 5c02ab88-7b9c-11ea-8fc9-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 53, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: a6cf58d6-14d1-11eb-a8bf-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 48, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: a2313fba-74a6-11ed-a8bf-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 55, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 25b2699a-e18e-11ec-8e69-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 60, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 96c798f6-4645-11ee-b8a1-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 50, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: d49e545e-0daf-11ee-a91f-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 111, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 7c077572-6da9-11ef-b786-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 59, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: c0a2c394-e27b-11ee-91f6-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 105, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 1282cc1a-f426-11ef-9495-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 57, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: a5a81a34-f257-11ef-ba82-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 109, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: ecfab6c8-df5b-11ed-98a7-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 65, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: ab0147e4-e673-11ee-8058-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 66, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: ba7a37e3-033a-e1ab-06f6-9027aa4630f5, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 107, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: ca506e08-ce3d-5e5a-c128-6358caca15e5, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 58, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 03573f46-e944-11eb-a8bf-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 101, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 331cae90-f7e9-11ed-b4e2-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 103, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: fcd39788-ca23-11ed-86e2-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 104, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 9d80dd14-ac44-11ee-a116-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 64, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 98cedeca-99a0-11ef-bb64-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 102, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: fd224a6c-addc-11ed-a8bf-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 98, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 64617ed2-4823-11ef-9f2d-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 106, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 6d4abac0-86e6-11ef-83cc-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 99, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 4d631e24-97f7-11ea-8fc9-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 54, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 336501b6-51d2-11ee-a993-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 3, server: s3.db-link01.top, port: 2052, type: vmess, uuid: 248be52b-35d9-34cb-9b73-e12b78bc1301, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 100-10-228-216.s3.db-link01.top}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 67, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: a4c9b7cc-a816-11ed-9f65-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇲🇩 摩尔多瓦 - 基希讷乌 - ''IT FRUIT'' S.R.L. - 1, server: 185.153.197.5, port: 989, type: ss, cipher: aes-256-cfb, password: f8f7aCzcPKbsF8p3, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 108, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 9cc3c03e-21fd-11ee-a642-f23c91369f2d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 16, server: 7a8c402e-sv6hs0-tct1rd-1o0ch.hk.p5pv.com, port: 80, type: vmess, uuid: d49e545e-0daf-11ee-a91f-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: 🇭🇰HK-1.65.202.130-5125 | 1.871MB, network: ws, ws-opts: {path: /, headers: {Host: 7a8c402e-sv6hs0-tct1rd-1o0ch.hk.p5pv.com}}, udp: true}
+  - {name: 🇱🇹 立陶宛 - 维尔纽斯 - EDIS GmbH - 1, server: 192.36.61.59, port: 989, type: ss, cipher: aes-256-cfb, password: f8f7aCzcPKbsF8p3, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 10, server: 4a8c875a-sv2sg0-sxi4nd-1o6fm.hk.p5pv.com, port: 80, type: vmess, uuid: e03df6fc-97e8-11ee-be7f-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: 4a8c875a-sv2sg0-sxi4nd-1o6fm.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 61, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 989aa406-ea9b-11ef-97da-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 62, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 7699767c-44ae-11ef-80c7-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 13, server: d473568d-sv0xs0-t3q3xd-1sai0.hk.p5pv.com, port: 80, type: vmess, uuid: 4551f124-65ca-11ef-8c8e-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: d473568d-sv0xs0-t3q3xd-1sai0.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 4, server: 377dc0dd-sva740-tbrhck-1thqb.hk.p5pv.com, port: 80, type: vmess, uuid: 4f4c6876-fcf6-11ef-94aa-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: 377dc0dd-sva740-tbrhck-1thqb.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 25, server: 130b8183-sv0xs0-td5fm5-4dl0.hk.p5pv.com, port: 80, type: vmess, uuid: 56b05600-e140-11ec-a3de-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: 130b8183-sv0xs0-td5fm5-4dl0.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 9, server: d5542df0-sv0xs0-sw2c3o-1thts.hk.p5pv.com, port: 80, type: vmess, uuid: cb96c846-fd6d-11ef-a910-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: 🇭🇰HK-1.65.202.130-4921 | 3.057MB, network: ws, ws-opts: {path: /, headers: {Host: d5542df0-sv0xs0-sw2c3o-1thts.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 27, server: 5e5a088d-sv2sg0-swkmdk-1imi4.hk.p5pv.com, port: 80, type: vmess, uuid: 40fb1315-191a-11ed-b0ca-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: 🇭🇰HK-1.65.202.130-4931 | 2.764MB, network: ws, ws-opts: {path: /, headers: {Host: 5e5a088d-sv2sg0-swkmdk-1imi4.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 3, server: 72697351-sv2sg0-suzz2n-vmdo.hk.p5pv.com, port: 80, type: vmess, uuid: 24e32978-4858-11eb-8684-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 7, server: a1d35d30-sv2sg0-t66zs1-1pq44.hk.p5pv.com, port: 80, type: vmess, uuid: 3f194e88-8eac-11ee-be7f-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: 🇭🇰HK-1.65.202.130-5099 | 15.167MB, network: ws, ws-opts: {path: /, headers: {Host: a1d35d30-sv2sg0-t66zs1-1pq44.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 17, server: 84e9c650-szecg0-t0uhms-1rk0x.hk.p5pv.com, port: 80, type: vmess, uuid: 7960b6cc-1c95-11ef-ac7f-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: 84e9c650-szecg0-t0uhms-1rk0x.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 18, server: ab01eb81-sv2sg0-tcsjnd-1tff5.hk.p5pv.com, port: 80, type: vmess, uuid: dfb6b402-f422-11ef-80e5-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: ab01eb81-sv2sg0-tcsjnd-1tff5.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 92, server: ee734b86-t0bog0-t2bzbl-1qs82.hk.p5pv.com, port: 80, type: vmess, uuid: 9c6d1142-dc2b-11ee-88c7-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 5, server: eaf70f66-sv0xs0-t8ivpf-z65w.hk.p5pv.com, port: 80, type: vmess, uuid: a2313fba-74a6-11ed-a8bf-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: eaf70f66-sv0xs0-t8ivpf-z65w.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 28, server: 4672ae04-sv2sg0-t2hqlr-1s3mx.hk.p5pv.com, port: 80, type: vmess, uuid: b58095f0-52dc-11ef-bc74-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: 4672ae04-sv2sg0-t2hqlr-1s3mx.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 19, server: 96aaf322-sv2sg0-tbvl5i-1mebs.hk.p5pv.com, port: 80, type: vmess, uuid: 80f73b42-8264-11ef-8dc4-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: 🇭🇰HK-1.65.202.130-5137 | 3.302MB, network: ws, ws-opts: {path: /, headers: {Host: 96aaf322-sv2sg0-tbvl5i-1mebs.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 88, server: fe42ccee-t0bog0-t9uin7-19ord.hk.p5pv.com, port: 80, type: vmess, uuid: dcdb1278-4b7d-11ed-bb74-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 30, server: cf703cfc-sv6hs0-sz578n-1pw2y.hk.p5pv.com, port: 80, type: vmess, uuid: 8815622e-7598-11ef-a01c-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: cf703cfc-sv6hs0-sz578n-1pw2y.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 71, server: 8b5da18e-szpgg0-t13s3a-zn8y.hk.p5pv.com, port: 80, type: vmess, uuid: 44e76f8c-7362-11ec-bb74-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: 8b5da18e-szpgg0-t13s3a-zn8y.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 14, server: acbd7ff2-sv6hs0-szj6wo-8f7h.hk.p5pv.com, port: 80, type: vmess, uuid: b1e0ecc4-c7af-11ed-a8bf-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: acbd7ff2-sv6hs0-szj6wo-8f7h.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 31, server: df08b250-sv2sg0-t5wcb1-13x18.hk.p5pv.com, port: 80, type: vmess, uuid: e4499a62-0cfe-11eb-ad8c-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: df08b250-sv2sg0-t5wcb1-13x18.hk.p5pv.com, network: ws, ws-opts: {path: /, headers: {Host: df08b250-sv2sg0-t5wcb1-13x18.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 2, server: 84a663fa-sunz40-swhx5y-1q3dm.hk.p5pv.com, port: 80, type: vmess, uuid: c1785de0-212f-11ef-92aa-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: 84a663fa-sunz40-swhx5y-1q3dm.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 11, server: dbacca25-sv2sg0-sv0wpw-17xo8.hk.p5pv.com, port: 80, type: vmess, uuid: b4e40aa2-74a1-11ed-b0b5-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: dbacca25-sv2sg0-sv0wpw-17xo8.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 6, server: 49c660d6-sucv40-svb30a-150lf.hk.p5pv.com, port: 80, type: vmess, uuid: 3035b36e-679f-11ed-87fd-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: 49c660d6-sucv40-svb30a-150lf.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 26, server: b55d59d3-sv6hs0-tbpu76-1thmd.hk.p5pv.com, port: 80, type: vmess, uuid: 2d8c38cc-fc12-11ef-94aa-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: 🇭🇰HK-1.65.202.130-5148 | 1.877MB, network: ws, ws-opts: {path: /, headers: {Host: b55d59d3-sv6hs0-tbpu76-1thmd.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 8, server: 2f692aa9-sv2sg0-svs488-n09f.hk.p5pv.com, port: 80, type: vmess, uuid: 89b0ea8c-806b-11ed-94ba-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 89, server: 2e9a1088-t0bog0-taksay-1tcuf.hk.p5pv.com, port: 80, type: vmess, uuid: 3952a514-eaa7-11ef-97da-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 12, server: bd12944a-sv0xs0-t2lc1c-1mim2.hk.p5pv.com, port: 80, type: vmess, uuid: 6e3ee1de-381f-11ee-87f9-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: bd12944a-sv0xs0-t2lc1c-1mim2.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 23, server: 8e551c95-sv0xs0-szj6wo-8f7h.hk.p5pv.com, port: 80, type: vmess, uuid: b1e0ecc4-c7af-11ed-a8bf-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: 8e551c95-sv0xs0-szj6wo-8f7h.hk.p5pv.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 15, server: ae030a85-sv2sg0-tas70o-yjcr.hk.p5pv.com, port: 80, type: vmess, uuid: f1ddbc82-ae6a-11ef-b69c-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: 🇭🇰HK-1.65.202.130-4993 | 8.703MB, network: ws, ws-opts: {path: /, headers: {Host: ae030a85-sv2sg0-tas70o-yjcr.hk.p5pv.com}}, udp: true}
+  - {name: 🇻🇳 越南 - Bo - VNPT Corp - 1, server: arxfw2b78fi2q9hzylhn.freesocks.work, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: Nk9asglDzHzjktVzTkvhaA, udp: true}
+  - {name: 二爷翻墙_24, server: arxfw2b78fi2q9hzylhn.freesocks.work, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: Nk9asglDzHzjktVzTkvhaA, udp: true}
+  - {name: 🇷🇺 俄罗斯 V2CROSS.COM, server: 46.254.92.25, port: 8880, type: vmess, uuid: 3e1e3e7f-2683-3f36-83b1-1850790295df, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: TG.WangCai2.s2.cn-db.top}}, udp: true}
+  - {name: 🇳🇱 荷兰 - 阿姆斯特丹 - Matteo Martelloni trading as DELUXHOST - 1, server: switcher-nick-croquet.freesocks.work, port: 443, type: ss, cipher: chacha20-ietf-poly1305, password: 9tqhMdIrTkgQ46PvhyAtMH, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 24, server: 6bbeaaf6-sv4n40-t8tsp0-1szmi.hk3.p5pv.com, port: 80, type: vmess, uuid: ba151628-b3a2-11ef-bdb9-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: 🇭🇰HK-1.65.196.218-4865 | 1.756MB, network: ws, ws-opts: {path: /, headers: {Host: 6bbeaaf6-sv4n40-t8tsp0-1szmi.hk3.p5pv.com}}, udp: true}
+  - {name: 🇺🇸 美国 CloudFlare节点 2, server: 108.162.192.241, port: 8880, type: vmess, uuid: 248be52b-35d9-34cb-9b73-e12b78bc1301, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: TG.WangCai2.s2.db-link02.top}}, udp: true}
+  - {name: 🇩🇰 丹麦 V2CROSS.COM, server: 195.85.59.241, port: 8880, type: vmess, uuid: 248be52b-35d9-34cb-9b73-e12b78bc1301, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: TG.WangCai2.s2.db-link02.top}}, udp: true}
+  - {name: 🇮🇳 印度 V2CROSS.COM, server: 103.160.204.241, port: 8880, type: vmess, uuid: 248be52b-35d9-34cb-9b73-e12b78bc1301, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: TG.WangCai2.s2.db-link02.top}}, udp: true}
+  - {name: 🇷🇺 俄罗斯 V2CROSS.COM 2, server: 77.105.163.25, port: 8880, type: vmess, uuid: 3e1e3e7f-2683-3f36-83b1-1850790295df, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: TG.WangCai2.s2.cn-db.top}}, udp: true}
+  - {name: 🇺🇸 美国 V2CROSS.COM 2, server: 45.159.216.25, port: 8880, type: vmess, uuid: 3e1e3e7f-2683-3f36-83b1-1850790295df, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: TG.WangCai2.s2.cn-db.top}}, udp: true}
+  - {name: 🇭🇰 香港 电讯盈科有限公司 3, server: v10.heduian.link, port: 30807, type: vmess, uuid: cbb3f877-d1fb-344c-87a9-d153bffd5484, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: baidu.com}}, udp: true}
+  - {name: 🇺🇸 美国 V2CROSS.COM, server: 108.165.216.241, port: 8880, type: vmess, uuid: 248be52b-35d9-34cb-9b73-e12b78bc1301, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: TG.WangCai2.s2.db-link02.top}}, udp: true}
+  - {name: 亚太地区 V2CROSS.COM, server: 103.116.7.241, port: 8880, type: vmess, uuid: 248be52b-35d9-34cb-9b73-e12b78bc1301, alterId: 0, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: TG.WangCai2.s2.db-link02.top}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 29, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 91df5a86-fcdd-11ef-94aa-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 34, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 541259a8-8df6-11ee-ace4-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 35, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 55cce5a4-56b7-11ee-af82-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 36, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 715a2574-9c25-11eb-8673-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 38, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 6e313598-a088-11ea-a22e-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 39, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 3085fcf8-a69c-11ec-bd7c-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 40, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 93fb69fc-77cf-11ee-85ee-f23c91369f2d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 41, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 6e8482fb-1f9b-11ed-af5f-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 42, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 44e76f8c-7362-11ec-bb74-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 43, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 40639730-e027-11ea-87ad-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 44, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 40fb1315-191a-11ed-b0ca-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 45, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 12a81f5a-fa9e-11ef-8400-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 47, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: dfb6b402-f422-11ef-80e5-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 69, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 56b05600-e140-11ec-a3de-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: hkt.gotochinatown.net, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 70, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: c11ff50c-f582-11ee-94df-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 72, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 398e0d38-8649-11ef-959c-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 73, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: f3961816-505d-11ed-bd7c-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 74, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 0de37cdc-abff-11ef-b7c6-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 75, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 40d572ec-7f67-11ed-bf1f-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 76, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 8d0ec7cc-eefa-11ee-9b59-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 77, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 0114339c-488d-11ee-8792-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 78, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: b2c6384c-f63d-11ec-b1b3-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 79, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 6ce63b80-8b5b-11ef-b635-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 80, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 4b9ca118-7fab-11eb-bd3a-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 81, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 448aff24-b2e6-11ef-97e0-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, servername: broadcastlv.chat.bilibili.com, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 82, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 676c67c6-5e73-11ee-9a79-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: hkt.gotochinatown.net}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 87, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: b58095f0-52dc-11ef-bc74-f23c91cfbbc9, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 90, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 32315324-cf6b-11ed-979b-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - Pccw IMS - 91, server: hkt.gotochinatown.net, port: 80, type: vmess, uuid: 9cccea7a-b6ab-11eb-a0fc-f23c913c8d2b, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+  - {name: 🇭🇰 中国 - 香港 - PCCW IMS Limited - 86, server: 97b67adf-t0bog0-t51upj-ochh.hk.p5pv.com, port: 80, type: vmess, uuid: cf89e064-5c77-11eb-bd3a-f23c9164ca5d, alterId: 2, cipher: auto, tls: false, skip-cert-verify: true, network: ws, ws-opts: {path: /, headers: {Host: broadcastlv.chat.bilibili.com}}, udp: true}
+proxy-groups:
+  - name: 🚀 节点选择
+    type: select
+    proxies:
+      - ♻️ 自动选择
+      - ✅ 手动选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: ♻️ 自动选择
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+    proxies:
+      - 🇺🇸 美国 CloudFlare节点 4
+      - 🇩🇪 德国 - Falkenstein - Hetzner Online GmbH - 1
+      - 🇫🇮 芬兰 - 赫尔辛基 - Hetzner Online GmbH - 5
+      - 🇺🇸 美国 CloudFlare节点
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 37
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 63
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 46
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 1
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 49
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 52
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 56
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 51
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 53
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 48
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 55
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 60
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 50
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 111
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 59
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 105
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 57
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 109
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 65
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 66
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 107
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 58
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 101
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 103
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 104
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 64
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 102
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 98
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 106
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 99
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 54
+      - 🇺🇸 美国 CloudFlare节点 3
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 67
+      - 🇲🇩 摩尔多瓦 - 基希讷乌 - ''IT FRUIT'' S.R.L. - 1
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 108
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 16
+      - 🇱🇹 立陶宛 - 维尔纽斯 - EDIS GmbH - 1
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 10
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 61
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 62
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 13
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 4
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 25
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 9
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 27
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 3
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 7
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 17
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 18
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 92
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 5
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 28
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 19
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 88
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 30
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 71
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 14
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 31
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 2
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 11
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 6
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 26
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 8
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 89
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 12
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 23
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 15
+      - 🇻🇳 越南 - Bo - VNPT Corp - 1
+      - 二爷翻墙_24
+      - 🇷🇺 俄罗斯 V2CROSS.COM
+      - 🇳🇱 荷兰 - 阿姆斯特丹 - Matteo Martelloni trading as DELUXHOST - 1
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 24
+      - 🇺🇸 美国 CloudFlare节点 2
+      - 🇩🇰 丹麦 V2CROSS.COM
+      - 🇮🇳 印度 V2CROSS.COM
+      - 🇷🇺 俄罗斯 V2CROSS.COM 2
+      - 🇺🇸 美国 V2CROSS.COM 2
+      - 🇭🇰 香港 电讯盈科有限公司 3
+      - 🇺🇸 美国 V2CROSS.COM
+      - 亚太地区 V2CROSS.COM
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 29
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 34
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 35
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 36
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 38
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 39
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 40
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 41
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 42
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 43
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 44
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 45
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 47
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 69
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 70
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 72
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 73
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 74
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 75
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 76
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 77
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 78
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 79
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 80
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 81
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 82
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 87
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 90
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 91
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 86
+  - name: ✅ 手动选择
+    type: select
+    proxies:
+      - 🇺🇸 美国 CloudFlare节点 4
+      - 🇩🇪 德国 - Falkenstein - Hetzner Online GmbH - 1
+      - 🇫🇮 芬兰 - 赫尔辛基 - Hetzner Online GmbH - 5
+      - 🇺🇸 美国 CloudFlare节点
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 37
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 63
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 46
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 1
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 49
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 52
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 56
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 51
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 53
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 48
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 55
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 60
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 50
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 111
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 59
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 105
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 57
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 109
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 65
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 66
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 107
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 58
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 101
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 103
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 104
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 64
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 102
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 98
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 106
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 99
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 54
+      - 🇺🇸 美国 CloudFlare节点 3
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 67
+      - 🇲🇩 摩尔多瓦 - 基希讷乌 - ''IT FRUIT'' S.R.L. - 1
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 108
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 16
+      - 🇱🇹 立陶宛 - 维尔纽斯 - EDIS GmbH - 1
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 10
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 61
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 62
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 13
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 4
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 25
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 9
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 27
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 3
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 7
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 17
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 18
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 92
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 5
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 28
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 19
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 88
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 30
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 71
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 14
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 31
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 2
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 11
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 6
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 26
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 8
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 89
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 12
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 23
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 15
+      - 🇻🇳 越南 - Bo - VNPT Corp - 1
+      - 二爷翻墙_24
+      - 🇷🇺 俄罗斯 V2CROSS.COM
+      - 🇳🇱 荷兰 - 阿姆斯特丹 - Matteo Martelloni trading as DELUXHOST - 1
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 24
+      - 🇺🇸 美国 CloudFlare节点 2
+      - 🇩🇰 丹麦 V2CROSS.COM
+      - 🇮🇳 印度 V2CROSS.COM
+      - 🇷🇺 俄罗斯 V2CROSS.COM 2
+      - 🇺🇸 美国 V2CROSS.COM 2
+      - 🇭🇰 香港 电讯盈科有限公司 3
+      - 🇺🇸 美国 V2CROSS.COM
+      - 亚太地区 V2CROSS.COM
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 29
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 34
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 35
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 36
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 38
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 39
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 40
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 41
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 42
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 43
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 44
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 45
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 47
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 69
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 70
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 72
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 73
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 74
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 75
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 76
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 77
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 78
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 79
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 80
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 81
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 82
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 87
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 90
+      - 🇭🇰 中国 - 香港 - Pccw IMS - 91
+      - 🇭🇰 中国 - 香港 - PCCW IMS Limited - 86
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 🐟 漏网之鱼
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 🚫 拒接访问
+    type: select
+    proxies:
+      - REJECT
+  - name: 🎯 全球直连
+    type: select
+    proxies:
+      - DIRECT
+  - name: 🌍 国外加速
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+      - 🚫 拒接访问
+  - name: 📲 电报信息
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+  - name: Ⓜ️ 微软服务
+    type: select
+    proxies:
+      - 🎯 全球直连
+      - 🚀 节点选择
+  - name: 🛑 全球拦截
+    type: select
+    proxies:
+      - 🚫 拒接访问
+      - 🎯 全球直连
+rules:
+  - DOMAIN-SUFFIX,googleapis.cn,🌍 国外加速
+  - DOMAIN-SUFFIX,xn--ngstr-lra8j.com,🎯 全球直连
+  - DOMAIN-SUFFIX,xn--ngstr-cn-8za9o.com,🎯 全球直连
+  - DOMAIN-KEYWORD,kgithub,🎯 全球直连
+  - DOMAIN-KEYWORD,fastgit,🎯 全球直连
+  - DOMAIN-KEYWORD,ghproxy,🎯 全球直连
+  - DOMAIN-KEYWORD,gitmirror,🎯 全球直连
+  - DOMAIN-SUFFIX,gitclone.com,🎯 全球直连
+  - DOMAIN-SUFFIX,gh.api.99988866.xyz,🎯 全球直连
+  - DOMAIN-SUFFIX,weserv.nl,🎯 全球直连
+  - DOMAIN-SUFFIX,wsrv.nl,🎯 全球直连
+  - PROCESS-NAME,v2ray,🎯 全球直连
+  - PROCESS-NAME,xray,🎯 全球直连
+  - PROCESS-NAME,naive,🎯 全球直连
+  - PROCESS-NAME,trojan,🎯 全球直连
+  - PROCESS-NAME,trojan-go,🎯 全球直连
+  - PROCESS-NAME,ss-local,🎯 全球直连
+  - PROCESS-NAME,privoxy,🎯 全球直连
+  - PROCESS-NAME,leaf,🎯 全球直连
+  - PROCESS-NAME,v2ray.exe,🎯 全球直连
+  - PROCESS-NAME,xray.exe,🎯 全球直连
+  - PROCESS-NAME,naive.exe,🎯 全球直连
+  - PROCESS-NAME,trojan.exe,🎯 全球直连
+  - PROCESS-NAME,trojan-go.exe,🎯 全球直连
+  - PROCESS-NAME,ss-local.exe,🎯 全球直连
+  - PROCESS-NAME,privoxy.exe,🎯 全球直连
+  - PROCESS-NAME,leaf.exe,🎯 全球直连
+  - PROCESS-NAME,Surge,🎯 全球直连
+  - PROCESS-NAME,Surge 2,🎯 全球直连
+  - PROCESS-NAME,Surge 3,🎯 全球直连
+  - PROCESS-NAME,Surge 4,🎯 全球直连
+  - PROCESS-NAME,Surge%202,🎯 全球直连
+  - PROCESS-NAME,Surge%203,🎯 全球直连
+  - PROCESS-NAME,Surge%204,🎯 全球直连
+  - PROCESS-NAME,Thunder,🎯 全球直连
+  - PROCESS-NAME,DownloadService,🎯 全球直连
+  - PROCESS-NAME,qBittorrent,🎯 全球直连
+  - PROCESS-NAME,Transmission,🎯 全球直连
+  - PROCESS-NAME,fdm,🎯 全球直连
+  - PROCESS-NAME,aria2c,🎯 全球直连
+  - PROCESS-NAME,Folx,🎯 全球直连
+  - PROCESS-NAME,NetTransport,🎯 全球直连
+  - PROCESS-NAME,uTorrent,🎯 全球直连
+  - PROCESS-NAME,WebTorrent,🎯 全球直连
+  - PROCESS-NAME,aria2c.exe,🎯 全球直连
+  - PROCESS-NAME,BitComet.exe,🎯 全球直连
+  - PROCESS-NAME,fdm.exe,🎯 全球直连
+  - PROCESS-NAME,NetTransport.exe,🎯 全球直连
+  - PROCESS-NAME,qbittorrent.exe,🎯 全球直连
+  - PROCESS-NAME,Thunder.exe,🎯 全球直连
+  - PROCESS-NAME,ThunderVIP.exe,🎯 全球直连
+  - PROCESS-NAME,transmission-daemon.exe,🎯 全球直连
+  - PROCESS-NAME,transmission-qt.exe,🎯 全球直连
+  - PROCESS-NAME,uTorrent.exe,🎯 全球直连
+  - PROCESS-NAME,WebTorrent.exe,🎯 全球直连
+  - DOMAIN,steamstore-a.akamaihd.net,🎯 全球直连
+  - DOMAIN,steamcdn-a.akamaihd.net,🎯 全球直连
+  - DOMAIN,api.steampowered.com,🎯 全球直连
+  - DOMAIN,store.steampowered.com,🎯 全球直连
+  - DOMAIN,clash.razord.top,🎯 全球直连
+  - DOMAIN,yacd.haishan.me,🎯 全球直连
+  - DOMAIN,www.biqugeu.net,🌍 国外加速
+  - DOMAIN,www.cool18.com,🌍 国外加速
+  - DOMAIN-KEYWORD,diyibanzhu,🌍 国外加速
+  - DOMAIN-SUFFIX,cool18.com,🌍 国外加速
+  - DOMAIN-KEYWORD,cunhua,🌍 国外加速
+  - RULE-SET,自定义广告白名单,🎯 全球直连
+  - RULE-SET,自定义广告拦截,🛑 全球拦截
+  - RULE-SET,adblock,🛑 全球拦截
+  - IP-CIDR,0.0.0.0/32,🛑 全球拦截
+  - RULE-SET,MetaCubeX-cn-domain,🎯 全球直连
+  - GEOIP,private,🎯 全球直连,no-resolve
+  - GEOIP,JP,🌍 国外加速
+  - GEOIP,CN,🎯 全球直连
+  - RULE-SET,ChinaCompanyIp,🎯 全球直连
+  - RULE-SET,ChinaDomain,🎯 全球直连
+  - RULE-SET,ChinaMedia,🎯 全球直连
+  - RULE-SET,ChinaIp,🎯 全球直连
+  - RULE-SET,LocalAreaNetwork,🎯 全球直连
+  - DOMAIN-SUFFIX,cn,🎯 全球直连
+  - DOMAIN-KEYWORD,-cn,🎯 全球直连
+  - RULE-SET,region,🌍 国外加速
+  - RULE-SET,direct,🎯 全球直连
+  - RULE-SET,direct2,🎯 全球直连
+  - RULE-SET,ProxyGFWlist,🌍 国外加速
+  - RULE-SET,telegramcidr,📲 电报信息
+  - GEOIP,CN,🎯 全球直连
+  - RULE-SET,proxy,🌍 国外加速
+  - MATCH,🐟 漏网之鱼
