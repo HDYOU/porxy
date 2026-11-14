@@ -1,0 +1,87 @@
+﻿name: Update Rules
+on:
+  schedule:
+    - cron: '0 */2 * * *' # Executes at 2 hours past the hour.
+  push:
+   branches:
+    - main
+
+  workflow_dispatch:
+
+  repository_dispatch:
+    type:
+      - [ Manual-Update ]
+
+  watch:
+    types: [ started ]
+
+# only one run
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  SCKEY: ${{ secrets.SCKEY }}
+  PUSH_PUSH: ${{ secrets.PUSH_PUSH }}
+  GITHUBTOKEN: ${{ secrets.GITHUBTOKEN }}
+  TG_TOKEN: ${{ secrets.TG_TOKEN }}
+  CHAT_ID: ${{ secrets.CHAT_ID }}
+  REPO_NAME: ${{ github.event.repository.name }}
+  OWR_NAME: ${{ github.actor }}
+  NETLIFY_API: ${{ secrets.NETLIFY_API }}
+  RENDER_API_API: ${{ secrets.RENDER_API_API }}
+
+jobs:
+  update-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+
+      - name: Install rename
+        run: |
+          # sudo apt update
+          # sudo apt install rename
+          echo "rename"
+      - name: Git fetch
+        run: |
+          git pull -f
+      - name: Update rules
+        run: |
+          echo $PWD
+          export HOME="$PWD"
+          chmod 777 ${HOME}/data/*.sh
+          sh ${HOME}/data/run.sh
+
+      - name: Git push assets to Github
+        continue-on-error: false
+        if: 1 == 1
+        run: |
+          git init
+          git config --local user.name "GitHub Action"
+          git config --local user.email "action@github.com"
+          git branch -m main
+          git add .
+          git add --all
+          git checkout --orphan new_branch
+          git add -A
+          git commit -am "Updated at $(TZ=UTC-8 date +'%Y-%m-%d %H:%M:%S')"
+          git branch -D main 
+          git branch -m main
+          git branch -M main
+          git tag -l | xargs git tag -d
+          git push --force --set-upstream origin main
+      # - name: Auto Built
+        # continue-on-error: true
+        # run: |
+          #curl -s -X POST -d {} "${{ secrets.NETLIFY_API }}"
+          #echo Nelify Built Pass
+          # curl -s -X POST -d {} "${{ secrets.RENDER_API }}" &
+          # echo Render Built Pass
+          # curl -X POST "${{ secrets.CF_TOKEN }}"
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          retain_days: 0
+          keep_minimum_runs: 2
